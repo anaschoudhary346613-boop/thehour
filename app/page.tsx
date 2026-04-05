@@ -1,5 +1,7 @@
 'use client';
 
+export const dynamic = 'force-dynamic';
+
 import { useState, Suspense } from 'react';
 import { AnimatePresence } from 'framer-motion';
 import Navbar from '@/components/Navbar';
