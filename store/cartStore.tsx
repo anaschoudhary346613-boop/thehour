@@ -13,9 +13,10 @@ export interface Product {
   stock: number;
   description: string;
   image: string;
-  image2: string;
+  image2?: string;
   tags: string[];
   featured?: boolean;
+  material?: string;
 }
 
 export interface CartItem extends Product {

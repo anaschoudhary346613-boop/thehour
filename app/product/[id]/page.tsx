@@ -79,7 +79,7 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
             <motion.div 
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+              transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] as const }}
               className="relative aspect-[4/5] rounded-[2.5rem] overflow-hidden glass border border-white/5"
             >
               <Image
@@ -126,7 +126,7 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
               <motion.div
                 initial={{ opacity: 0, x: 30 }}
                 animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+                transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] as const }}
               >
                 <div className="flex items-center gap-3 mb-6">
                   <span className="font-label text-gold tracking-[0.3em]">{product.category}</span>

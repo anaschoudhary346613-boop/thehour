@@ -51,7 +51,7 @@ export default function ProductGrid() {
             initial={{ opacity: 0, x: -30 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] as const }}
             className="max-w-2xl"
           >
             <div className="flex items-center gap-3 mb-4">
@@ -71,7 +71,7 @@ export default function ProductGrid() {
             initial={{ opacity: 0, x: 30 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] as const }}
             className="flex flex-wrap gap-x-8 gap-y-4"
           >
             {CATEGORIES.map((category) => (
