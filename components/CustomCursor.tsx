@@ -1,73 +1,75 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { motion, useSpring, useMotionValue } from 'framer-motion';
 
 export default function CustomCursor() {
-  const [isHovered, setIsHovered] = useState(false);
-  const [isMobile, setIsMobile] = useState(true);
+  const cursorX = useMotionValue(-100);
+  const cursorY = useMotionValue(-100);
+  const followerX = useMotionValue(-100);
+  const followerY = useMotionValue(-100);
 
-  const x = useMotionValue(0);
-  const y = useMotionValue(0);
+  const springConfig = { damping: 25, stiffness: 400 };
+  const followerSpringConfig = { damping: 30, stiffness: 150 };
 
-  const springConfig = { damping: 25, stiffness: 200, mass: 0.5 };
-  const springX = useSpring(x, springConfig);
-  const springY = useSpring(y, springConfig);
+  const x = useSpring(cursorX, springConfig);
+  const y = useSpring(cursorY, springConfig);
+  const fx = useSpring(followerX, followerSpringConfig);
+  const fy = useSpring(followerY, followerSpringConfig);
+
+  const [isHovering, setIsHovering] = useState(false);
 
   useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth < 1024);
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-
-    const handleMouseMove = (e: MouseEvent) => {
-      x.set(e.clientX);
-      y.set(e.clientY);
+    const moveCursor = (e: MouseEvent) => {
+      cursorX.set(e.clientX - 10);
+      cursorY.set(e.clientY - 10);
+      followerX.set(e.clientX - 20);
+      followerY.set(e.clientY - 20);
     };
 
-    const handleMouseOver = (e: MouseEvent) => {
+    const handleHover = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
-      setIsHovered(
-        target.tagName === 'A' ||
+      if (
         target.tagName === 'BUTTON' ||
-        target.closest('a') !== null ||
-        target.closest('button') !== null ||
-        target.dataset.cursor === 'hover'
-      );
+        target.tagName === 'A' ||
+        target.closest('button') ||
+        target.closest('a')
+      ) {
+        setIsHovering(true);
+      } else {
+        setIsHovering(false);
+      }
     };
 
-    window.addEventListener('mousemove', handleMouseMove);
-    window.addEventListener('mouseover', handleMouseOver);
+    window.addEventListener('mousemove', moveCursor);
+    window.addEventListener('mouseover', handleHover);
 
     return () => {
-      window.removeEventListener('resize', checkMobile);
-      window.removeEventListener('mousemove', handleMouseMove);
-      window.removeEventListener('mouseover', handleMouseOver);
+      window.removeEventListener('mousemove', moveCursor);
+      window.removeEventListener('mouseover', handleHover);
     };
-  }, [x, y]);
-
-  if (isMobile) return null;
+  }, [cursorX, cursorY, followerX, followerY]);
 
   return (
-    <div className="fixed inset-0 z-[10000] pointer-events-none mix-blend-difference">
-      {/* Outer ring */}
+    <>
       <motion.div
-        style={{ x: springX, y: springY, translateX: '-50%', translateY: '-50%' }}
-        animate={{
-          width: isHovered ? 60 : 32,
-          height: isHovered ? 60 : 32,
-          opacity: 0.8,
+        className="custom-cursor hidden md:block"
+        style={{
+          x: x,
+          y: y,
+          scale: isHovering ? 1.5 : 1,
+          backgroundColor: isHovering ? 'var(--ivory)' : 'var(--gold)',
         }}
-        className="fixed rounded-full border border-white/50 will-change-transform"
       />
-      {/* Follow dot */}
       <motion.div
-        style={{ x, y, translateX: '-50%', translateY: '-50%' }}
-        animate={{
-          scale: isHovered ? 0.4 : 1,
-          opacity: isHovered ? 0.3 : 1,
+        className="cursor-follower hidden md:block"
+        style={{
+          x: fx,
+          y: fy,
+          scale: isHovering ? 1.8 : 1,
+          opacity: isHovering ? 0 : 0.5,
         }}
-        className="fixed w-1.5 h-1.5 bg-white rounded-full will-change-transform"
       />
-    </div>
+    </>
   );
 }

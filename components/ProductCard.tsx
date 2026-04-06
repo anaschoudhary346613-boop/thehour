@@ -108,19 +108,19 @@ export default function ProductCard({ product }: ProductCardProps) {
 
       <Link href={`/product/${product.id}`} className="block mt-5 space-y-2">
         <div className="flex justify-between items-start">
-          <div>
-            <h3 className="font-syne font-700 text-ivory text-base group-hover:text-gold transition-colors duration-300">
+          <div className="flex flex-col">
+            <h3 className="font-serif italic text-ivory text-xl md:text-2xl group-hover:text-gold transition-all duration-500 tracking-tight">
               {product.name}
             </h3>
-            <p className="font-inter text-silver/50 text-[0.65rem] tracking-widest mt-1 uppercase">
-              {product.material}
+            <p className="font-label text-gold/40 text-[0.6rem] mt-2 group-hover:text-gold transition-colors duration-500">
+              {product.material || "Exquisite Craftsmanship"}
             </p>
           </div>
           <div className="text-right">
-            <p className="font-syne font-800 text-gold text-base tracking-tight">
+            <p className="font-syne font-800 text-gold-gradient text-lg tracking-tight">
               {formatPrice(product.price)}
             </p>
-            <p className="font-label text-silver/30 text-[0.55rem] mt-0.5 tracking-[0.2em]">{product.category}</p>
+            <p className="font-label text-silver/20 text-[0.55rem] mt-1 tracking-[0.3em]">{product.category}</p>
           </div>
         </div>
       </Link>

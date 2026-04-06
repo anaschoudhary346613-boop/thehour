@@ -8,9 +8,9 @@ import { useCartStore } from '@/store/cartStore';
 
 const navLinks = [
   { label: 'Collections', href: '#collections' },
-  { label: 'Editorials', href: '#editorials' },
-  { label: 'Craftsmanship', href: '#craftsmanship' },
-  { label: 'Contact', href: '#contact' },
+  { label: 'Journal', href: '#editorials' },
+  { label: 'Heritage', href: '#craftsmanship' },
+  { label: 'Concierge', href: '#contact' },
 ];
 
 export default function Navbar({
@@ -232,7 +232,7 @@ function MagneticLink({ href, children }: { href: string; children: string }) {
     <motion.a
       href={href}
       whileHover={{ y: -2 }}
-      className="relative font-label text-silver hover:text-ivory transition-colors duration-500 overflow-hidden group py-1"
+      className="relative font-serif italic text-silver/80 hover:text-ivory transition-colors duration-500 overflow-hidden group py-1 text-lg"
     >
       <span className="relative z-10 block translate-y-0 group-hover:-translate-y-full transition-transform duration-500 ease-in-out">
         {children}

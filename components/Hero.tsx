@@ -81,7 +81,7 @@ export default function Hero() {
           {/* Label */}
           <motion.div variants={fadeUp} className="mb-6 flex items-center gap-3">
             <span className="w-8 h-[1px] bg-gold/50" />
-            <span className="font-label text-gold flex items-center gap-2 tracking-[0.3em] text-[0.6rem] sm:text-[0.65rem]">
+            <span className="font-serif italic text-gold flex items-center gap-2 tracking-[0.1em] text-lg sm:text-xl">
               <Sparkles size={11} className="animate-pulse" />
               Haute Horlogerie · Est. 2024
             </span>

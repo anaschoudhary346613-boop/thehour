@@ -1,24 +1,24 @@
-@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap');
 @import "tailwindcss";
 
 :root {
-  --obsidian: #080808;
-  --onyx: #111111;
-  --graphite: #1a1a1a;
-  --steel: #2a2a2a;
-  --mist: #3a3a3a;
-  --silver: #8a8a8a;
-  --pearl: #c8c8c8;
-  --ivory: #e8e8e8;
-  --cream: #f5f3ee;
-  --gold: #b8973a;
-  --gold-light: #d4af58;
-  --gold-pale: #f0d882;
-  --rose: #b06050;
-  --accent: #c9a96e;
-  --glass: rgba(255,255,255,0.03);
-  --glass-border: rgba(255,255,255,0.08);
-  --glass-hover: rgba(255,255,255,0.08);
+  --obsidian: #050505;
+  --onyx: #0a0a0a;
+  --graphite: #121212;
+  --steel: #222222;
+  --mist: #333333;
+  --silver: #9a9a9a;
+  --pearl: #d8d8d8;
+  --ivory: #f2f2f2;
+  --cream: #faf9f6;
+  --gold: #c5a044;
+  --gold-light: #e6c670;
+  --gold-pale: #f7e8b5;
+  --rose: #c07060;
+  --accent: #d4b478;
+  --glass: rgba(255,255,255,0.02);
+  --glass-border: rgba(255,255,255,0.05);
+  --glass-hover: rgba(255,255,255,0.07);
 }
 
 @theme inline {
@@ -38,6 +38,7 @@
   --color-glass-border: var(--glass-border);
   --font-syne: 'Syne', sans-serif;
   --font-inter: 'Inter', sans-serif;
+  --font-serif: 'Cormorant Garamond', serif;
 }
 
 *, *::before, *::after {
@@ -90,18 +91,50 @@ body {
 .font-label {
   font-family: 'Inter', sans-serif;
   font-weight: 500;
-  letter-spacing: 0.2em;
+  letter-spacing: 0.25em;
   text-transform: uppercase;
-  font-size: 0.65rem;
+  font-size: 0.7rem;
+}
+
+.font-serif {
+  font-family: 'Cormorant Garamond', serif;
 }
 
 /* Glass morphism */
 .glass {
   background: var(--glass);
-  backdrop-filter: blur(28px) saturate(180%);
-  -webkit-backdrop-filter: blur(28px) saturate(180%);
+  backdrop-filter: blur(40px) saturate(180%);
+  -webkit-backdrop-filter: blur(40px) saturate(180%);
   border: 1px solid var(--glass-border);
   transition: border-color 0.4s ease, background-color 0.4s ease;
+}
+
+/* Custom Cursor */
+.custom-cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 20px;
+  height: 20px;
+  background: var(--gold);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9999;
+  mix-blend-mode: difference;
+  transition: transform 0.15s ease-out;
+}
+
+.cursor-follower {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--gold);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9998;
+  transition: transform 0.3s ease-out;
 }
 
 .glass-dark {
