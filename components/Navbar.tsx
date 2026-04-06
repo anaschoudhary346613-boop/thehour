@@ -76,7 +76,6 @@ export default function Navbar({
               <span className="font-syne font-800 text-[1.1rem] tracking-[0.15em] uppercase text-ivory leading-none">
                 The <span className="text-gold-gradient">Hour</span>
               </span>
-              <span className="font-label text-[0.45rem] text-silver/40 tracking-[0.25em] mt-1">Founders Selection</span>
             </div>
           </Link>
 
@@ -102,7 +101,6 @@ export default function Navbar({
               className="hidden md:flex items-center gap-2.5 font-label text-silver hover:text-ivory transition-colors duration-300"
             >
               <User size={16} strokeWidth={1.5} />
-              <span className="tracking-[0.2em]">Account</span>
             </motion.button>
 
             {/* Cart */}

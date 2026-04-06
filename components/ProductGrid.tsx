@@ -66,39 +66,12 @@ export default function ProductGrid() {
             </p>
           </motion.div>
 
-          {/* Category Filter */}
-          <motion.div
-            initial={{ opacity: 0, x: 30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] as const }}
-            className="flex flex-wrap gap-x-8 gap-y-4"
-          >
-            {CATEGORIES.map((category) => (
-              <button
-                key={category}
-                onClick={() => setActiveCategory(category)}
-                className={`group relative py-2 font-label text-[0.65rem] tracking-[0.25em] transition-colors duration-500 uppercase ${
-                  activeCategory === category ? 'text-gold' : 'text-silver/40 hover:text-silver'
-                }`}
-              >
-                {category}
-                <motion.span
-                  className={`absolute -bottom-1 left-0 h-[1px] bg-gold transition-all duration-500 ${
-                    activeCategory === category ? 'w-full' : 'w-0 group-hover:w-1/2'
-                  }`}
-                  initial={false}
-                  animate={{ width: activeCategory === category ? '100%' : '0%' }}
-                />
-              </button>
-            ))}
-          </motion.div>
         </div>
 
-        {/* Responsive Staggered Grid - Optimized for layout stability */}
+        {/* Cinematic Grid Layout */}
         <motion.div 
           layout
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-10 gap-y-16 md:gap-y-24 min-h-[600px]"
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-16 gap-y-24 md:gap-y-32 min-h-[600px]"
         >
           <AnimatePresence mode="popLayout">
             {filteredProducts.map((product, i) => (

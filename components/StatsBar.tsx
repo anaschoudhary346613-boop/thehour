@@ -36,32 +36,20 @@ export default function StatsBar() {
         </div>
       </div>
 
-      {/* Stats */}
-      <div ref={ref} className="max-w-[1440px] mx-auto px-6 lg:px-12">
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
-          {STATS.map((stat, i) => (
-            <motion.div
-              key={stat.label}
-              initial={{ opacity: 0, y: 30 }}
-              animate={inView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.6, delay: i * 0.1 }}
-              className="glass rounded-2xl p-6 border border-white/5 hover:border-gold/20 transition-colors group"
-            >
-              <div className="flex items-center gap-3 mb-4">
-                {stat.icon}
-              </div>
-              <motion.p
-                initial={{ opacity: 0 }}
-                animate={inView ? { opacity: 1 } : {}}
-                transition={{ delay: 0.3 + i * 0.1, duration: 0.6 }}
-                className="font-display text-4xl text-gold-gradient mb-1"
-              >
-                {stat.value}
-              </motion.p>
-              <p className="font-label text-silver">{stat.label}</p>
-            </motion.div>
-          ))}
-        </div>
+      {/* Minimal Heritage Statement */}
+      <div ref={ref} className="max-w-[1440px] mx-auto px-6 lg:px-12 text-center">
+        <motion.div
+           initial={{ opacity: 0, y: 20 }}
+           animate={inView ? { opacity: 1, y: 0 } : {}}
+           transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+           className="max-w-3xl mx-auto"
+        >
+          <span className="font-label text-gold/40 tracking-[0.6em] uppercase text-[0.6rem] mb-6 block">The Standard</span>
+          <h2 className="font-display text-[clamp(1.5rem,4vw,3.5rem)] text-ivory/90 leading-tight uppercase tracking-tight">
+            Crafted for those who understand that <br />
+            <span className="text-gold-gradient">perfection is a journey, not a destination.</span>
+          </h2>
+        </motion.div>
       </div>
     </section>
   );

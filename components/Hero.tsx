@@ -61,12 +61,11 @@ export default function Hero() {
         {/* Cinematic Lens Flare */}
         <motion.div 
           animate={{ 
-            opacity: [0.3, 0.5, 0.3],
-            x: [0, 20, 0],
-            y: [0, -10, 0]
+            opacity: [0.3, 0.6, 0.3],
+            scale: [1, 1.1, 1],
           }}
-          transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
-          className="absolute top-1/4 right-1/4 w-[600px] h-[600px] bg-gold/10 rounded-full blur-[160px] pointer-events-none mix-blend-screen"
+          transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-gold/10 rounded-full blur-[180px] pointer-events-none mix-blend-screen z-0"
         />
       </motion.div>
 
@@ -115,9 +114,9 @@ export default function Hero() {
 
           {/* Subtext */}
           <motion.div variants={fadeUp} className="max-w-md mb-12">
-            <p className="text-silver/80 font-inter font-light text-base md:text-lg leading-relaxed">
-              Exceptional timepieces forged for those who understand that true luxury
-              is measured not in price, but in the relentless pursuit of perfection.
+            <p className="text-silver/80 font-inter font-light text-xl md:text-2xl tracking-tight leading-relaxed">
+              Exceptional timepieces for those who understand that true luxury
+              is the relentless pursuit of perfection.
             </p>
           </motion.div>
 

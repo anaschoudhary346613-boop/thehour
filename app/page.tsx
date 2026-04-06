@@ -32,11 +32,8 @@ export default function Home() {
       {/* Product Grid */}
       <ProductGrid />
 
-      {/* Features Showcase */}
-      <FeaturesShowcase />
-
-      {/* Editorials CTA */}
-      <EditorialsCTA />
+      {/* Minimal Journal CTA */}
+      <JournalCTA />
 
       {/* Footer */}
       <Footer />
@@ -49,43 +46,34 @@ export default function Home() {
         {showAuth && <AuthModal onClose={() => setShowAuth(false)} />}
         {showCheckout && <CheckoutModal onClose={() => setShowCheckout(false)} />}
       </AnimatePresence>
-
-      {/* WhatsApp Concierge */}
-      <WhatsAppButton />
     </main>
   );
 }
 
-function EditorialsCTA() {
+function JournalCTA() {
   return (
-    <section id="editorials" className="py-28 relative overflow-hidden">
-      <div className="absolute inset-0 bg-gradient-to-b from-obsidian via-graphite/30 to-obsidian pointer-events-none" />
+    <section id="editorials" className="py-40 relative overflow-hidden bg-obsidian">
+      <div className="max-w-[1440px] mx-auto px-6 lg:px-12">
+        <div className="flex flex-col md:flex-row items-end justify-between gap-12 mb-20">
+          <div className="max-w-2xl">
+            <span className="font-label text-gold/40 tracking-[0.4em] uppercase text-[0.65rem] mb-4 block">The Journal</span>
+            <h2 className="font-display text-[clamp(2.5rem,6vw,5.5rem)] text-ivory leading-[0.9] uppercase tracking-tighter">
+              Art Beyond <br />
+              <span className="italic text-white/5">The Dial</span>
+            </h2>
+          </div>
+          <Link href="/journal" className="font-label text-gold/60 hover:text-gold transition-colors tracking-[0.3em] uppercase text-[0.65rem] border-b border-gold/20 pb-1">
+            View All Entries
+          </Link>
+        </div>
 
-      <div className="max-w-[1440px] mx-auto px-6 lg:px-12 text-center relative z-10">
-        <span className="font-label text-gold mb-4 block">Editorials</span>
-        <h2 className="font-display text-[clamp(2.5rem,6vw,5rem)] text-ivory mb-6">
-          Art Beyond<br />
-          <span className="text-gold-gradient">The Dial</span>
-        </h2>
-        <p className="text-silver font-light max-w-xl mx-auto mb-10 text-lg leading-relaxed">
-          Journey through the stories, the craftspeople, and the philosophy that makes 
-          every The Hour timepiece an irreplaceable piece of wearable history.
-        </p>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-left mt-16">
-          {[
-            { tag: 'Craftsmanship', title: 'The Last Hand-Engravers of Le Sentier', date: 'March 2024' },
-            { tag: 'Heritage', title: 'Ten Years, One Movement: The Éternel Story', date: 'February 2024' },
-            { tag: 'Design', title: 'Midnight Blue & The Art of Guilloche', date: 'January 2024' },
-          ].map((article, i) => (
-            <div key={i} className="glass rounded-2xl p-6 border border-white/5 hover:border-gold/20 transition-all duration-300 group cursor-pointer">
-              <span className="tag-pill mb-4 inline-block">{article.tag}</span>
-              <h3 className="font-syne font-700 text-ivory text-lg mt-4 mb-3 group-hover:text-gold transition-colors duration-200">
-                {article.title}
-              </h3>
-              <p className="font-label text-silver/50">{article.date}</p>
-            </div>
-          ))}
+        <div className="group relative aspect-[21/9] rounded-[3rem] overflow-hidden border border-white/5">
+           <Image src="/watch-02.png" alt="Journal Spotlight" fill className="object-cover transition-transform duration-1000 group-hover:scale-105" />
+           <div className="absolute inset-0 bg-gradient-to-t from-obsidian via-obsidian/20 to-transparent" />
+           <div className="absolute bottom-12 left-12 max-w-lg">
+              <span className="tag-pill mb-4 inline-block">Craftsmanship</span>
+              <h3 className="font-display text-3xl md:text-5xl text-ivory uppercase leading-tight">The Last Hand-Engravers of Le Sentier</h3>
+           </div>
         </div>
       </div>
     </section>
