@@ -3,16 +3,36 @@ import { cookies } from 'next/headers'
 
 export default async function Page() {
   const cookieStore = await cookies()
-  const supabase = createClient(cookieStore)
+  
+  // High-level Configuration Validation
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
-  const { data: todos, error } = await supabase.from('todos').select()
+  const isConfigured = supabaseUrl && supabaseKey;
+  
+  const supabase = createClient(cookieStore)
+  const { data: todos, error } = isConfigured 
+    ? await supabase.from('todos').select()
+    : { data: null, error: { message: 'Missing environment variables. Please set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY in Vercel settings.' } };
 
   return (
     <div className="min-h-screen bg-obsidian text-ivory p-8 pt-24 font-inter">
       <div className="max-w-2xl mx-auto">
         <h1 className="font-display text-4xl mb-8 text-gold-gradient">Supabase Connection Test</h1>
         
-        {error ? (
+        {!isConfigured ? (
+          <div className="glass p-8 rounded-2xl border border-gold/20 bg-gold/5">
+            <h2 className="text-xl text-gold mb-2 font-syne">Configuration Missing</h2>
+            <p className="text-silver/80 mb-6">Supabase is not yet configured on this environment. Please ensure you have added the following keys to your <strong>Vercel Project Settings</strong>:</p>
+            <ul className="space-y-2 text-sm font-mono text-silver/60 list-disc list-inside">
+              <li>NEXT_PUBLIC_SUPABASE_URL</li>
+              <li>NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY</li>
+            </ul>
+            <p className="mt-8 text-xs text-silver/40 leading-relaxed italic">
+              Note: If you just added these, you may need to redeploy the project for them to take effect.
+            </p>
+          </div>
+        ) : error ? (
           <div className="glass p-8 rounded-2xl border border-red-500/20 bg-red-500/5">
             <h2 className="text-xl text-red-400 mb-2 font-syne">Connection Error</h2>
             <p className="text-silver/80 mb-4">{error.message}</p>
@@ -45,7 +65,7 @@ export default async function Page() {
         
         <div className="mt-12 text-center flex flex-col items-center gap-4">
           <p className="text-xs text-silver/30 font-label uppercase tracking-widest">
-            Supabase Project: {process.env.NEXT_PUBLIC_SUPABASE_URL}
+            Supabase Project: {supabaseUrl || "Not Configured"}
           </p>
           <a href="/" className="font-label text-gold hover:text-ivory transition-colors">
             ← Return to Storefront
