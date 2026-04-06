@@ -5,7 +5,7 @@ import { Providers } from "@/components/Providers";
 import Script from 'next/script';
 import Preloader from "@/components/Preloader";
 import CustomCursor from "@/components/CustomCursor";
-import WhatsAppConcierge from "@/components/WhatsAppConcierge";
+import BottomNav from "@/components/BottomNav";
 
 const syne = Syne({
   subsets: ["latin"],
@@ -17,17 +17,17 @@ const syne = Syne({
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
-  weight: ["300", "400", "500", "600", "700"], // Added 700 for better bold states
+  weight: ["300", "400", "500", "600", "700"],
   display: "swap",
 });
 
 export const metadata: Metadata = {
-  title: "The Hour — Hyper-Luxury Timepieces",
+  title: "THE HOUR — Exclusive Luxury Timepieces",
   description:
-    "A curated selection of ultra-rare, handcrafted timepieces for the discerning few. Where craftsmanship meets eternity.",
-  keywords: ["luxury watches", "haute horlogerie", "timepieces", "The Hour", "Geneva"],
+    "Curating the world's most sought-after watches for collectors who demand perfection. Experience the pinnacle of horology.",
+  keywords: ["luxury watches", "haute horlogerie", "THE HOUR", "Geneva", "Swiss watches"],
   openGraph: {
-    title: "The Hour — Hyper-Luxury Timepieces",
+    title: "THE HOUR — Exclusive Luxury Timepieces",
     description: "Discover exceptional timepieces that transcend time.",
     type: "website",
   },
@@ -40,7 +40,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${syne.variable} ${inter.variable}`}>
-      <body className="bg-obsidian text-ivory font-inter antialiased overflow-x-hidden selection:bg-gold selection:text-obsidian">
+      <body className="bg-black text-white font-inter antialiased overflow-x-hidden selection:bg-gold selection:text-black">
         <Script 
           src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.1.1/model-viewer.min.js" 
           type="module"
@@ -50,7 +50,7 @@ export default function RootLayout({
         <CustomCursor />
         <div className="noise-overlay" />
         <Providers>{children}</Providers>
-        <WhatsAppConcierge />
+        <BottomNav />
       </body>
     </html>
   );

@@ -22,7 +22,7 @@ export default function Footer() {
             transition={{ duration: 0.6 }}
           >
             <Link href="/" className="mb-6 block">
-              <Logo size={40} showText={false} />
+              <Logo size={60} />
             </Link>
             <p className="text-[#D4AF37] font-syne font-800 text-sm tracking-[0.2em] uppercase mb-6">
               Exceptional Timepieces

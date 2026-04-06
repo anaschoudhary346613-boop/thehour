@@ -1,168 +1,72 @@
 'use client';
 
-import { useRef, useState } from 'react';
+import { motion } from 'framer-motion';
 import Image from 'next/image';
-import { motion, useScroll, useTransform, useSpring, useMotionValue } from 'framer-motion';
-import { ArrowDown, Sparkles } from 'lucide-react';
-
-const container = {
-  hidden: {},
-  show: {
-    transition: { staggerChildren: 0.15, delayChildren: 0.4 },
-  },
-};
-
-const line = {
-  hidden: { opacity: 0, y: 80 },
-  show: { 
-    opacity: 1, 
-    y: 0, 
-    transition: { duration: 1.2, ease: [0.16, 1, 0.3, 1] as const } 
-  },
-};
-
-const fadeUp = {
-  hidden: { opacity: 0, y: 40 },
-  show: { 
-    opacity: 1, 
-    y: 0, 
-    transition: { duration: 1, ease: [0.16, 1, 0.3, 1] as const } 
-  },
-};
-
-const ModelViewer = 'model-viewer' as any;
 
 export default function Hero() {
-  const ref = useRef<HTMLElement>(null);
-  const { scrollYProgress } = useScroll({ target: ref, offset: ['start start', 'end start'] });
-  const y = useTransform(scrollYProgress, [0, 1], ['0%', '25%']);
-  const opacity = useTransform(scrollYProgress, [0, 0.7], [1, 0]);
-  const scaleP = useTransform(scrollYProgress, [0, 1], [1, 1.15]); // Renamed to avoid confusion
-
   return (
-    <section ref={ref} className="relative h-screen min-h-[750px] overflow-hidden flex items-center">
-      {/* Background Layer (Handles Parallax) */}
-      <motion.div style={{ y, scale: scaleP }} className="absolute inset-0 z-0 will-change-transform">
-        {/* Animation Layer (Handles CSS Ken Burns ZOOM only) */}
-        <div className="relative w-full h-full ken-burns overflow-hidden">
-          <Image
-            src="/watch-06.png"
-            alt="The Hour - Éternel Tourbillon hero watch"
-            fill
-            priority
-            className="object-cover object-center scale-[1.05]"
-            quality={100}
-          />
-        </div>
-        
-        {/* Cinematic overlays */}
-        <div className="absolute inset-0 bg-gradient-to-r from-obsidian via-obsidian/70 to-transparent" />
-        <div className="absolute inset-0 bg-gradient-to-t from-obsidian via-transparent to-obsidian/30" />
-        <div className="absolute inset-0 bg-obsidian/20" />
-        
-        {/* Cinematic Lens Flare */}
-        <motion.div 
-          animate={{ 
-            opacity: [0.3, 0.6, 0.3],
-            scale: [1, 1.1, 1],
-          }}
-          transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-gold/10 rounded-full blur-[180px] pointer-events-none mix-blend-screen z-0"
-        />
-      </motion.div>
-
-      {/* Noise overlay */}
-      <div className="noise-overlay" />
-
-      {/* Content - Systematic Vertical Flow */}
-      <motion.div
-        style={{ opacity }}
-        className="relative z-10 max-w-[1440px] mx-auto px-6 lg:px-12 w-full pt-32 pb-20 md:py-32"
+    <section className="relative pt-32 pb-20 overflow-hidden bg-black flex flex-col items-center text-center">
+      {/* Sub-header */}
+      <motion.p
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8 }}
+        className="font-label text-[0.65rem] text-gold/60 tracking-[0.4em] uppercase mb-12"
       >
-        <motion.div variants={container} initial="hidden" animate="show" className="flex flex-col items-center">
-          
-          {/* Watch 3D Viewer Container */}
-          <div className="watch-container relative w-full h-[400px] md:h-[600px] flex items-center justify-center mb-12">
-            {/* Live 3D Indicator */}
-            <div className="absolute top-0 right-0 md:top-10 md:right-10 z-20 flex items-center gap-2 px-3 py-1.5 glass border border-gold/30 rounded-full animate-fade-up">
-              <div className="w-1.5 h-1.5 rounded-full bg-gold animate-pulse" />
-              <span className="font-label text-[0.55rem] text-gold tracking-widest uppercase">Live 3D View</span>
-            </div>
+        Exclusive Timepieces for the Elite
+      </motion.p>
 
-            {/* Custom element bypass for TypeScript build */}
-            <ModelViewer 
-              src="/models/watch_model.glb" 
-              ar 
-              ar-modes="webxr scene-viewer quick-look" 
-              camera-controls 
-              poster="/watch-06.png" 
-              shadow-intensity="1" 
-              auto-rotate 
-              rotation-per-second="10deg"
-              interaction-prompt="auto"
-              style={{ width: '100%', height: '100%', '--poster-color': 'transparent' } as any}
-              alt="A 3D model of the Éternel Tourbillon watch"
-            >
-              <button slot="ar-button" style={{ backgroundColor: '#D4AF37', borderRadius: '4px', border: 'none', position: 'absolute', top: '16px', right: '16px', padding: '10px' }}>
-                  View in AR
-              </button>
-            </ModelViewer>
-          </div>
+      {/* Main Headline */}
+      <div className="relative z-10 px-6 max-w-4xl mx-auto mb-16">
+        <motion.h1 
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
+          className="font-serif text-5xl md:text-8xl text-white uppercase tracking-tight leading-[0.9] mb-4"
+        >
+          Elevate Your Style
+        </motion.h1>
+        <motion.p 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.5, duration: 1 }}
+          className="font-label text-xs md:text-sm text-silver/40 tracking-[0.3em] uppercase"
+        >
+          Discover Luxury Watches
+        </motion.p>
+      </div>
 
-          <motion.div variants={fadeUp} className="text-center">
-            {/* Product info line in solid gold */}
-            <div className="flex flex-col items-center justify-center gap-2 mb-10">
-               <span className="font-syne font-800 text-2xl md:text-4xl text-[#D4AF37] uppercase tracking-tighter">Éternel Tourbillon</span>
-               <span className="font-syne font-500 text-lg md:text-xl text-[#D4AF37]/60 tracking-tight">$225,000</span>
-            </div>
+      {/* Shop Now Button */}
+      <motion.button
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.8 }}
+        className="px-12 py-5 rounded-full bg-onyx border border-white/10 text-white font-syne font-800 text-xs tracking-[0.2em] uppercase hover:bg-black hover:border-gold transition-all duration-300 mb-20 shadow-[0_20px_50px_rgba(0,0,0,0.5)]"
+      >
+        Shop Now
+      </motion.button>
 
-            {/* CTA */}
-            <motion.div variants={fadeUp} className="flex items-center justify-center">
-              <MagneticButton href="#collections">
-                Explore Collection
-              </MagneticButton>
-            </motion.div>
-          </motion.div>
-        </motion.div>
+      {/* Hero Image Container */}
+      <motion.div 
+        initial={{ opacity: 0, y: 100 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+        className="relative w-full max-w-[800px] aspect-square md:aspect-video -mt-10 px-4 group"
+      >
+        <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent z-10" />
+        <Image
+          src="/watch-01.png"
+          alt="Luxury Watch Showcase"
+          fill
+          className="object-contain transition-transform duration-1000 group-hover:scale-105"
+          priority
+        />
+        
+        {/* Glow Effects */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[60%] h-[60%] bg-gold/5 rounded-full blur-[100px] pointer-events-none" />
       </motion.div>
     </section>
-  );
-}
-
-function MagneticButton({ href, children }: { href: string; children: React.ReactNode }) {
-  const ref = useRef<HTMLAnchorElement>(null);
-  const x = useMotionValue(0);
-  const y = useMotionValue(0);
-
-  const springX = useSpring(x, { damping: 20, stiffness: 150 });
-  const springY = useSpring(y, { damping: 20, stiffness: 150 });
-
-  const handleMouseMove = (e: React.MouseEvent) => {
-    const btn = ref.current;
-    if (!btn) return;
-    const rect = btn.getBoundingClientRect();
-    const mouseX = e.clientX - rect.left - rect.width / 2;
-    const mouseY = e.clientY - rect.top - rect.height / 2;
-    // Damped movement
-    x.set(mouseX * 0.4);
-    y.set(mouseY * 0.4);
-  };
-
-  const handleMouseLeave = () => {
-    x.set(0);
-    y.set(0);
-  };
-
-  return (
-    <motion.a
-      ref={ref}
-      href={href}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
-      style={{ x: springX, y: springY }}
-      className="magnetic-btn px-8 py-4 rounded-full bg-gold text-obsidian font-syne font-700 text-sm tracking-wider uppercase hover:bg-gold-light transition-colors duration-300 glow-gold animate-pulse-glow"
-    >
-      {children}
-    </motion.a>
   );
 }

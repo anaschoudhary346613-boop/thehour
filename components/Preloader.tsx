@@ -39,13 +39,13 @@ export default function Preloader() {
             transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
             className="flex flex-col items-center gap-8"
           >
-            <Logo size={120} showText={false} />
+            <Logo size={120} />
             
             <div className="text-center">
-              <span className="font-syne font-800 text-3xl tracking-[0.25em] text-[#D4AF37] uppercase">
+              <span className="font-serif font-700 text-3xl tracking-[0.25em] text-white uppercase">
                 THE HOUR
               </span>
-              <p className="font-label text-silver/40 mt-4 text-[0.7rem] tracking-[0.4em] uppercase">Established 2024 · Geneva</p>
+              <p className="font-label text-gold/40 mt-4 text-[0.7rem] tracking-[0.4em] uppercase">Excellence in Horology · Established 2024</p>
             </div>
           </motion.div>
 

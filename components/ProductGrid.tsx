@@ -1,111 +1,61 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { supabase } from '@/lib/supabase';
+import { motion } from 'framer-motion';
+import Image from 'next/image';
 import { PRODUCTS } from '@/lib/products';
-import ProductCard from './ProductCard';
-import { Product } from '@/store/cartStore';
-
-const CATEGORIES = ['All', 'Chronograph', 'Dress Watch', 'Sport', 'Complication', 'Diver', 'Tourbillon'];
+import { ArrowRight } from 'lucide-react';
 
 export default function ProductGrid() {
-  const [activeCategory, setActiveCategory] = useState('All');
-  const [products, setProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    async function fetchProducts() {
-      setLoading(true);
-      try {
-        const { data, error } = await supabase
-          .from('products')
-          .select('*')
-          .order('created_at', { ascending: false });
-
-        if (data && data.length > 0 && !error) {
-          const mappedData = data.map((p: any) => ({
-            ...p,
-            image: p.image_urls?.[0] || `/watch-0${Math.floor(Math.random() * 6) + 1}.png`,
-          }));
-          setProducts(mappedData);
-        } else {
-          // Fallback to high-quality mock data if DB is empty or error occurs
-          console.warn('Supabase products empty or error, falling back to mock data');
-          setProducts(PRODUCTS);
-        }
-      } catch (err) {
-        console.error('Fetch error, using mock data:', err);
-        setProducts(PRODUCTS);
-      }
-      setLoading(false);
-    }
-    fetchProducts();
-  }, []);
-
-  const filteredProducts = activeCategory === 'All'
-    ? products
-    : products.filter((p) => p.category.toLowerCase() === activeCategory.toLowerCase() || p.category === activeCategory);
+  const arrivals = PRODUCTS.slice(0, 3); // Mocking the first 3 as new arrivals
 
   return (
-    <section id="collections" className="py-24 md:py-32 bg-obsidian relative overflow-hidden">
-      {/* Subtle Background Elements */}
-      <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-gold/10 to-transparent" />
-      <div className="absolute inset-0 dot-grid opacity-[0.03] pointer-events-none" />
-      
-      <div className="max-w-[1440px] mx-auto px-6 lg:px-12">
-        {/* Header Section */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-12 mb-20">
-          <motion.div
-            initial={{ opacity: 0, x: -30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] as const }}
-            className="max-w-2xl"
-          >
-            <div className="flex items-center gap-3 mb-4">
-              <span className="w-8 h-[1px] bg-gold/50" />
-              <span className="font-label text-gold/60 tracking-[0.4em]">The Selection</span>
+    <section id="collections" className="py-24 bg-black px-6">
+      <div className="max-w-[1440px] mx-auto">
+        {/* Header */}
+        <div className="flex items-center justify-between mb-16 px-4">
+          <div className="flex flex-col">
+            <div className="flex items-center gap-4 mb-2">
+              <div className="w-8 h-[1px] bg-gold/50" />
+              <h2 className="font-serif text-2xl md:text-3xl text-white uppercase tracking-widest">New Arrivals</h2>
+              <div className="w-8 h-[1px] bg-gold/50" />
             </div>
-            <h2 className="font-display text-5xl md:text-7xl text-ivory uppercase tracking-tighter leading-[0.9]">
-              Curated <span className="italic text-white/5">Excellence</span>
-            </h2>
-            <p className="text-silver/50 font-inter font-light text-sm mt-6 max-w-md tracking-wide">
-              Explore our masterfully crafted collection, where every complication tells a story of heritage and innovation.
-            </p>
-          </motion.div>
-
+            <p className="font-label text-[0.6rem] text-gold/60 uppercase tracking-[0.3em] ml-12">Latest Collection</p>
+          </div>
+          
+          <button className="flex items-center gap-2 font-label text-[0.65rem] text-silver/60 uppercase tracking-widest hover:text-gold transition-colors group">
+            View All <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
+          </button>
         </div>
 
-        {/* Cinematic Grid Layout */}
-        <motion.div 
-          layout
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-16 gap-y-24 md:gap-y-32 min-h-[600px]"
-        >
-          <AnimatePresence mode="popLayout">
-            {filteredProducts.map((product, i) => (
-              <motion.div
-                key={product.id}
-                layout
-                initial={{ opacity: 0, scale: 0.9, y: 20 }}
-                animate={{ opacity: 1, scale: 1, y: 0 }}
-                exit={{ opacity: 0, scale: 0.9, transition: { duration: 0.3 } }}
-                transition={{ 
-                  duration: 0.7, 
-                  delay: i * 0.03,
-                  ease: [0.16, 1, 0.3, 1] 
-                }}
-                className="relative"
-              >
-                <ProductCard product={product} />
-              </motion.div>
-            ))}
-          </AnimatePresence>
-        </motion.div>
+        {/* Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-12">
+          {arrivals.map((product, i) => (
+            <motion.div
+              key={product.id}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ delay: i * 0.1 }}
+              viewport={{ once: true }}
+              className="group cursor-pointer"
+            >
+              <div className="relative aspect-square rounded-2xl overflow-hidden bg-onyx border border-white/5 mb-6 group-hover:border-gold/30 transition-colors duration-500 shadow-[0_10px_30px_rgba(0,0,0,0.3)]">
+                <Image
+                  src={product.image}
+                  alt={product.name}
+                  fill
+                  className="object-contain p-8 transition-transform duration-700 group-hover:scale-110"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+              </div>
+              
+              <div className="text-center">
+                <h3 className="font-serif text-lg text-white uppercase tracking-tight mb-1 group-hover:text-gold transition-colors">{product.name}</h3>
+                <p className="font-syne font-800 text-gold text-sm tracking-tight">${product.price.toLocaleString()}</p>
+              </div>
+            </motion.div>
+          ))}
+        </div>
       </div>
-      
-      {/* Decorative localized glow */}
-      <div className="absolute -bottom-1/4 -right-1/4 w-[800px] h-[800px] bg-gold/5 rounded-full blur-[150px] pointer-events-none" />
     </section>
   );
 }
