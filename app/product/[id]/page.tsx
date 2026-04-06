@@ -37,7 +37,7 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
 
   return (
     <div className="min-h-screen bg-gs-black text-gs-gold pb-32 md:pb-0">
-      <Navbar onAuthClick={() => setShowAuth(true)} />
+      <Navbar />
       
       <main className="pt-24 md:pt-32 px-6 lg:px-12 max-w-7xl mx-auto">
         {/* Back Link */}
@@ -141,7 +141,14 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
               {/* Action Buttons */}
               <div className="flex flex-col gap-4">
                 <button 
-                  onClick={() => { addItem(product); toggleCart(true); }}
+                  onClick={() => { addItem({
+                    id: product.id,
+                    name: product.name,
+                    brand: 'The Hour',
+                    price: product.price,
+                    image_url: product.image,
+                    quantity: 1
+                  }); toggleCart(true); }}
                   className="w-full btn-beige py-5 text-sm shadow-2xl shadow-gs-gold/5 flex items-center justify-center gap-3"
                 >
                   <ShoppingBag size={18} />
@@ -168,14 +175,8 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
         </div>
       </main>
 
-      <BottomNav onAuthClick={() => setShowAuth(true)} />
-      <CartDrawer onCheckout={() => setShowCheckout(true)} />
-
-      {/* Auth & Checkout Modals */}
-      <AnimatePresence>
-        {showAuth && <AuthModal onClose={() => setShowAuth(false)} />}
-        {showCheckout && <CheckoutModal onClose={() => setShowCheckout(false)} />}
-      </AnimatePresence>
+      <BottomNav />
+      <CartDrawer />
 
       {/* Noise Texture Overlay */}
       <div className="noise-overlay pointer-events-none" />
