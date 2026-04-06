@@ -15,8 +15,7 @@ export default function Footer() {
       <div className="absolute inset-0 dot-grid opacity-10 pointer-events-none" />
 
       <div className="max-w-[1440px] mx-auto px-6 lg:px-12" ref={ref}>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
-          {/* Brand */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-16 lg:gap-24 mb-24">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={inView ? { opacity: 1, y: 0 } : {}}
@@ -27,6 +26,9 @@ export default function Footer() {
             </Link>
             <p className="text-[#D4AF37] font-syne font-800 text-sm tracking-[0.2em] uppercase mb-6">
               Exceptional Timepieces
+            </p>
+            <p className="text-silver/50 font-inter font-light text-xs leading-relaxed max-w-[200px] mb-8">
+              Curating the world's most sought-after watches for collectors who demand perfection.
             </p>
             <div className="flex items-center gap-4">
               {[Camera, MessageIcon, Mail].map((Icon, i) => (
@@ -48,11 +50,11 @@ export default function Footer() {
             animate={inView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.6, delay: 0.1 }}
           >
-            <h4 className="font-label text-ivory mb-6">Collections</h4>
+            <h4 className="font-label text-ivory mb-6 uppercase tracking-widest text-[0.65rem]">Collections</h4>
             <ul className="space-y-3">
               {['Chronographs', 'Dress Watches', 'Sport Watches', 'Tourbillons', 'Limited Editions'].map((item) => (
                 <li key={item}>
-                  <a href="#collections" className="text-silver font-light text-sm hover:text-gold transition-colors link-underline">
+                  <a href="#collections" className="text-silver font-light text-xs hover:text-gold transition-colors link-underline uppercase tracking-tight">
                     {item}
                   </a>
                 </li>
@@ -60,54 +62,31 @@ export default function Footer() {
             </ul>
           </motion.div>
 
-          {/* Company */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={inView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.6, delay: 0.2 }}
-          >
-            <h4 className="font-label text-ivory mb-6">Company</h4>
-            <ul className="space-y-3">
-              {['Our Story', 'Master Watchmakers', 'Editorials', 'Press', 'Careers'].map((item) => (
-                <li key={item}>
-                  <a href="#" className="text-silver font-light text-sm hover:text-gold transition-colors link-underline">
-                    {item}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </motion.div>
-
-          {/* Contact */}
+          {/* Contact & Newsletter */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={inView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.6, delay: 0.3 }}
           >
-            <h4 className="font-label text-ivory mb-6">Contact</h4>
-            <ul className="space-y-4">
-              <li className="flex items-start gap-3">
+            <h4 className="font-label text-ivory mb-6 uppercase tracking-widest text-[0.65rem]">Concierge</h4>
+            <ul className="space-y-4 mb-10">
+              <li className="flex items-start gap-4">
                 <MapPin size={14} className="text-gold shrink-0 mt-0.5" />
-                <span className="text-silver font-light text-sm">1 Avenue de la Paix, Geneva, CH-1211</span>
+                <span className="text-silver font-light text-xs leading-relaxed">1 Avenue de la Paix, Geneva, CH-1211</span>
               </li>
-              <li className="flex items-center gap-3">
-                <Phone size={14} className="text-gold shrink-0" />
-                <span className="text-silver font-light text-sm">+41 22 000 0000</span>
-              </li>
-              <li className="flex items-center gap-3">
+              <li className="flex items-center gap-4">
                 <Mail size={14} className="text-gold shrink-0" />
-                <span className="text-silver font-light text-sm">concierge@thehour.com</span>
+                <span className="text-silver font-light text-xs">concierge@thehour.com</span>
               </li>
             </ul>
 
-            {/* Newsletter */}
-            <div className="mt-6">
-              <p className="font-label text-silver/60 mb-3 text-xs">Private Access Newsletter</p>
+            <div className="mt-8 pt-8 border-t border-white/5">
+              <p className="font-label text-silver/40 mb-4 text-[0.55rem] uppercase tracking-[0.2em]">Private Access Newsletter</p>
               <div className="flex gap-2">
                 <input
                   type="email"
                   placeholder="your@email.com"
-                  className="flex-1 rounded-xl px-4 py-2.5 text-ivory text-sm placeholder:text-silver/30"
+                  className="flex-1 bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-ivory text-xs placeholder:text-silver/20 focus:border-gold/30 outline-none transition-all"
                 />
                 <button className="p-2.5 rounded-xl bg-gold text-obsidian hover:bg-gold-light transition-colors">
                   <Mail size={14} />

@@ -9,8 +9,6 @@ import { useCartStore } from '@/store/cartStore';
 
 const navLinks = [
   { label: 'Collections', href: '#collections' },
-  { label: 'Journal', href: '#editorials' },
-  { label: 'Heritage', href: '#craftsmanship' },
   { label: 'Concierge', href: '#contact' },
 ];
 
@@ -64,18 +62,18 @@ export default function Navbar({
       >
         <div className="max-w-[1440px] mx-auto px-6 lg:px-12 flex items-center justify-between relative">
           {/* Top-Left: Manage Account & Client Portal Links */}
-          <div className="flex items-center gap-6 relative z-[110] flex-1">
+          <div className="flex items-center gap-10 relative z-[110] flex-1">
             <button
                onClick={onAuthClick}
-               className="flex flex-col text-left group"
+               className="group flex flex-col items-start"
             >
-               <span className="font-label text-[0.55rem] text-silver/60 group-hover:text-white transition-colors duration-300">Manage Account</span>
-               <span className="font-label text-[0.65rem] text-white tracking-widest uppercase mt-0.5">Client Portal</span>
+               <span className="font-label text-[0.65rem] text-white tracking-[0.2em] uppercase">Client Portal</span>
+               <div className="w-0 h-[1px] bg-gold group-hover:w-full transition-all duration-500" />
             </button>
 
-            {/* Desktop Nav Links (Hidden for priority on small white links) */}
-            <nav className="hidden xl:flex items-center gap-8 ml-10">
-              {navLinks.slice(0, 2).map((link) => (
+            {/* Desktop Nav Links */}
+            <nav className="hidden xl:flex items-center gap-10">
+              {navLinks.slice(0, 1).map((link) => (
                 <MagneticLink key={link.label} href={link.href}>{link.label}</MagneticLink>
               ))}
             </nav>
@@ -88,10 +86,10 @@ export default function Navbar({
           </Link>
 
           {/* Right: Actions */}
-          <div className="flex items-center justify-end gap-6 relative z-[110] flex-1">
+          <div className="flex items-center justify-end gap-10 relative z-[110] flex-1">
             {/* Desktop Nav Links (Right Side) */}
-            <nav className="hidden xl:flex items-center gap-8 mr-8">
-              {navLinks.slice(2).map((link) => (
+            <nav className="hidden xl:flex items-center gap-10">
+              {navLinks.slice(1).map((link) => (
                 <MagneticLink key={link.label} href={link.href}>{link.label}</MagneticLink>
               ))}
             </nav>

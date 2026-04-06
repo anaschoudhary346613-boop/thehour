@@ -110,35 +110,17 @@ export default function Hero() {
           </div>
 
           <motion.div variants={fadeUp} className="text-center">
-            {/* Headline - Simplified */}
-            <motion.h1
-              variants={line}
-              className="font-display text-4xl md:text-7xl lg:text-8xl text-ivory leading-tight uppercase tracking-tight mb-8"
-            >
-              The Art of Precision
-            </motion.h1>
-
             {/* Product info line in solid gold */}
-            <div className="flex flex-col md:flex-row items-center justify-center gap-4 border-y border-[#D4AF37]/20 py-6 mb-12">
-               <span className="font-syne font-800 text-lg md:text-2xl text-[#D4AF37] uppercase tracking-tighter">Éternel Tourbillon</span>
-               <span className="hidden md:block w-8 h-[1px] bg-[#D4AF37]/40" />
-               <span className="font-syne font-800 text-lg md:text-2xl text-[#D4AF37] tracking-tighter">$225,000</span>
+            <div className="flex flex-col items-center justify-center gap-2 mb-10">
+               <span className="font-syne font-800 text-2xl md:text-4xl text-[#D4AF37] uppercase tracking-tighter">Éternel Tourbillon</span>
+               <span className="font-syne font-500 text-lg md:text-xl text-[#D4AF37]/60 tracking-tight">$225,000</span>
             </div>
 
             {/* CTA */}
-            <motion.div variants={fadeUp} className="flex items-center justify-center gap-6 flex-wrap">
+            <motion.div variants={fadeUp} className="flex items-center justify-center">
               <MagneticButton href="#collections">
                 Explore Collection
               </MagneticButton>
-              <a
-                href="#craftsmanship"
-                className="group flex items-center gap-3 font-label text-silver hover:text-white transition-all duration-300"
-              >
-                <span className="link-underline">Our Heritage</span>
-                <div className="w-8 h-8 rounded-full border border-white/10 flex items-center justify-center group-hover:border-gold/50 group-hover:translate-x-1 transition-all">
-                  <ArrowDown size={14} className="-rotate-[135deg]" />
-                </div>
-              </a>
             </motion.div>
           </motion.div>
         </motion.div>

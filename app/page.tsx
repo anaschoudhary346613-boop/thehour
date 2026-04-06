@@ -34,9 +34,6 @@ export default function Home() {
       {/* Product Grid */}
       <ProductGrid />
 
-      {/* Featured Entry - Streamlined */}
-      <JournalCTA />
-
       {/* Footer */}
       <Footer />
 
