@@ -25,7 +25,7 @@ export default function CheckoutModal({ onClose }: { onClose: () => void }) {
   const handleOrder = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    // Simulated Stripe checkout
+    // Simulated secure checkout
     await new Promise((r) => setTimeout(r, 2000));
     setLoading(false);
     clearCart();
@@ -186,7 +186,7 @@ export default function CheckoutModal({ onClose }: { onClose: () => void }) {
                     <div className="glass rounded-xl p-4 border border-white/5 flex items-center gap-3">
                       <Shield size={16} className="text-gold" />
                       <p className="font-label text-silver text-xs">
-                        Your payment is secured with 256-bit SSL encryption via Stripe
+                        Your payment is secured with 256-bit SSL encryption.
                       </p>
                     </div>
                     <CheckoutInput label="Card Number" value={form.card} onChange={(v) => set('card', v.replace(/\D/g, '').replace(/(.{4})/g, '$1 ').trim().slice(0, 19))} type="text" icon={<CreditCard size={14} />} placeholder="0000 0000 0000 0000" />
