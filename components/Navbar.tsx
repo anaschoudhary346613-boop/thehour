@@ -188,7 +188,7 @@ export default function Navbar({
                     >
                       <div className="flex items-center gap-4">
                         <span className="font-label text-[0.6rem] text-gold/40 group-hover:text-gold transition-colors">0{i + 1}</span>
-                        <span className="font-display text-4xl sm:text-5xl text-ivory group-hover:text-gold-gradient transition-all duration-500 group-hover:pl-4 uppercase tracking-tighter">
+                        <span className="font-display text-5xl sm:text-6xl text-ivory group-hover:text-gold-gradient transition-all duration-500 group-hover:pl-4 uppercase tracking-tighter">
                           {link.label}
                         </span>
                       </div>
@@ -216,8 +216,8 @@ export default function Navbar({
                   </button>
                 </motion.div>
                 
-                <div className="absolute bottom-12 left-12 right-12 flex justify-between items-center text-silver/30 font-label text-[0.55rem] tracking-[0.3em]">
-                  <span>GENAVA • LONDON • NEW YORK</span>
+                <div className="absolute bottom-12 pb-[env(safe-area-inset-bottom)] left-12 right-12 flex flex-col sm:flex-row justify-between items-center gap-4 text-silver/30 font-label text-[0.55rem] tracking-[0.3em]">
+                  <span>GENEVA • LONDON • NEW YORK</span>
                   <span>THE HOUR © 2024</span>
                 </div>
               </div>

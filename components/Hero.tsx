@@ -76,7 +76,7 @@ export default function Hero() {
       {/* Content - Increased pt-32 for better header clearance */}
       <motion.div
         style={{ opacity }}
-        className="relative z-10 max-w-[1440px] mx-auto px-6 lg:px-12 w-full pt-32"
+        className="relative z-10 max-w-[1440px] mx-auto px-6 lg:px-12 w-full pt-20 md:pt-32"
       >
         <motion.div variants={container} initial="hidden" animate="show" className="max-w-4xl">
           {/* Label */}

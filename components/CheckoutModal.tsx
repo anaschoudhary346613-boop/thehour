@@ -47,7 +47,7 @@ export default function CheckoutModal({ onClose }: { onClose: () => void }) {
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.92, y: 20 }}
         transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-        className="glass-dark rounded-3xl w-full max-w-2xl border border-white/8 max-h-[90vh] overflow-y-auto"
+        className="glass-dark rounded-3xl w-full max-w-2xl border border-white/8 max-h-[90vh] overflow-y-auto m-2 sm:m-0"
         onClick={(e) => e.stopPropagation()}
       >
         {step === 'success' ? (
@@ -85,7 +85,7 @@ export default function CheckoutModal({ onClose }: { onClose: () => void }) {
             </button>
           </motion.div>
         ) : (
-          <div className="p-8 md:p-10">
+          <div className="p-6 md:p-10">
             {/* Header */}
             <div className="flex items-center justify-between mb-8">
               <div>
@@ -254,7 +254,7 @@ function CheckoutInput({
           value={value}
           onChange={(e) => onChange(e.target.value)}
           placeholder={placeholder}
-          className={`w-full rounded-xl ${icon ? 'pl-10' : 'pl-4'} pr-4 py-3 text-ivory text-sm placeholder:text-silver/30`}
+          className={`w-full rounded-xl ${icon ? 'pl-10' : 'pl-4'} pr-4 py-4 md:py-3 text-ivory text-sm placeholder:text-silver/30`}
         />
       </div>
     </div>
