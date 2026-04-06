@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { supabase } from '@/lib/supabase';
+import { PRODUCTS } from '@/lib/products';
 import ProductCard from './ProductCard';
 import { Product } from '@/store/cartStore';
 
@@ -16,18 +17,26 @@ export default function ProductGrid() {
   useEffect(() => {
     async function fetchProducts() {
       setLoading(true);
-      const { data, error } = await supabase
-        .from('products')
-        .select('*')
-        .order('created_at', { ascending: false });
+      try {
+        const { data, error } = await supabase
+          .from('products')
+          .select('*')
+          .order('created_at', { ascending: false });
 
-      if (data && !error) {
-        // Map any missing image URLs from mock if they are not in the database yet
-        const mappedData = data.map((p: any) => ({
-          ...p,
-          image: p.image_urls?.[0] || `/watch-0${Math.floor(Math.random() * 6) + 1}.png`,
-        }));
-        setProducts(mappedData);
+        if (data && data.length > 0 && !error) {
+          const mappedData = data.map((p: any) => ({
+            ...p,
+            image: p.image_urls?.[0] || `/watch-0${Math.floor(Math.random() * 6) + 1}.png`,
+          }));
+          setProducts(mappedData);
+        } else {
+          // Fallback to high-quality mock data if DB is empty or error occurs
+          console.warn('Supabase products empty or error, falling back to mock data');
+          setProducts(PRODUCTS);
+        }
+      } catch (err) {
+        console.error('Fetch error, using mock data:', err);
+        setProducts(PRODUCTS);
       }
       setLoading(false);
     }
