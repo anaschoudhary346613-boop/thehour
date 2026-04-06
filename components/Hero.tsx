@@ -30,6 +30,8 @@ const fadeUp = {
   },
 };
 
+const ModelViewer = 'model-viewer' as any;
+
 export default function Hero() {
   const ref = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start start', 'end start'] });
@@ -87,8 +89,8 @@ export default function Hero() {
               <span className="font-label text-[0.55rem] text-gold tracking-widest uppercase">Live 3D View</span>
             </div>
 
-            {/* @ts-ignore - model-viewer is a custom element */}
-            <model-viewer 
+            {/* Custom element bypass for TypeScript build */}
+            <ModelViewer 
               src="/models/watch_model.glb" 
               ar 
               ar-modes="webxr scene-viewer quick-look" 
@@ -104,7 +106,7 @@ export default function Hero() {
               <button slot="ar-button" style={{ backgroundColor: '#D4AF37', borderRadius: '4px', border: 'none', position: 'absolute', top: '16px', right: '16px', padding: '10px' }}>
                   View in AR
               </button>
-            </model-viewer>
+            </ModelViewer>
           </div>
 
           <motion.div variants={fadeUp} className="text-center">

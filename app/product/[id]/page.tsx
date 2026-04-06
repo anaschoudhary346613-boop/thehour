@@ -9,7 +9,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ShoppingBag, ArrowLeft, Shield, Clock, Award, ChevronRight, Share2, Heart } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { useCartStore, Product } from '@/store/cartStore';
-import { formatPrice } from '@/lib/products';
+import { formatPrice, PRODUCTS } from '@/lib/products';
 import Navbar from '@/components/Navbar';
 import AuthModal from '@/components/AuthModal';
 import CartDrawer from '@/components/CartDrawer';

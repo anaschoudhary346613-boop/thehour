@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Clock } from 'lucide-react';
+import Logo from './Logo';
 
 export default function Preloader() {
   const [loading, setLoading] = useState(true);
@@ -30,29 +30,22 @@ export default function Preloader() {
           initial={{ opacity: 1 }}
           exit={{ opacity: 0, scale: 1.1 }}
           transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
-          className="fixed inset-0 z-[9999] bg-obsidian flex flex-col items-center justify-center p-6"
+          className="fixed inset-0 z-[9999] bg-[#050505] flex flex-col items-center justify-center p-6"
         >
-          {/* Logo animation */}
+          {/* Animated Monogram Logo */}
           <motion.div
             initial={{ scale: 0.8, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
+            animate={{ scale: 1.1, opacity: 1 }}
             transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
-            className="flex flex-col items-center gap-6"
+            className="flex flex-col items-center gap-8"
           >
-            <div className="w-16 h-16 rounded-full border border-gold/30 flex items-center justify-center relative">
-              <motion.div
-                animate={{ rotate: 360 }}
-                transition={{ repeat: Infinity, duration: 4, ease: 'linear' }}
-                className="absolute inset-0 rounded-full border-t border-gold"
-              />
-              <Clock size={24} className="text-gold" strokeWidth={1} />
-            </div>
-
+            <Logo size={120} showText={false} />
+            
             <div className="text-center">
-              <h2 className="font-syne font-800 text-2xl tracking-[0.2em] text-ivory uppercase">
-                The <span className="text-gold">Hour</span>
-              </h2>
-              <p className="font-label text-silver/60 mt-2 text-[0.6rem]">Established 2024 · Geneva</p>
+              <span className="font-syne font-800 text-3xl tracking-[0.25em] text-[#D4AF37] uppercase">
+                THE HOUR
+              </span>
+              <p className="font-label text-silver/40 mt-4 text-[0.7rem] tracking-[0.4em] uppercase">Established 2024 · Geneva</p>
             </div>
           </motion.div>
 

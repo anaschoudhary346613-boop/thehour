@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useRef } from 'react';
 import Link from 'next/link';
+import Logo from './Logo';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ShoppingBag, User, Menu, X, Clock, ChevronDown } from 'lucide-react';
 import { useCartStore } from '@/store/cartStore';
@@ -18,6 +19,8 @@ export default function Navbar({
 }: {
   onAuthClick: () => void;
 }) {
+  // - [x] Create reusable `Logo.tsx` component
+  // - [x] Implement new logo in `Navbar.tsx`
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const { count, isCartBouncing, openCart } = useCartStore();
@@ -78,12 +81,10 @@ export default function Navbar({
             </nav>
           </div>
 
-          {/* Center: Logo (Solid Gold) */}
+          {/* Center: Logo (Solid Gold Monogram) */}
           <Link href="/" className="absolute left-1/2 -translate-x-1/2 flex flex-col items-center group z-[110]">
-            <span className="font-syne font-800 text-[1.1rem] md:text-[1.3rem] tracking-[0.2em] uppercase text-[#D4AF37] leading-none mb-1">
-              The Hour
-            </span>
-            <div className="w-12 h-[1px] bg-[#D4AF37]/30" />
+            <Logo size={42} showText={false} />
+            <div className="w-8 h-[1px] bg-[#D4AF37]/30 mt-1 opacity-0 group-hover:opacity-100 transition-opacity" />
           </Link>
 
           {/* Right: Actions */}

@@ -1,6 +1,8 @@
 'use client';
 
 import { useRef } from 'react';
+import Link from 'next/link';
+import Logo from './Logo';
 import { motion, useInView } from 'framer-motion';
 import { Clock, Camera, MessageSquare as MessageIcon, Mail, Phone, MapPin } from 'lucide-react';
 
@@ -20,14 +22,9 @@ export default function Footer() {
             animate={inView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.6 }}
           >
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-8 h-8 rounded-full border border-gold flex items-center justify-center">
-                <Clock size={14} className="text-gold" strokeWidth={1.5} />
-              </div>
-              <span className="font-syne font-800 text-[1.05rem] tracking-[0.12em] uppercase">
-                The <span className="text-gold">Hour</span>
-              </span>
-            </div>
+            <Link href="/" className="mb-6 block">
+              <Logo size={40} showText={false} />
+            </Link>
             <p className="text-[#D4AF37] font-syne font-800 text-sm tracking-[0.2em] uppercase mb-6">
               Exceptional Timepieces
             </p>
