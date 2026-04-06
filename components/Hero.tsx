@@ -5,15 +5,18 @@ import { motion } from 'framer-motion';
 import { useCart } from '@/store/useCart';
 import { useState } from 'react';
 
-export default function Hero() {
+export default function Hero({ featuredWatch }: { featuredWatch?: any }) {
   const { addItem } = useCart();
   const [hasImageError, setHasImageError] = useState(false);
 
-  const heroWatch = {
+  // Fallback if DB fetch fails
+  const product = featuredWatch || {
     id: 'th-hero-chronograph',
     name: 'The Hour Chronograph',
+    brand: 'Garner & Spruces',
     price: 4999,
-    image: '/hero-watch.png',
+    description: 'PRECISION, ELEGANCE, AND A LEGACY OF TIME.',
+    image_url: '/hero-watch.png',
   };
 
   return (
@@ -61,7 +64,7 @@ export default function Hero() {
 
           {/* Floating "+" Button */}
           <button
-            onClick={() => addItem(heroWatch)}
+            onClick={() => addItem(product)}
             className="absolute z-30 w-12 h-12 rounded-full bg-black/40 backdrop-blur-md flex items-center justify-center border border-white/10 hover:bg-black/60 hover:scale-110 cursor-pointer transition-all bottom-2 right-4 md:bottom-20 md:right-12 pointer-events-auto shadow-2xl"
             aria-label="Add to cart"
           >
@@ -77,7 +80,7 @@ export default function Hero() {
           </p>
           <p className="text-[#C5A059] md:text-white text-5xl md:text-7xl font-bold font-sans mb-8 tracking-tight">$4,999</p>
           <button
-            onClick={() => addItem(heroWatch)}
+            onClick={() => addItem(product)}
             className="bg-[#DBC197] text-black px-10 py-3 md:px-12 md:py-4 rounded-full font-bold uppercase tracking-widest hover:scale-105 transition-transform"
           >
             Buy Now

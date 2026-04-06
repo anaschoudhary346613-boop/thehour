@@ -22,7 +22,7 @@ export default function ShopPage() {
 
   return (
     <div className="min-h-screen bg-gs-black text-gs-gold pb-32 md:pb-0 font-inter">
-      <Navbar onAuthClick={() => setShowAuth(true)} />
+      <Navbar />
 
       <main className="pt-24 md:pt-32 px-6 lg:px-12 max-w-7xl mx-auto">
         <div className="mb-12 md:mb-20">
@@ -81,7 +81,14 @@ export default function ShopPage() {
 
                 <div className="flex items-center gap-3 mt-auto">
                   <button 
-                    onClick={() => addItem(product)}
+                    onClick={() => addItem({
+                      id: product.id,
+                      name: product.name,
+                      brand: 'The Hour',
+                      price: product.price,
+                      image_url: product.image,
+                      quantity: 1
+                    })}
                     className="flex-1 bg-gs-black text-gs-gold-light border border-gs-gold/20 rounded-full py-3 hover:bg-gs-gold/10 transition-colors uppercase font-bold text-[10px] tracking-widest flex items-center justify-center gap-2"
                   >
                     <ShoppingBag size={14} />
@@ -100,14 +107,8 @@ export default function ShopPage() {
         </div>
       </main>
 
-      <BottomNav onAuthClick={() => setShowAuth(true)} />
-      <CartDrawer onCheckout={() => setShowCheckout(true)} />
-
-      {/* Auth & Checkout Modals */}
-      <AnimatePresence>
-        {showAuth && <AuthModal onClose={() => setShowAuth(false)} />}
-        {showCheckout && <CheckoutModal onClose={() => setShowCheckout(false)} />}
-      </AnimatePresence>
+      <BottomNav />
+      <CartDrawer />
 
       {/* Noise Texture */}
       <div className="noise-overlay pointer-events-none" />

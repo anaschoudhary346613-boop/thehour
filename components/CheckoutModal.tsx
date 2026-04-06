@@ -125,7 +125,7 @@ export default function CheckoutModal({ onClose }: CheckoutModalProps) {
                 {items.map((item) => (
                   <div key={item.id} className="flex gap-4 items-center">
                     <div className="w-16 h-16 bg-gs-black/40 rounded-xl border border-gs-gold/10 p-2">
-                      <img src={item.image} alt={item.name} className="w-full h-full object-contain" />
+                      <img src={item.image_url} alt={item.name} className="w-full h-full object-contain" />
                     </div>
                     <div className="flex-1">
                       <p className="text-xs font-bold text-gs-gold-light uppercase truncate">{item.name}</p>
