@@ -1,164 +1,111 @@
 'use client';
 
-import { AnimatePresence, motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
+import { X, Minus, Plus, Trash2, ShoppingBag, ArrowRight } from 'lucide-react';
+import { useCart } from '@/store/useCart';
 import Image from 'next/image';
-import { X, Trash2, Plus, Minus, ShoppingBag, ArrowRight, Loader2 } from 'lucide-react';
-import { useCartStore } from '@/store/cartStore';
-import { formatPrice } from '@/lib/products';
-import { useState } from 'react';
+import Link from 'next/link';
 
-export default function CartDrawer({ onCheckout }: { onCheckout: () => void }) {
-  const { isOpen, closeCart, items, removeItem, updateQuantity, total, clearCart } = useCartStore();
-  const [isClearing, setIsClearing] = useState(false);
-  const cartTotal = total();
+export default function CartDrawer() {
+  const { isCartOpen, toggleCart, items, removeItem, incrementQuantity, decrementQuantity, getTotal } = useCart();
+
+  const total = getTotal();
 
   return (
     <AnimatePresence>
-      {isOpen && (
+      {isCartOpen && (
         <>
-          {/* Backdrop */}
+          {/* Overlay */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            onClick={closeCart}
-            className="fixed inset-0 z-[100] bg-obsidian/70 backdrop-blur-sm"
+            onClick={() => toggleCart(false)}
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[90]"
           />
 
-          {/* Drawer */}
+          {/* Drawer Container (Strict Nuclear Prompt Rules) */}
           <motion.div
-            initial={{ x: '100%', opacity: 0 }}
-            animate={{ x: 0, opacity: 1 }}
-            exit={{ x: '100%', opacity: 0 }}
-            transition={{ type: 'spring', damping: 30, stiffness: 300 }}
-            className="fixed right-0 top-0 bottom-0 z-[101] w-full max-w-md glass-dark border-l border-white/8 flex flex-col"
+            initial={{ x: '100%' }}
+            animate={{ x: 0 }}
+            exit={{ x: '100%' }}
+            transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+            className="fixed top-0 right-0 h-full w-full max-w-[450px] bg-[#0A0A0A] border-l border-white/10 z-[100] shadow-2xl flex flex-col"
           >
             {/* Header */}
-            <div className="flex items-center justify-between px-6 py-6 border-b border-white/5">
-              <div className="flex items-center gap-3">
-                <ShoppingBag size={18} className="text-gold" strokeWidth={1.5} />
-                <h2 className="font-syne font-700 text-ivory text-lg">Your Selection</h2>
-                {items.length > 0 && (
-                  <span className="w-5 h-5 rounded-full bg-gold text-obsidian text-[10px] font-bold flex items-center justify-center">
-                    {items.reduce((a, i) => a + i.quantity, 0)}
-                  </span>
-                )}
-              </div>
-              <button
-                onClick={closeCart}
-                className="p-2 rounded-full glass border border-white/10 hover:border-gold/30 text-silver hover:text-ivory transition-colors"
-              >
-                <X size={16} />
+            <div className="p-8 border-b border-white/10 text-[#C8A97E] text-xl tracking-widest font-bold flex items-center justify-between">
+              <span className="font-serif uppercase">Your Collection</span>
+              <button onClick={() => toggleCart(false)} className="text-[#C8A97E] hover:text-white transition-colors cursor-pointer p-2">
+                <X size={24} />
               </button>
             </div>
 
-            {/* Items */}
-            <div className="flex-1 overflow-y-auto px-6 py-4 space-y-4">
-              <AnimatePresence>
-                {items.length === 0 ? (
-                  <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    className="flex flex-col items-center justify-center h-full gap-4 py-20"
-                  >
-                    <div className="w-16 h-16 rounded-full glass border border-white/10 flex items-center justify-center">
-                      <ShoppingBag size={24} className="text-silver" strokeWidth={1} />
+            {/* Body/Items */}
+            <div className="flex-1 overflow-y-auto p-8 flex flex-col gap-6">
+              {items.length === 0 ? (
+                <div className="h-full flex flex-col items-center justify-center text-gray-400 space-y-4">
+                  <ShoppingBag size={48} strokeWidth={1} className="text-[#C8A97E]/40" />
+                  <p className="font-sans font-bold uppercase tracking-widest text-[#C8A97E]/60">Your collection is empty</p>
+                </div>
+              ) : (
+                items.map((item) => (
+                  <div key={item.id} className="flex gap-4 p-4 rounded-2xl bg-white/5 border border-white/5 hover:border-white/10 transition-colors">
+                    <div className="relative w-24 h-24 bg-white/10 rounded-lg overflow-hidden flex-shrink-0">
+                      <img 
+                        src={item.image_url} 
+                        alt={item.name} 
+                        className="object-cover w-full h-full p-1" 
+                      />
                     </div>
-                    <p className="font-syne text-silver text-sm">Your curation is empty</p>
-                    <p className="font-label text-silver/40 text-center">
-                      Discover our collection of exceptional timepieces
-                    </p>
-                    <button
-                      onClick={closeCart}
-                      className="font-label text-gold border border-gold/30 px-6 py-2 rounded-full hover:bg-gold/10 transition-colors"
-                    >
-                      Explore Collection
-                    </button>
-                  </motion.div>
-                ) : (
-                  items.map((item) => (
-                    <motion.div
-                      key={item.id}
-                      layout
-                      initial={{ opacity: 0, x: 30 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      exit={{ opacity: 0, x: 30, height: 0, marginBottom: 0 }}
-                      transition={{ duration: 0.3 }}
-                      className="flex gap-4 glass rounded-xl p-4 border border-white/5 group"
-                    >
-                      <div className="relative w-16 h-16 rounded-lg overflow-hidden shrink-0 bg-graphite">
-                        <Image src={item.image} alt={item.name} fill className="object-cover" />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="font-syne font-600 text-ivory text-sm truncate">{item.name}</p>
-                        <p className="text-silver text-xs truncate">{item.subtitle}</p>
-                        <p className="text-gold font-syne font-700 text-sm mt-1">
-                          {formatPrice(item.price * item.quantity)}
-                        </p>
-                        {/* Qty controls */}
-                        <div className="flex items-center gap-2 mt-2">
-                          <button
-                            onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                            className="w-6 h-6 rounded-full border border-white/10 hover:border-gold/40 flex items-center justify-center text-silver hover:text-ivory transition-colors"
-                          >
-                            <Minus size={10} />
-                          </button>
-                          <span className="font-syne text-ivory text-sm w-4 text-center">{item.quantity}</span>
-                          <button
-                            onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                            className="w-6 h-6 rounded-full border border-white/10 hover:border-gold/40 flex items-center justify-center text-silver hover:text-ivory transition-colors"
-                          >
-                            <Plus size={10} />
+                    <div className="flex-1 flex flex-col justify-between py-1">
+                      <div>
+                        <div className="flex justify-between items-start">
+                          <div>
+                            <p className="text-[#C8A97E] text-[10px] font-bold uppercase tracking-widest mb-1">{item.brand}</p>
+                            <h3 className="font-sans font-bold text-white text-sm">{item.name}</h3>
+                          </div>
+                          <button onClick={() => removeItem(item.id)} className="text-gray-500 hover:text-red-400 transition-colors">
+                            <Trash2 size={16} />
                           </button>
                         </div>
+                        <p className="text-[#C8A97E] font-black mt-2">
+                          {new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(item.price)}
+                        </p>
                       </div>
-                      <button
-                        onClick={() => removeItem(item.id)}
-                        className="p-1.5 text-silver/30 hover:text-rose transition-colors opacity-0 group-hover:opacity-100 shrink-0"
-                      >
-                        <Trash2 size={14} />
-                      </button>
-                    </motion.div>
-                  ))
-                )}
-              </AnimatePresence>
+                      <div className="flex items-center gap-4 mt-4">
+                        <div className="flex items-center border border-white/20 rounded-full bg-black/60 overflow-hidden">
+                          <button onClick={() => decrementQuantity(item.id)} className="px-3 py-1 text-gray-400 hover:text-[#C8A97E] transition-colors"><Minus size={14} /></button>
+                          <span className="w-8 text-center text-xs font-black text-white">{item.quantity}</span>
+                          <button onClick={() => incrementQuantity(item.id)} className="px-3 py-1 text-gray-400 hover:text-[#C8A97E] transition-colors"><Plus size={14} /></button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))
+              )}
             </div>
 
-            {/* Footer */}
+            {/* Footer/Checkout */}
             {items.length > 0 && (
-              <div className="px-6 py-6 border-t border-white/5 space-y-4">
-                {/* Summary */}
-                <div className="space-y-2">
-                  <div className="flex justify-between text-silver text-sm">
-                    <span>Subtotal</span>
-                    <span>{formatPrice(cartTotal)}</span>
-                  </div>
-                  <div className="flex justify-between text-silver text-sm">
-                    <span>Shipping</span>
-                    <span className="text-gold">Complimentary</span>
-                  </div>
-                  <div className="h-[1px] bg-white/5" />
-                  <div className="flex justify-between">
-                    <span className="font-syne font-700 text-ivory">Total</span>
-                    <span className="font-display text-gold text-xl">{formatPrice(cartTotal)}</span>
-                  </div>
+              <div className="p-8 bg-black/80 backdrop-blur-xl border-t border-white/10">
+                <div className="flex justify-between items-center text-white text-lg mb-6">
+                  <span className="font-sans font-bold uppercase tracking-wider text-sm">Total Investment:</span>
+                  <span className="text-[#C8A97E] font-black text-2xl">
+                    {new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(total)}
+                  </span>
                 </div>
-
-                {/* Checkout button */}
-                <motion.button
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  onClick={() => { closeCart(); onCheckout(); }}
-                  className="w-full py-4 rounded-full bg-gold text-obsidian font-syne font-700 tracking-wider text-sm uppercase flex items-center justify-center gap-2 hover:bg-gold-light transition-colors glow-gold"
+                <Link 
+                  href="/checkout"
+                  onClick={() => toggleCart(false)}
+                  className="w-full bg-[#C8A97E] text-black py-5 rounded-full font-black uppercase tracking-widest text-center hover:bg-white hover:scale-[1.02] transition-all cursor-pointer shadow-xl mb-4 flex justify-center items-center gap-3"
                 >
-                  Proceed to Checkout <ArrowRight size={16} />
-                </motion.button>
-
+                  Acquire Collection <ArrowRight size={20} />
+                </Link>
                 <button
-                  onClick={clearCart}
-                  className="w-full text-center font-label text-silver/40 hover:text-silver transition-colors text-xs"
+                  onClick={() => toggleCart(false)}
+                  className="w-full text-gray-500 text-xs uppercase tracking-widest font-bold hover:text-white transition-colors"
                 >
-                  Clear Selection
+                  Continue Browsing
                 </button>
               </div>
             )}

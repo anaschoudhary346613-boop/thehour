@@ -1,72 +1,89 @@
 'use client';
 
-import { motion } from 'framer-motion';
 import Image from 'next/image';
+import { motion } from 'framer-motion';
+import { useCart } from '@/store/useCart';
+import { useState } from 'react';
 
 export default function Hero() {
-  return (
-    <section className="relative pt-32 pb-20 overflow-hidden bg-black flex flex-col items-center text-center">
-      {/* Sub-header */}
-      <motion.p
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8 }}
-        className="font-label text-[0.65rem] text-gold/60 tracking-[0.4em] uppercase mb-12"
-      >
-        Exclusive Timepieces for the Elite
-      </motion.p>
+  const { addItem } = useCart();
+  const [hasImageError, setHasImageError] = useState(false);
 
-      {/* Main Headline */}
-      <div className="relative z-10 px-6 max-w-4xl mx-auto mb-16">
-        <motion.h1 
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
-          className="font-serif text-5xl md:text-8xl text-white uppercase tracking-tight leading-[0.9] mb-4"
-        >
-          Elevate Your Style
-        </motion.h1>
-        <motion.p 
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.5, duration: 1 }}
-          className="font-label text-xs md:text-sm text-silver/40 tracking-[0.3em] uppercase"
-        >
-          Discover Luxury Watches
-        </motion.p>
+  const heroWatch = {
+    id: 'th-hero-chronograph',
+    name: 'The Hour Chronograph',
+    price: 4999,
+    image: '/hero-watch.png',
+  };
+
+  return (
+    <section className="relative min-h-screen w-full overflow-hidden flex flex-col justify-between pb-16 md:pb-0">
+      {/* Layer 1: The Backgrounds (z-0) */}
+      <div className="absolute inset-0 z-0 flex w-full h-full">
+        <div className="w-1/2 h-full bg-black"></div>
+        <div className="w-1/2 h-full bg-[#C8A97E]"></div>
       </div>
 
-      {/* Shop Now Button */}
-      <motion.button
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
-        initial={{ opacity: 0, y: 30 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.8 }}
-        className="px-12 py-5 rounded-full bg-onyx border border-white/10 text-white font-syne font-800 text-xs tracking-[0.2em] uppercase hover:bg-black hover:border-gold transition-all duration-300 mb-20 shadow-[0_20px_50px_rgba(0,0,0,0.5)]"
-      >
-        Shop Now
-      </motion.button>
+      {/* Layer 2: The Content Wrapper (z-10, MUST NOT BE HIDDEN) */}
+      <div className="relative z-10 flex-1 flex flex-col items-center justify-center w-full px-4 pt-12 md:static">
 
-      {/* Hero Image Container */}
-      <motion.div 
-        initial={{ opacity: 0, y: 100 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
-        className="relative w-full max-w-[800px] aspect-square md:aspect-video -mt-10 px-4 group"
-      >
-        <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent z-10" />
-        <Image
-          src="/watch-01.png"
-          alt="Luxury Watch Showcase"
-          fill
-          className="object-contain transition-transform duration-1000 group-hover:scale-105"
-          priority
-        />
-        
-        {/* Glow Effects */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[60%] h-[60%] bg-gold/5 rounded-full blur-[100px] pointer-events-none" />
-      </motion.div>
+        {/* TOP: Logo */}
+        <div className="absolute top-6 left-6 z-20 md:hidden">
+          <img
+            src="/image_3.png"
+            alt="The Hour Logo - Metallic Gold Emblem"
+            className="object-contain h-10 w-auto"
+            onError={(e) => {
+              const target = e.target as HTMLElement;
+              target.style.display = 'none';
+              if (target.nextElementSibling) {
+                (target.nextElementSibling as HTMLElement).style.display = 'block';
+              }
+            }}
+          />
+          <span className="font-serif text-[#C5A059] uppercase tracking-[0.3em] font-bold text-xl hidden">
+            THE HOUR
+          </span>
+        </div>
+
+        {/* MIDDLE: Floating Watch */}
+        <div className="relative z-20 w-[280px] h-[280px] md:w-[600px] md:h-auto my-8 md:absolute md:top-1/2 md:left-1/2 md:transform md:-translate-x-1/2 md:-translate-y-1/2 flex justify-center items-center">
+          {!hasImageError ? (
+            <img
+              src="/hero-watch.png"
+              alt="Luxury Watch"
+              className="object-contain w-full h-full drop-shadow-2xl"
+              onError={() => setHasImageError(true)}
+            />
+          ) : (
+            <div className="w-full h-full aspect-square bg-gradient-to-tr from-gray-800 to-gray-600 rounded-full animate-pulse shadow-2xl" />
+          )}
+
+          {/* Floating "+" Button */}
+          <button
+            onClick={() => addItem(heroWatch)}
+            className="absolute z-30 w-12 h-12 rounded-full bg-black/40 backdrop-blur-md flex items-center justify-center border border-white/10 hover:bg-black/60 hover:scale-110 cursor-pointer transition-all bottom-2 right-4 md:bottom-20 md:right-12 pointer-events-auto shadow-2xl"
+            aria-label="Add to cart"
+          >
+            <span className="text-[#C8A97E] text-2xl font-light mb-1">+</span>
+          </button>
+        </div>
+
+        {/* BOTTOM: Text and Button */}
+        <div className="relative z-20 flex flex-col items-center text-center mt-6 md:absolute md:left-24 md:top-1/2 md:-translate-y-1/2 md:items-start md:text-left md:mt-0">
+          <h1 className="text-white md:text-[#C8A97E] text-4xl md:text-7xl font-serif font-black mb-2 md:mb-4 uppercase tracking-tighter">Garner & Spruces</h1>
+          <p className="hidden md:block text-[10px] md:text-sm tracking-widest text-[#C8A97E]/60 uppercase mb-4 md:mb-8">
+            PRECISION, ELEGANCE, AND A LEGACY OF TIME.
+          </p>
+          <p className="text-[#C5A059] md:text-white text-5xl md:text-7xl font-bold font-sans mb-8 tracking-tight">$4,999</p>
+          <button
+            onClick={() => addItem(heroWatch)}
+            className="bg-[#DBC197] text-black px-10 py-3 md:px-12 md:py-4 rounded-full font-bold uppercase tracking-widest hover:scale-105 transition-transform"
+          >
+            Buy Now
+          </button>
+        </div>
+      </div>
     </section>
   );
 }

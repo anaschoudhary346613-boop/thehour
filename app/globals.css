@@ -1,44 +1,25 @@
-@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 @import "tailwindcss";
 
 :root {
-  --obsidian: #050505;
-  --onyx: #0a0a0a;
-  --graphite: #121212;
-  --steel: #222222;
-  --mist: #333333;
-  --silver: #9a9a9a;
-  --pearl: #d8d8d8;
-  --ivory: #f2f2f2;
-  --cream: #faf9f6;
-  --gold: #c5a044;
-  --gold-light: #e6c670;
-  --gold-pale: #f7e8b5;
-  --rose: #c07060;
-  --accent: #d4b478;
-  --glass: rgba(255,255,255,0.02);
-  --glass-border: rgba(255,255,255,0.05);
-  --glass-hover: rgba(255,255,255,0.07);
+  --gs-black: #0a0a0a;
+  --gs-charcoal: #1a1a1a;
+  --gs-gold: #b8973a;
+  --gs-gold-light: #d4b478;
+  --gs-beige: #d4c0a1;
+  --gs-white: #f5f5f5;
+  --glass: rgba(255, 255, 255, 0.03);
+  --glass-border: rgba(255, 255, 255, 0.08);
 }
 
 @theme inline {
-  --color-obsidian: var(--obsidian);
-  --color-onyx: var(--onyx);
-  --color-graphite: var(--graphite);
-  --color-steel: var(--steel);
-  --color-mist: var(--mist);
-  --color-silver: var(--silver);
-  --color-pearl: var(--pearl);
-  --color-ivory: var(--ivory);
-  --color-gold: var(--gold);
-  --color-gold-light: var(--gold-light);
-  --color-gold-pale: var(--gold-pale);
-  --color-accent: var(--accent);
-  --color-glass: var(--glass);
-  --color-glass-border: var(--glass-border);
-  --font-syne: 'Syne', sans-serif;
+  --color-gs-black: var(--gs-black);
+  --color-gs-charcoal: var(--gs-charcoal);
+  --color-gs-gold: var(--gs-gold);
+  --color-gs-gold-light: var(--gs-gold-light);
+  --color-gs-beige: var(--gs-beige);
+  --color-gs-white: var(--gs-white);
   --font-inter: 'Inter', sans-serif;
-  --font-serif: 'Cormorant Garamond', serif;
 }
 
 *, *::before, *::after {
@@ -49,69 +30,39 @@
 
 html {
   scroll-behavior: smooth;
-  scroll-padding-top: 100px;
   overflow-x: hidden;
 }
 
 body {
-  background-color: var(--obsidian);
-  color: var(--ivory);
+  background-color: var(--gs-black);
+  color: var(--gs-gold);
   font-family: 'Inter', sans-serif;
-  font-weight: 300;
+  font-weight: 400;
   letter-spacing: 0.01em;
-  overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 ::selection {
-  background: var(--gold);
-  color: var(--obsidian);
+  background: var(--gs-gold);
+  color: var(--gs-black);
 }
 
-/* Scrollbar */
-::-webkit-scrollbar { width: 4px; }
-::-webkit-scrollbar-track { background: var(--obsidian); }
-::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 2px; }
-
-/* Typography */
-.font-display {
-  font-family: 'Syne', sans-serif;
-  font-weight: 800;
-  letter-spacing: -0.03em;
-  line-height: 0.95;
+/* Luxury Split Backgrounds */
+.bg-split-hero {
+  background: linear-gradient(to right, var(--gs-black) 50%, var(--gs-gold) 50%);
 }
 
-.font-heading {
-  font-family: 'Syne', sans-serif;
-  font-weight: 700;
-  letter-spacing: -0.02em;
+.bg-split-hero-mobile {
+  background: linear-gradient(to bottom, var(--gs-black) 60%, var(--gs-gold) 40%);
 }
 
-.font-label {
-  font-family: 'Inter', sans-serif;
-  font-weight: 500;
-  letter-spacing: 0.25em;
-  text-transform: uppercase;
-  font-size: 0.7rem;
-}
-
-.font-serif {
-  font-family: 'Cormorant Garamond', serif;
-}
-
-/* Glass morphism */
+/* Glassmorphism */
 .glass {
   background: var(--glass);
-  backdrop-filter: blur(40px) saturate(180%);
-  -webkit-backdrop-filter: blur(40px) saturate(180%);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
   border: 1px solid var(--glass-border);
-  transition: border-color 0.4s ease, background-color 0.4s ease;
-}
-
-/* Custom Cursor */
-.custom-cursor {
-  position: fixed;
   top: 0;
   left: 0;
   width: 20px;

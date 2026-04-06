@@ -2,261 +2,204 @@
 
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, CreditCard, MapPin, User, ArrowRight, Check, Loader2, Shield } from 'lucide-react';
-import { useCartStore } from '@/store/cartStore';
-import { formatPrice } from '@/lib/products';
+import { X, Check, Loader2, Package, Truck, ShieldCheck } from 'lucide-react';
+import { useCart } from '@/store/useCart';
+import { supabase } from '@/lib/supabase';
 
-type Step = 'details' | 'payment' | 'success';
+interface CheckoutModalProps {
+  onClose: () => void;
+}
 
-export default function CheckoutModal({ onClose }: { onClose: () => void }) {
-  const { items, total, clearCart } = useCartStore();
-  const [step, setStep] = useState<Step>('details');
+export default function CheckoutModal({ onClose }: CheckoutModalProps) {
+  const { items, getTotal, clearCart } = useCart();
   const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [address, setAddress] = useState('');
+  const [phone, setPhone] = useState('');
 
-  // Form state
-  const [form, setForm] = useState({
-    name: '', email: '', phone: '',
-    address: '', city: '', country: 'United States', zip: '',
-    card: '', expiry: '', cvv: '',
-  });
+  const total = getTotal();
 
-  const set = (key: string, value: string) => setForm((f) => ({ ...f, [key]: value }));
-
-  const handleOrder = async (e: React.FormEvent) => {
+  const handleCheckout = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    // Simulated secure checkout
-    await new Promise((r) => setTimeout(r, 2000));
-    setLoading(false);
-    clearCart();
-    setStep('success');
-  };
 
-  const cartTotal = total();
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (!user) {
+        throw new Error('Please sign in to complete your acquisition.');
+      }
+
+      // Create Order in Supabase
+      const { data: order, error: orderError } = await supabase
+        .from('orders')
+        .insert({
+          user_id: user.id,
+          total_amount: total,
+          status: 'pending',
+          shipping_address: address,
+          contact_phone: phone,
+        })
+        .select()
+        .single();
+
+      if (orderError) throw orderError;
+
+      // Create Order Items
+      const orderItems = items.map(item => ({
+        order_id: order.id,
+        product_id: item.id,
+        quantity: item.quantity,
+        price_at_purchase: item.price
+      }));
+
+      const { error: itemsError } = await supabase
+        .from('order_items')
+        .insert(orderItems);
+
+      if (itemsError) throw itemsError;
+
+      setSuccess(true);
+      clearCart();
+    } catch (err: any) {
+      alert(err.message || 'An error occurred during checkout.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-obsidian/85 backdrop-blur-sm"
+      className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-gs-black/80 backdrop-blur-sm"
       onClick={onClose}
     >
       <motion.div
         initial={{ opacity: 0, scale: 0.92, y: 20 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.92, y: 20 }}
-        transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-        className="glass-dark rounded-3xl w-full max-w-2xl border border-white/8 max-h-[90vh] overflow-y-auto m-2 sm:m-0"
+        className="glass rounded-[40px] p-8 md:p-12 w-full max-w-2xl border border-gs-gold/10 relative overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
-        {step === 'success' ? (
+        <div className="absolute top-0 right-0 w-64 h-64 bg-gs-gold/5 blur-[100px] -z-10" />
+
+        <button
+          onClick={onClose}
+          className="absolute top-6 right-6 p-2 rounded-full hover:bg-gs-gold/10 text-gs-gold/50 hover:text-gs-gold transition-colors"
+        >
+          <X size={18} />
+        </button>
+
+        {success ? (
           <motion.div
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="flex flex-col items-center gap-6 p-16 text-center"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-center py-12"
           >
-            <motion.div
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              transition={{ type: 'spring', damping: 15, delay: 0.2 }}
-              className="w-20 h-20 rounded-full bg-gold/20 border border-gold/40 flex items-center justify-center"
-            >
-              <Check size={32} className="text-gold" />
-            </motion.div>
-            <div>
-              <h2 className="font-display text-4xl text-ivory mb-3">Order Confirmed</h2>
-              <p className="text-silver font-light leading-relaxed max-w-sm">
-                Your timepiece is being prepared with the utmost care. You will receive an email confirmation
-                with tracking details within 24 hours.
-              </p>
+            <div className="w-20 h-20 rounded-full bg-gs-gold/20 border border-gs-gold/40 flex items-center justify-center mx-auto mb-8">
+              <Check size={40} className="text-gs-gold" />
             </div>
-            <div className="glass rounded-2xl p-5 w-full text-left border border-white/5">
-              <p className="font-label text-gold mb-1">Order Reference</p>
-              <p className="font-syne font-700 text-ivory text-lg">
-                TH-{Math.random().toString(36).slice(2, 8).toUpperCase()}
-              </p>
-            </div>
-            <button
+            <h2 className="text-4xl font-black text-gs-gold-light uppercase tracking-tighter mb-4">Acquisition Confirmed</h2>
+            <p className="text-gs-gold/60 max-w-md mx-auto mb-12">
+              Your masterpiece is being prepared. Our concierge will contact you shortly to arrange secure, white-glove delivery.
+            </p>
+            <button 
               onClick={onClose}
-              className="px-8 py-3 rounded-full border border-gold/30 text-gold font-label hover:bg-gold/10 transition-colors"
+              className="btn-gold px-12"
             >
-              Continue Exploring
+              Return to Gallery
             </button>
           </motion.div>
         ) : (
-          <div className="p-6 md:p-10">
-            {/* Header */}
-            <div className="flex items-center justify-between mb-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+            {/* Left: Summary */}
+            <div className="space-y-8">
               <div>
-                <span className="font-label text-gold">Secure Checkout</span>
-                <h2 className="font-display text-2xl text-ivory mt-1">
-                  {step === 'details' ? 'Your Details' : 'Payment'}
-                </h2>
+                <h2 className="text-2xl font-black text-gs-gold-light uppercase tracking-tight mb-2">Order Summary</h2>
+                <p className="text-gs-gold/40 text-xs uppercase tracking-widest font-bold">Review your selection</p>
               </div>
-              <button
-                onClick={onClose}
-                className="p-2 rounded-full glass border border-white/10 hover:border-gold/30 text-silver hover:text-ivory transition-colors"
-              >
-                <X size={14} />
-              </button>
-            </div>
 
-            {/* Order summary */}
-            <div className="glass rounded-2xl p-5 mb-8 border border-white/5">
-              <p className="font-label text-silver mb-3">Order Summary</p>
-              <div className="space-y-2">
+              <div className="space-y-4 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
                 {items.map((item) => (
-                  <div key={item.id} className="flex justify-between text-sm">
-                    <span className="text-silver">{item.name} × {item.quantity}</span>
-                    <span className="text-ivory">{formatPrice(item.price * item.quantity)}</span>
+                  <div key={item.id} className="flex gap-4 items-center">
+                    <div className="w-16 h-16 bg-gs-black/40 rounded-xl border border-gs-gold/10 p-2">
+                      <img src={item.image} alt={item.name} className="w-full h-full object-contain" />
+                    </div>
+                    <div className="flex-1">
+                      <p className="text-xs font-bold text-gs-gold-light uppercase truncate">{item.name}</p>
+                      <p className="text-[10px] text-gs-gold/40 font-bold uppercase">{item.quantity} × ${item.price.toLocaleString()}</p>
+                    </div>
                   </div>
                 ))}
-                <div className="h-px bg-white/5 my-2" />
-                <div className="flex justify-between">
-                  <span className="font-syne font-700 text-ivory">Total</span>
-                  <span className="font-display text-gold text-xl">{formatPrice(cartTotal)}</span>
+              </div>
+
+              <div className="pt-6 border-t border-gs-gold/10">
+                <div className="flex justify-between items-baseline">
+                  <span className="text-gs-gold/40 text-[10px] font-bold uppercase tracking-widest">Total Investment</span>
+                  <span className="text-3xl font-black text-gs-gold-light">${total.toLocaleString()}</span>
+                </div>
+              </div>
+
+              <div className="space-y-4 pt-4">
+                <div className="flex items-center gap-3 text-gs-gold/40">
+                  <ShieldCheck size={16} className="text-gs-gold/60" />
+                  <span className="text-[10px] font-bold uppercase tracking-widest">Insured Worldwide Transit</span>
+                </div>
+                <div className="flex items-center gap-3 text-gs-gold/40">
+                  <Truck size={16} className="text-gs-gold/60" />
+                  <span className="text-[10px] font-bold uppercase tracking-widest">White-Glove Delivery</span>
                 </div>
               </div>
             </div>
 
-            {/* Steps progress */}
-            <div className="flex items-center gap-3 mb-8">
-              {(['details', 'payment'] as Step[]).map((s, i) => (
-                <div key={s} className="flex items-center gap-3">
-                  <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-700 transition-all duration-300 ${
-                    step === s || (s === 'details' && step === 'payment')
-                      ? 'bg-gold text-obsidian'
-                      : 'glass border border-white/10 text-silver'
-                  }`}>
-                    {s === 'details' && step === 'payment' ? <Check size={12} /> : i + 1}
-                  </div>
-                  <span className={`font-label capitalize ${step === s ? 'text-ivory' : 'text-silver/50'}`}>{s}</span>
-                  {i < 1 && <div className="flex-1 h-px bg-white/10" />}
-                </div>
-              ))}
-            </div>
-
-            <form onSubmit={step === 'payment' ? handleOrder : (e) => { e.preventDefault(); setStep('payment'); }}>
-              <AnimatePresence mode="wait">
-                {step === 'details' && (
-                  <motion.div
-                    key="details"
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: 20 }}
-                    className="space-y-4"
-                  >
-                    <div className="grid grid-cols-2 gap-4">
-                      <CheckoutInput label="Full Name" value={form.name} onChange={(v) => set('name', v)} type="text" icon={<User size={14} />} />
-                      <CheckoutInput label="Email" value={form.email} onChange={(v) => set('email', v)} type="email" icon={<User size={14} />} />
-                    </div>
-                    <CheckoutInput label="Phone Number" value={form.phone} onChange={(v) => set('phone', v)} type="tel" icon={<User size={14} />} />
-                    <CheckoutInput label="Shipping Address" value={form.address} onChange={(v) => set('address', v)} type="text" icon={<MapPin size={14} />} />
-                    <div className="grid grid-cols-3 gap-4">
-                      <CheckoutInput label="City" value={form.city} onChange={(v) => set('city', v)} type="text" />
-                      <CheckoutInput label="ZIP" value={form.zip} onChange={(v) => set('zip', v)} type="text" />
-                      <div>
-                        <label className="font-label text-silver/60 text-xs block mb-2">Country</label>
-                        <select
-                          value={form.country}
-                          onChange={(e) => set('country', e.target.value)}
-                          className="w-full rounded-xl px-4 py-3 text-ivory text-sm"
-                        >
-                          <option>United States</option>
-                          <option>United Kingdom</option>
-                          <option>UAE</option>
-                          <option>Switzerland</option>
-                          <option>France</option>
-                          <option>Germany</option>
-                        </select>
-                      </div>
-                    </div>
-                  </motion.div>
-                )}
-
-                {step === 'payment' && (
-                  <motion.div
-                    key="payment"
-                    initial={{ opacity: 0, x: 20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: -20 }}
-                    className="space-y-4"
-                  >
-                    <div className="glass rounded-xl p-4 border border-white/5 flex items-center gap-3">
-                      <Shield size={16} className="text-gold" />
-                      <p className="font-label text-silver text-xs">
-                        Your payment is secured with 256-bit SSL encryption.
-                      </p>
-                    </div>
-                    <CheckoutInput label="Card Number" value={form.card} onChange={(v) => set('card', v.replace(/\D/g, '').replace(/(.{4})/g, '$1 ').trim().slice(0, 19))} type="text" icon={<CreditCard size={14} />} placeholder="0000 0000 0000 0000" />
-                    <div className="grid grid-cols-2 gap-4">
-                      <CheckoutInput label="Expiry (MM/YY)" value={form.expiry} onChange={(v) => set('expiry', v)} type="text" placeholder="MM/YY" />
-                      <CheckoutInput label="CVV" value={form.cvv} onChange={(v) => set('cvv', v.slice(0, 3))} type="text" placeholder="•••" />
-                    </div>
-                    <div className="flex items-center gap-4 opacity-60">
-                      {['visa', 'mastercard', 'amex'].map((c) => (
-                        <span key={c} className="font-label text-silver text-[0.6rem] border border-white/10 px-2 py-1 rounded uppercase tracking-widest">{c}</span>
-                      ))}
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-
-              <div className="flex gap-4 mt-8">
-                {step === 'payment' && (
-                  <button
-                    type="button"
-                    onClick={() => setStep('details')}
-                    className="px-6 py-4 rounded-full border border-white/10 text-silver hover:text-ivory font-label transition-colors"
-                  >
-                    Back
-                  </button>
-                )}
-                <motion.button
-                  type="submit"
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  disabled={loading}
-                  className="flex-1 py-4 rounded-full bg-gold text-obsidian font-syne font-700 tracking-wider text-sm uppercase flex items-center justify-center gap-2 hover:bg-gold-light transition-colors glow-gold disabled:opacity-70"
-                >
-                  {loading ? (
-                    <Loader2 size={16} className="animate-spin" />
-                  ) : (
-                    <>
-                      {step === 'details' ? 'Continue to Payment' : `Pay ${formatPrice(cartTotal)}`}
-                      <ArrowRight size={16} />
-                    </>
-                  )}
-                </motion.button>
+            {/* Right: Checkout Form */}
+            <form onSubmit={handleCheckout} className="space-y-6">
+              <h3 className="text-lg font-black text-gs-gold-light uppercase tracking-tight">Delivery Details</h3>
+              
+              <div className="space-y-4">
+                <textarea
+                  placeholder="Shipping Address"
+                  value={address}
+                  onChange={(e) => setAddress(e.target.value)}
+                  className="w-full rounded-2xl bg-gs-black/40 border border-gs-gold/10 p-4 text-gs-gold-light text-xs font-bold transition-all focus:border-gs-gold/40 focus:bg-gs-black/60 outline-none h-32 resize-none"
+                  required
+                />
+                <input
+                  type="tel"
+                  placeholder="Contact Phone"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  className="w-full rounded-2xl bg-gs-black/40 border border-gs-gold/10 p-4 text-gs-gold-light text-xs font-bold transition-all focus:border-gs-gold/40 focus:bg-gs-black/60 outline-none"
+                  required
+                />
               </div>
+
+              <div className="bg-gs-gold/5 rounded-2xl p-4 border border-gs-gold/10">
+                <p className="text-[10px] text-gs-gold/60 font-bold uppercase tracking-widest leading-relaxed">
+                  By confirming, you agree to our private acquisition terms. Payment will be coordinated by our concierge team via secure bank transfer or private link.
+                </p>
+              </div>
+
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full btn-beige py-5 text-sm shadow-xl shadow-gs-gold/5 flex items-center justify-center gap-3 disabled:opacity-50 mt-4"
+              >
+                {loading ? (
+                  <Loader2 size={20} className="animate-spin" />
+                ) : (
+                  <>
+                    <Package size={20} />
+                    Confirm Acquisition
+                  </>
+                )}
+              </button>
             </form>
           </div>
         )}
       </motion.div>
     </motion.div>
-  );
-}
-
-function CheckoutInput({
-  label, value, onChange, type, icon, placeholder,
-}: {
-  label: string; value: string; onChange: (v: string) => void; type: string;
-  icon?: React.ReactNode; placeholder?: string;
-}) {
-  return (
-    <div>
-      <label className="font-label text-silver/60 text-xs block mb-2">{label}</label>
-      <div className="relative">
-        {icon && <div className="absolute left-4 top-1/2 -translate-y-1/2 text-silver">{icon}</div>}
-        <input
-          type={type}
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
-          placeholder={placeholder}
-          className={`w-full rounded-xl ${icon ? 'pl-10' : 'pl-4'} pr-4 py-4 md:py-3 text-ivory text-sm placeholder:text-silver/30`}
-        />
-      </div>
-    </div>
   );
 }
