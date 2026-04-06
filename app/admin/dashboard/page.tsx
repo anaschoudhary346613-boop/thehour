@@ -44,7 +44,8 @@ const NAV = [
 ];
 
 export default function AdminDashboard() {
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(false); // Default to closed for mobile
+  const [isMobile, setIsMobile] = useState(false);
   const [orders, setOrders] = useState<any[]>([]);
   const [products, setProducts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -63,6 +64,11 @@ export default function AdminDashboard() {
       setLoading(false);
     }
     fetchData();
+
+    const checkMobile = () => setIsMobile(window.innerWidth < 1024);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
   const stats = useMemo(() => [
@@ -93,12 +99,28 @@ export default function AdminDashboard() {
 
   return (
     <div className="min-h-screen bg-obsidian text-ivory flex font-inter selection:bg-gold selection:text-obsidian">
+      {/* Sidebar Overlay */}
+      <AnimatePresence>
+        {isMobile && sidebarOpen && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setSidebarOpen(false)}
+            className="fixed inset-0 bg-obsidian/60 backdrop-blur-sm z-40"
+          />
+        )}
+      </AnimatePresence>
+
       {/* Sidebar */}
       <motion.aside
-        animate={{ width: sidebarOpen ? 280 : 80 }}
-        transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-        className="shrink-0 h-screen sticky top-0 border-r border-white/5 flex flex-col overflow-hidden z-20"
-        style={{ background: 'rgba(8,8,8,0.95)', backdropFilter: 'blur(32px)' }}
+        animate={{ 
+          width: isMobile ? (sidebarOpen ? '280px' : '0px') : (sidebarOpen ? 280 : 80),
+          x: isMobile && !sidebarOpen ? -280 : 0
+        }}
+        transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+        className={`shrink-0 h-screen sticky top-0 border-r border-white/5 flex flex-col overflow-hidden z-50 ${isMobile ? 'fixed' : ''}`}
+        style={{ background: 'rgba(8,8,8,0.98)', backdropFilter: 'blur(32px)' }}
       >
         <div className="px-6 py-10 border-b border-white/5 flex items-center gap-4">
           <motion.div 
@@ -146,7 +168,24 @@ export default function AdminDashboard() {
       </motion.aside>
 
       {/* Main Content */}
-      <main className="flex-1 overflow-auto p-10 lg:p-14 max-w-[1600px] mx-auto bg-[radial-gradient(circle_at_top_right,rgba(184,151,58,0.03),transparent)]">
+      <main className="flex-1 overflow-x-hidden min-h-screen p-6 md:p-10 lg:p-14 max-w-[1600px] mx-auto bg-[radial-gradient(circle_at_top_right,rgba(184,151,58,0.03),transparent)]">
+        {/* Mobile Header Toggle */}
+        <div className="lg:hidden flex items-center justify-between mb-8 pb-4 border-b border-white/5">
+           <div className="flex items-center gap-3">
+             <div className="w-8 h-8 rounded-full border border-gold flex items-center justify-center">
+               <Clock size={12} className="text-gold" />
+             </div>
+             <span className="font-syne font-800 text-sm tracking-widest text-ivory uppercase">
+               The <span className="text-gold">Hour</span>
+             </span>
+           </div>
+           <button 
+             onClick={() => setSidebarOpen(true)}
+             className="w-10 h-10 rounded-xl glass border border-white/10 flex items-center justify-center text-gold"
+           >
+             <Menu size={20} />
+           </button>
+        </div>
         {loading ? (
           <div className="h-full flex items-center justify-center">
             <div className="w-12 h-12 border-2 border-gold/10 border-t-gold rounded-full animate-spin" />
@@ -158,31 +197,32 @@ export default function AdminDashboard() {
                 <AdminHeader title="Overview" subtitle="Systems Status: Nominal" />
                 
                 {/* Stats Grid */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-12">
                   {stats.map((stat, i) => (
                     <motion.div 
                       key={stat.label} 
                       initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.1 }}
-                      className="glass rounded-3xl p-6 border border-white/5 hover:border-gold/20 transition-all group"
+                      className="glass rounded-2xl md:rounded-3xl p-4 md:p-6 border border-white/5 hover:border-gold/20 transition-all group"
                     >
-                      <div className="flex items-center justify-between mb-6">
-                        <div className="p-2.5 rounded-xl bg-white/5 text-gold group-hover:bg-gold group-hover:text-obsidian transition-all"><stat.icon size={18} /></div>
-                        <span className="font-label text-gold/40 text-[0.6rem] tracking-widest">{stat.change}</span>
+                      <div className="flex items-center justify-between mb-4 md:mb-6">
+                        <div className="p-2 md:p-2.5 rounded-xl bg-white/5 text-gold group-hover:bg-gold group-hover:text-obsidian transition-all"><stat.icon size={16} /></div>
+                        <span className="font-label text-gold/40 text-[0.55rem] tracking-widest">{stat.change}</span>
                       </div>
-                      <p className="font-display text-4xl text-ivory mb-1 tracking-tight">{stat.value}</p>
-                      <p className="font-label text-silver/40 text-[0.65rem] tracking-[0.2em]">{stat.label}</p>
+                      <p className="font-display text-2xl md:text-4xl text-ivory mb-1 tracking-tight">{stat.value}</p>
+                      <p className="font-label text-silver/40 text-[0.55rem] md:text-[0.65rem] tracking-[0.2em]">{stat.label}</p>
                     </motion.div>
                   ))}
                 </div>
 
                 {/* Recent Orders Table */}
                 <div className="glass rounded-[2rem] border border-white/5 overflow-hidden">
-                  <div className="p-8 border-b border-white/5 flex items-center justify-between bg-white/[0.01]">
-                    <h3 className="font-syne font-800 text-ivory uppercase tracking-widest text-[0.8rem]">Recent Transactions</h3>
+                  <div className="p-6 md:p-8 border-b border-white/5 flex items-center justify-between bg-white/[0.01]">
+                    <h3 className="font-syne font-800 text-ivory uppercase tracking-widest text-[0.7rem] md:text-[0.8rem]">Recent Transactions</h3>
                     <button onClick={() => setActiveTab('ORDERS')} className="font-label text-gold/60 hover:text-gold transition-colors text-[0.6rem] tracking-[0.3em]">View All</button>
                   </div>
                   <div className="overflow-x-auto">
-                    <table className="w-full text-left">
+                    {/* Desktop Table */}
+                    <table className="hidden md:table w-full text-left">
                       <thead>
                         <tr className="font-label text-silver/40 text-[0.55rem] tracking-[0.3em] uppercase border-b border-white/5 bg-white/[0.01]">
                           <th className="px-8 py-5">Order ID</th>
@@ -200,13 +240,30 @@ export default function AdminDashboard() {
                               <p className="text-[0.6rem] text-silver/40 uppercase tracking-widest mt-1">{order.customer_email}</p>
                             </td>
                             <td className="px-8 py-6 font-syne font-800 text-ivory">{formatPrice(order.total_amount)}</td>
-                            <td className="px-8 py-6">
+                            <td className="px-8 py-6 text-right md:text-left">
                               <StatusBadge status={order.status} />
                             </td>
                           </tr>
                         ))}
                       </tbody>
                     </table>
+
+                    {/* Mobile Cards */}
+                    <div className="md:hidden divide-y divide-white/5">
+                      {orders.slice(0, 5).map((order) => (
+                        <div key={order.id} className="p-6 space-y-4">
+                          <div className="flex items-center justify-between">
+                            <span className="font-syne font-700 text-gold text-[0.7rem] tracking-widest">{order.id.split('-')[0].toUpperCase()}</span>
+                            <StatusBadge status={order.status} />
+                          </div>
+                          <div>
+                            <p className="font-medium text-ivory text-sm">{order.customer_name}</p>
+                            <p className="text-[0.55rem] text-silver/40 uppercase tracking-[0.2em] mt-0.5">{order.customer_email}</p>
+                          </div>
+                          <p className="font-syne font-800 text-ivory">{formatPrice(order.total_amount)}</p>
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 </div>
               </motion.div>
@@ -220,7 +277,8 @@ export default function AdminDashboard() {
                   action={<button className="flex items-center gap-2 px-6 py-3 rounded-2xl bg-gold text-obsidian font-syne font-800 tracking-widest uppercase text-[0.7rem] hover:bg-gold-light shadow-xl"><Plus size={16} /> Asset Entry</button>}
                 />
                 <div className="glass rounded-[2rem] border border-white/5 overflow-hidden">
-                   <table className="w-full text-left">
+                   {/* Desktop Table */}
+                   <table className="hidden md:table w-full text-left">
                       <thead>
                         <tr className="font-label text-silver/40 text-[0.55rem] tracking-[0.3em] uppercase border-b border-white/5 bg-white/[0.01]">
                           <th className="px-10 py-6">Asset Name</th>
@@ -252,6 +310,33 @@ export default function AdminDashboard() {
                         ))}
                       </tbody>
                    </table>
+
+                   {/* Mobile Cards */}
+                   <div className="md:hidden divide-y divide-white/5">
+                      {products.map((p) => (
+                        <div key={p.id} className="p-6 space-y-4">
+                          <div className="flex items-center gap-4">
+                            <div className="w-16 h-16 rounded-xl overflow-hidden bg-white/5 border border-white/5 relative shrink-0">
+                               <Image src={p.image_urls?.[0] || '/watch-01.png'} alt={p.name} fill className="object-cover" />
+                            </div>
+                            <div className="flex-1 min-w-0">
+                               <p className="font-syne font-700 text-ivory text-sm truncate">{p.name}</p>
+                               <p className="font-label text-[0.5rem] tracking-[0.2em] text-silver/40 uppercase mt-1">{p.category}</p>
+                            </div>
+                          </div>
+                          <div className="flex items-center justify-between">
+                             <div>
+                                <p className="font-syne font-800 text-gold text-lg tracking-tight">{formatPrice(p.price)}</p>
+                                <p className="font-label text-silver/40 text-[0.55rem] mt-0.5">{p.stock} units available</p>
+                             </div>
+                             <div className="flex items-center gap-4">
+                                <button className="w-10 h-10 rounded-xl glass border border-white/10 flex items-center justify-center text-silver/40 hover:text-gold transition-colors"><Pencil size={18} /></button>
+                                <button className="w-10 h-10 rounded-xl glass border border-white/10 flex items-center justify-center text-silver/40 hover:text-rose transition-colors"><Trash2 size={18} /></button>
+                             </div>
+                          </div>
+                        </div>
+                      ))}
+                   </div>
                 </div>
               </motion.div>
             )}
@@ -260,7 +345,8 @@ export default function AdminDashboard() {
               <motion.div key="orders" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}>
                 <AdminHeader title="Transactions" subtitle="Order Fullfillment" />
                 <div className="glass rounded-[2rem] border border-white/5 overflow-hidden">
-                   <table className="w-full text-left">
+                   {/* Desktop Table */}
+                   <table className="hidden md:table w-full text-left">
                       <thead>
                         <tr className="font-label text-silver/40 text-[0.55rem] tracking-[0.3em] uppercase border-b border-white/5 bg-white/[0.01]">
                           <th className="px-8 py-5">Order ID</th>
@@ -298,6 +384,37 @@ export default function AdminDashboard() {
                         ))}
                       </tbody>
                    </table>
+
+                   {/* Mobile Cards */}
+                   <div className="md:hidden divide-y divide-white/5">
+                      {orders.map((o) => (
+                        <div key={o.id} className="p-6 space-y-4">
+                           <div className="flex items-center justify-between">
+                              <span className="font-syne font-700 text-gold text-[0.7rem] tracking-widest uppercase">{o.id.split('-')[0]}</span>
+                              <StatusBadge status={o.status} />
+                           </div>
+                           <div className="flex justify-between items-end">
+                              <div>
+                                 <p className="font-medium text-ivory text-sm">{o.customer_name}</p>
+                                 <p className="text-[0.55rem] text-silver/40 uppercase tracking-[0.2em] mt-0.5">{o.customer_email}</p>
+                              </div>
+                              <button onClick={() => deleteOrder(o.id)} className="w-10 h-10 rounded-xl glass border border-white/10 flex items-center justify-center text-silver/20 hover:text-rose transition-colors"><Trash2 size={18} /></button>
+                           </div>
+                           <div className="pt-2">
+                             <select 
+                               value={o.status}
+                               onChange={(e) => updateOrderStatus(o.id, e.target.value)}
+                               className="w-full bg-obsidian border border-white/10 rounded-xl px-4 py-3 text-[0.6rem] font-label tracking-widest text-gold hover:border-gold transition-all"
+                             >
+                               <option value="Pending">Pending</option>
+                               <option value="Authenticating">Authenticating</option>
+                               <option value="Dispatched">Dispatched</option>
+                               <option value="Delivered">Delivered</option>
+                             </select>
+                           </div>
+                        </div>
+                      ))}
+                   </div>
                 </div>
               </motion.div>
             )}
@@ -310,14 +427,14 @@ export default function AdminDashboard() {
 
 function AdminHeader({ title, subtitle, action }: { title: string; subtitle: string; action?: React.ReactNode }) {
   return (
-    <div className="mb-12 flex items-center justify-between">
+    <div className="mb-10 md:mb-12 flex flex-col sm:flex-row sm:items-center justify-between gap-6">
       <div>
-        <p className="font-label text-gold/60 mb-2 tracking-[0.4em] uppercase text-[0.6rem]">{subtitle}</p>
-        <h2 className="font-display text-5xl text-ivory uppercase tracking-tighter leading-none">{title}</h2>
+        <p className="font-label text-gold/60 mb-2 tracking-[0.4em] uppercase text-[0.55rem] md:text-[0.6rem]">{subtitle}</p>
+        <h2 className="font-display text-4xl md:text-5xl text-ivory uppercase tracking-tighter leading-none">{title}</h2>
       </div>
       <div className="flex items-center gap-4">
         {action}
-        <div className="flex items-center gap-4 glass px-5 py-3 rounded-2xl border border-white/5">
+        <div className="hidden sm:flex items-center gap-4 glass px-5 py-3 rounded-2xl border border-white/5">
           <div className="flex flex-col items-end">
              <span className="font-label text-white/30 text-[0.5rem] tracking-[0.2em] mb-0.5">System Status</span>
              <span className="font-label text-silver text-[0.65rem] tracking-widest uppercase">Encryption Active</span>

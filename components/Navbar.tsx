@@ -46,76 +46,65 @@ export default function Navbar({
         animate={{ 
           y: 0, 
           opacity: 1,
-          paddingTop: scrolled || mobileOpen ? '1rem' : '2rem',
-          paddingBottom: scrolled || mobileOpen ? '1rem' : '2rem',
-          backgroundColor: scrolled || mobileOpen ? 'rgba(8,8,8,0.8)' : 'rgba(8,8,8,0)',
+          paddingTop: scrolled || mobileOpen ? '1rem' : '1.5rem',
+          paddingBottom: scrolled || mobileOpen ? '1rem' : '1.5rem',
+          backgroundColor: '#050505',
           backdropFilter: scrolled || mobileOpen ? 'blur(20px)' : 'blur(0px)',
         }}
         transition={{ 
           duration: 0.8, 
           ease: [0.16, 1, 0.3, 1],
-          backgroundColor: { duration: 0.6 },
-          paddingTop: { duration: 0.6 },
-          paddingBottom: { duration: 0.6 }
         }}
         className={`fixed top-0 left-0 right-0 z-[100] border-b transition-colors duration-700 ${
           scrolled || mobileOpen ? 'border-white/5 shadow-2xl' : 'border-transparent'
         }`}
       >
-        <div className="max-w-[1440px] mx-auto px-6 lg:px-12 flex items-center justify-between">
-          {/* Logo */}
-          <Link href="/" className="flex items-center gap-3 group relative z-[110]">
-            <motion.div
-              whileHover={{ rotate: 90, scale: 1.1 }}
-              transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-              className="w-10 h-10 rounded-full border border-gold flex items-center justify-center bg-obsidian/20 backdrop-blur-sm"
+        <div className="max-w-[1440px] mx-auto px-6 lg:px-12 flex items-center justify-between relative">
+          {/* Top-Left: Manage Account & Client Portal Links */}
+          <div className="flex items-center gap-6 relative z-[110] flex-1">
+            <button
+               onClick={onAuthClick}
+               className="flex flex-col text-left group"
             >
-              <Clock size={16} className="text-gold" strokeWidth={1.5} />
-            </motion.div>
-            <div className="flex flex-col">
-              <span className="font-syne font-800 text-[1.1rem] tracking-[0.15em] uppercase text-ivory leading-none">
-                The <span className="text-gold-gradient">Hour</span>
-              </span>
-            </div>
+               <span className="font-label text-[0.55rem] text-silver/60 group-hover:text-white transition-colors duration-300">Manage Account</span>
+               <span className="font-label text-[0.65rem] text-white tracking-widest uppercase mt-0.5">Client Portal</span>
+            </button>
+
+            {/* Desktop Nav Links (Hidden for priority on small white links) */}
+            <nav className="hidden xl:flex items-center gap-8 ml-10">
+              {navLinks.slice(0, 2).map((link) => (
+                <MagneticLink key={link.label} href={link.href}>{link.label}</MagneticLink>
+              ))}
+            </nav>
+          </div>
+
+          {/* Center: Logo (Solid Gold) */}
+          <Link href="/" className="absolute left-1/2 -translate-x-1/2 flex flex-col items-center group z-[110]">
+            <span className="font-syne font-800 text-[1.1rem] md:text-[1.3rem] tracking-[0.2em] uppercase text-[#D4AF37] leading-none mb-1">
+              The Hour
+            </span>
+            <div className="w-12 h-[1px] bg-[#D4AF37]/30" />
           </Link>
 
-          {/* Desktop Nav */}
-          <nav className="hidden lg:flex items-center gap-12">
-            {navLinks.map((link) => (
-              <MagneticLink
-                key={link.label}
-                href={link.href}
-              >
-                {link.label}
-              </MagneticLink>
-            ))}
-          </nav>
+          {/* Right: Actions */}
+          <div className="flex items-center justify-end gap-6 relative z-[110] flex-1">
+            {/* Desktop Nav Links (Right Side) */}
+            <nav className="hidden xl:flex items-center gap-8 mr-8">
+              {navLinks.slice(2).map((link) => (
+                <MagneticLink key={link.label} href={link.href}>{link.label}</MagneticLink>
+              ))}
+            </nav>
 
-          {/* Actions */}
-          <div className="flex items-center gap-6 relative z-[110]">
-            {/* Auth */}
-            <motion.button
-              whileHover={{ scale: 1.05, y: -1 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={onAuthClick}
-              className="hidden md:flex items-center gap-2.5 font-label text-silver hover:text-ivory transition-colors duration-300"
-            >
-              <User size={16} strokeWidth={1.5} />
-            </motion.button>
-
-            {/* Cart */}
+            {/* Cart Icon */}
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={openCart}
-              className="relative p-2.5 rounded-full border border-white/10 hover:border-gold/40 transition-all duration-500 group overflow-hidden"
+              className="relative p-2 rounded-full border border-white/5 hover:border-gold/40 transition-all duration-500 group overflow-hidden"
             >
-              <motion.div
-                className="absolute inset-0 bg-gold/5 scale-0 group-hover:scale-100 transition-transform duration-500 rounded-full"
-              />
               <ShoppingBag
-                size={20}
-                strokeWidth={1.5}
+                size={18}
+                strokeWidth={1.2}
                 className={`text-silver group-hover:text-gold transition-colors duration-300 relative z-10 ${
                   isCartBouncing ? 'animate-cart-bounce' : ''
                 }`}
@@ -127,7 +116,7 @@ export default function Navbar({
                     initial={{ scale: 0, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
                     exit={{ scale: 0, opacity: 0 }}
-                    className="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] rounded-full bg-gold text-obsidian text-[10px] font-bold flex items-center justify-center px-1 border-2 border-obsidian"
+                    className="absolute -top-0.5 -right-0.5 min-w-[14px] h-[14px] rounded-full bg-gold text-obsidian text-[8px] font-bold flex items-center justify-center border border-obsidian"
                   >
                     {cartCount}
                   </motion.span>
@@ -137,21 +126,21 @@ export default function Navbar({
 
             {/* Mobile hamburger */}
             <button
-              className="lg:hidden w-10 h-10 flex flex-col items-center justify-center gap-1.5 text-silver hover:text-ivory group"
-              onClick={() => setMobileOpen(!mobileOpen)}
+               className="lg:hidden w-8 h-8 flex flex-col items-center justify-center gap-1.5 text-silver hover:text-white group"
+               onClick={() => setMobileOpen(!mobileOpen)}
             >
-              <motion.span
-                animate={mobileOpen ? { rotate: 45, y: 7 } : { rotate: 0, y: 0 }}
-                className="w-6 h-[1.5px] bg-current rounded-full transition-transform"
-              />
-              <motion.span
-                animate={mobileOpen ? { opacity: 0, x: -10 } : { opacity: 1, x: 0 }}
-                className="w-4 h-[1.5px] bg-current rounded-full self-end transition-all"
-              />
-              <motion.span
-                animate={mobileOpen ? { rotate: -45, y: -7, width: '24px' } : { rotate: 0, y: 0 }}
-                className="w-5 h-[1.5px] bg-current rounded-full self-end transition-all"
-              />
+               <motion.span
+                 animate={mobileOpen ? { rotate: 45, y: 6 } : { rotate: 0, y: 0 }}
+                 className="w-5 h-[1px] bg-current rounded-full transition-transform"
+               />
+               <motion.span
+                 animate={mobileOpen ? { opacity: 0, x: -5 } : { opacity: 1, x: 0 }}
+                 className="w-3 h-[1px] bg-current rounded-full self-end transition-all"
+               />
+               <motion.span
+                 animate={mobileOpen ? { rotate: -45, y: -6, width: '20px' } : { rotate: 0, y: 0 }}
+                 className="w-4 h-[1px] bg-current rounded-full self-end transition-all"
+               />
             </button>
           </div>
         </div>

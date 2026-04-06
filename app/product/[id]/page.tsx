@@ -28,17 +28,29 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
   useEffect(() => {
     async function fetchProduct() {
       setLoading(true);
-      const { data, error } = await supabase
-        .from('products')
-        .select('*')
-        .eq('id', id)
-        .single();
+      try {
+        const { data, error } = await supabase
+          .from('products')
+          .select('*')
+          .eq('id', id)
+          .single();
 
-      if (data && !error) {
-        setProduct({
-          ...data,
-          image: data.image_urls?.[0] || `/watch-0${Math.floor(Math.random() * 6) + 1}.png`,
-        });
+        if (data && !error) {
+          setProduct({
+            ...data,
+            image: data.image_urls?.[0] || `/watch-0${Math.floor(Math.random() * 6) + 1}.png`,
+          });
+        } else {
+          // Fallback to searching mock data by ID
+          const mockProduct = PRODUCTS.find((p) => p.id === id);
+          if (mockProduct) {
+             setProduct(mockProduct);
+          }
+        }
+      } catch (err) {
+        console.error('Fetch error for product:', err);
+        const mockProduct = PRODUCTS.find((p) => p.id === id);
+        if (mockProduct) setProduct(mockProduct);
       }
       setLoading(false);
     }

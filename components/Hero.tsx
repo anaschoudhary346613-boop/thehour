@@ -72,110 +72,74 @@ export default function Hero() {
       {/* Noise overlay */}
       <div className="noise-overlay" />
 
-      {/* Content - Increased pt-32 for better header clearance */}
+      {/* Content - Systematic Vertical Flow */}
       <motion.div
         style={{ opacity }}
-        className="relative z-10 max-w-[1440px] mx-auto px-6 lg:px-12 w-full pt-20 md:pt-32"
+        className="relative z-10 max-w-[1440px] mx-auto px-6 lg:px-12 w-full pt-32 pb-20 md:py-32"
       >
-        <motion.div variants={container} initial="hidden" animate="show" className="max-w-4xl">
-          {/* Label */}
-          <motion.div variants={fadeUp} className="mb-6 flex items-center gap-3">
-            <span className="w-8 h-[1px] bg-gold/50" />
-            <span className="font-serif italic text-gold flex items-center gap-2 tracking-[0.1em] text-lg sm:text-xl">
-              <Sparkles size={11} className="animate-pulse" />
-              Haute Horlogerie · Est. 2024
-            </span>
-          </motion.div>
+        <motion.div variants={container} initial="hidden" animate="show" className="flex flex-col items-center">
+          
+          {/* Watch 3D Viewer Container */}
+          <div className="watch-container relative w-full h-[400px] md:h-[600px] flex items-center justify-center mb-12">
+            {/* Live 3D Indicator */}
+            <div className="absolute top-0 right-0 md:top-10 md:right-10 z-20 flex items-center gap-2 px-3 py-1.5 glass border border-gold/30 rounded-full animate-fade-up">
+              <div className="w-1.5 h-1.5 rounded-full bg-gold animate-pulse" />
+              <span className="font-label text-[0.55rem] text-gold tracking-widest uppercase">Live 3D View</span>
+            </div>
 
-          {/* Headline */}
-          <div className="overflow-hidden mb-1 md:mb-2">
+            {/* @ts-ignore - model-viewer is a custom element */}
+            <model-viewer 
+              src="/models/watch_model.glb" 
+              ar 
+              ar-modes="webxr scene-viewer quick-look" 
+              camera-controls 
+              poster="/watch-06.png" 
+              shadow-intensity="1" 
+              auto-rotate 
+              rotation-per-second="10deg"
+              interaction-prompt="auto"
+              style={{ width: '100%', height: '100%', '--poster-color': 'transparent' } as any}
+              alt="A 3D model of the Éternel Tourbillon watch"
+            >
+              <button slot="ar-button" style={{ backgroundColor: '#D4AF37', borderRadius: '4px', border: 'none', position: 'absolute', top: '16px', right: '16px', padding: '10px' }}>
+                  View in AR
+              </button>
+            </model-viewer>
+          </div>
+
+          <motion.div variants={fadeUp} className="text-center">
+            {/* Headline - Simplified */}
             <motion.h1
               variants={line}
-              className="font-display text-[clamp(2.5rem,11vw,7.5rem)] text-ivory leading-tight uppercase tracking-tight"
+              className="font-display text-4xl md:text-7xl lg:text-8xl text-ivory leading-tight uppercase tracking-tight mb-8"
             >
-              TIME IS
+              The Art of Precision
             </motion.h1>
-          </div>
-          <div className="overflow-hidden mb-1 md:mb-2">
-            <motion.div variants={line}>
-              <span className="font-display text-[clamp(2.5rem,11vw,7.5rem)] text-gold-gradient block uppercase tracking-tight">
-                AN ART
-              </span>
+
+            {/* Product info line in solid gold */}
+            <div className="flex flex-col md:flex-row items-center justify-center gap-4 border-y border-[#D4AF37]/20 py-6 mb-12">
+               <span className="font-syne font-800 text-lg md:text-2xl text-[#D4AF37] uppercase tracking-tighter">Éternel Tourbillon</span>
+               <span className="hidden md:block w-8 h-[1px] bg-[#D4AF37]/40" />
+               <span className="font-syne font-800 text-lg md:text-2xl text-[#D4AF37] tracking-tighter">$225,000</span>
+            </div>
+
+            {/* CTA */}
+            <motion.div variants={fadeUp} className="flex items-center justify-center gap-6 flex-wrap">
+              <MagneticButton href="#collections">
+                Explore Collection
+              </MagneticButton>
+              <a
+                href="#craftsmanship"
+                className="group flex items-center gap-3 font-label text-silver hover:text-white transition-all duration-300"
+              >
+                <span className="link-underline">Our Heritage</span>
+                <div className="w-8 h-8 rounded-full border border-white/10 flex items-center justify-center group-hover:border-gold/50 group-hover:translate-x-1 transition-all">
+                  <ArrowDown size={14} className="-rotate-[135deg]" />
+                </div>
+              </a>
             </motion.div>
-          </div>
-          <div className="overflow-hidden mb-10 md:mb-12">
-            <motion.h1
-              variants={line}
-              className="font-display text-[clamp(2.2rem,10vw,7rem)] text-white/5 block uppercase tracking-tight italic"
-            >
-              FORM.
-            </motion.h1>
-          </div>
-
-          {/* Subtext */}
-          <motion.div variants={fadeUp} className="max-w-md mb-12">
-            <p className="text-silver/80 font-inter font-light text-xl md:text-2xl tracking-tight leading-relaxed">
-              Exceptional timepieces for those who understand that true luxury
-              is the relentless pursuit of perfection.
-            </p>
-          </motion.div>
-
-          {/* CTA */}
-          <motion.div variants={fadeUp} className="flex items-center gap-8 flex-wrap">
-            <MagneticButton href="#collections">
-              Discover Perfection
-            </MagneticButton>
-            <a
-              href="#craftsmanship"
-              className="group flex items-center gap-3 font-label text-silver hover:text-ivory transition-all duration-300"
-            >
-              <span className="link-underline">Our Story</span>
-              <div className="w-8 h-8 rounded-full border border-white/10 flex items-center justify-center group-hover:border-gold/50 group-hover:translate-x-1 transition-all">
-                <ArrowDown size={14} className="-rotate-[135deg]" />
-              </div>
-            </a>
           </motion.div>
         </motion.div>
-      </motion.div>
-
-      {/* Scroll indicator */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 2.5, duration: 1 }}
-        className="absolute bottom-12 left-6 lg:left-12 z-10 hidden sm:flex items-center gap-4"
-      >
-        <div className="w-[1px] h-12 bg-gradient-to-t from-gold/50 to-transparent relative overflow-hidden">
-          <motion.div 
-            animate={{ y: [0, 48, 0] }}
-            transition={{ repeat: Infinity, duration: 2, ease: 'easeInOut' }}
-            className="absolute top-0 left-0 w-full h-1/4 bg-gold"
-          />
-        </div>
-        <span className="font-label text-silver/40 text-[0.55rem] tracking-[0.4em] uppercase">Scroll to Explore</span>
-      </motion.div>
-
-      {/* Floating watch badge - Adjusted for responsiveness */}
-      <motion.div
-        initial={{ opacity: 0, x: 20 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ delay: 2, duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
-        className="absolute right-6 lg:right-12 top-1/2 -translate-y-1/2 z-10 hidden 2xl:block"
-      >
-        <div className="glass rounded-2xl p-6 w-56 glow-gold relative overflow-hidden group">
-          <div className="absolute inset-0 bg-gradient-to-br from-gold/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
-          <p className="font-label text-gold/60 mb-4 text-[0.55rem] tracking-[0.3em]">Exemplary Piece</p>
-          <div className="space-y-1 mb-6">
-            <h3 className="font-syne font-800 text-ivory text-base">Éternel Tourbillon</h3>
-            <p className="text-silver/60 text-[0.65rem] font-medium tracking-wide">Hand-Finished Platinum • 1 of 1</p>
-          </div>
-          <div className="flex items-baseline gap-2 mb-4">
-            <p className="text-gold font-syne font-800 text-xl tracking-tight leading-none">$225k</p>
-            <p className="text-silver/30 text-[0.6rem] font-light uppercase tracking-widest leading-none">Investment Grade</p>
-          </div>
-          <div className="h-[1px] bg-white/5 w-full" />
-          <p className="font-label text-ivory/40 mt-4 text-[0.5rem] tracking-[0.2em]">Geneva Seal Certified</p>
-        </div>
       </motion.div>
     </section>
   );

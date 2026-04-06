@@ -15,7 +15,7 @@ export default function WhatsAppConcierge() {
 
   const handleConsultation = () => {
     const message = "Hello, I am interested in a private consultation regarding your timepiece collection.";
-    window.open(`https://wa.me/1234567890?text=${encodeURIComponent(message)}`, '_blank');
+    window.open(`https://wa.me/919860948892?text=${encodeURIComponent(message)}`, '_blank');
   };
 
   return (

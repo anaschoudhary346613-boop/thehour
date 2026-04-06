@@ -28,9 +28,8 @@ export default function Footer() {
                 The <span className="text-gold">Hour</span>
               </span>
             </div>
-            <p className="text-silver font-light text-sm leading-relaxed mb-6">
-              Where the art of watchmaking reaches its absolute zenith. 
-              Crafting exceptional timepieces since 2024.
+            <p className="text-[#D4AF37] font-syne font-800 text-sm tracking-[0.2em] uppercase mb-6">
+              Exceptional Timepieces
             </p>
             <div className="flex items-center gap-4">
               {[Camera, MessageIcon, Mail].map((Icon, i) => (

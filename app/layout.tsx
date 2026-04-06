@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Syne, Inter } from "next/font/google";
 import "./globals.css";
 import { Providers } from "@/components/Providers";
+import Script from 'next/script';
 import Preloader from "@/components/Preloader";
 import CustomCursor from "@/components/CustomCursor";
 import WhatsAppConcierge from "@/components/WhatsAppConcierge";
@@ -40,6 +41,11 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${syne.variable} ${inter.variable}`}>
       <body className="bg-obsidian text-ivory font-inter antialiased overflow-x-hidden selection:bg-gold selection:text-obsidian">
+        <Script 
+          src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.1.1/model-viewer.min.js" 
+          type="module"
+          strategy="afterInteractive"
+        />
         <Preloader />
         <CustomCursor />
         <div className="noise-overlay" />
