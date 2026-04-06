@@ -4,6 +4,7 @@ export const dynamic = 'force-dynamic';
 
 import { useState, Suspense } from 'react';
 import { AnimatePresence } from 'framer-motion';
+import Image from 'next/image';
 import Link from 'next/link';
 import Navbar from '@/components/Navbar';
 import Hero from '@/components/Hero';
