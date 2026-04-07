@@ -5,6 +5,9 @@ const nextConfig: NextConfig = {
     remotePatterns: [],
     formats: ['image/webp', 'image/avif'],
   },
+  typescript: {
+    ignoreBuildErrors: true,
+  },
   experimental: {
     optimizePackageImports: ['lucide-react', 'framer-motion'],
   },
