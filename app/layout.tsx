@@ -6,6 +6,7 @@ import ModalProvider from '@/components/ModalProvider';
 import FloatingNav from '@/components/FloatingNav';
 import CartDrawer from '@/components/CartDrawer';
 import SmoothScrollProvider from '@/components/SmoothScrollProvider';
+import Preloader from '@/components/Preloader';
 
 export const viewport = "width=device-width, initial-scale=1, maximum-scale=1";
 
@@ -28,9 +29,11 @@ export default function RootLayout({
           strategy="afterInteractive"
         />
       </head>
-      <body className="bg-black text-white antialiased overflow-x-hidden selection:bg-[#C8A97E] selection:text-black">
+      <body className="bg-black text-white antialiased selection:bg-[#C8A97E] selection:text-black">
         <Providers>
           <SmoothScrollProvider>
+            <Preloader />
+            
             {/* Fixed Logo Anchor */}
             <div className="fixed top-8 left-8 z-[100] w-12 h-12 group pointer-events-auto cursor-pointer">
               <img 

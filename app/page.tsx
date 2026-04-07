@@ -4,7 +4,7 @@ import MagneticButton from "@/components/MagneticButton";
 
 export default function Home() {
   return (
-    <div className="bg-black">
+    <div className="bg-black reveal-content">
       <CinematicHero />
       
       <div id="collection">
