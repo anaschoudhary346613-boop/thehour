@@ -26,8 +26,8 @@ export default function Logo({ className = '', size = 32 }: LogoProps) {
           onError={() => setHasError(true)}
         />
       ) : (
-        <div className="text-2xl font-serif text-[#C5A059] tracking-widest font-bold">
-          THE HOUR
+        <div className="text-3xl font-serif text-[#C8A97E] font-black tracking-[0.3em] uppercase">
+          TH
         </div>
       )}
     </motion.div>

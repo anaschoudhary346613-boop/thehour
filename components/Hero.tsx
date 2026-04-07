@@ -1,92 +1,82 @@
 'use client';
 
-import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { useCart } from '@/store/useCart';
-import { useState } from 'react';
 
 export default function Hero({ featuredWatch }: { featuredWatch?: any }) {
   const { addItem } = useCart();
-  const [hasImageError, setHasImageError] = useState(false);
 
-  // Fallback if DB fetch fails
   const product = featuredWatch || {
     id: 'th-hero-chronograph',
     name: 'The Hour Chronograph',
-    brand: 'Garner & Spruces',
     price: 4999,
-    description: 'PRECISION, ELEGANCE, AND A LEGACY OF TIME.',
     image_url: '/hero-watch.png',
   };
 
   return (
-    <section className="relative min-h-screen w-full overflow-hidden flex flex-col justify-between pb-16 md:pb-0">
-      {/* Layer 1: The Backgrounds (z-0) */}
-      <div className="absolute inset-0 z-0 flex w-full h-full">
-        <div className="w-1/2 h-full bg-black"></div>
-        <div className="w-1/2 h-full bg-[#C8A97E]"></div>
+    <section className="relative w-full h-[100dvh] overflow-hidden flex flex-col items-center justify-center bg-black">
+      {/* 1. Split Background (50/50) */}
+      <div className="absolute inset-0 z-0 flex pointer-events-none">
+        <div className="w-1/2 h-full bg-[#0A0A0A]"></div>
+        <div className="w-1/2 h-full bg-[#B5915F]"></div>
       </div>
 
-      {/* Layer 2: The Content Wrapper (z-10, MUST NOT BE HIDDEN) */}
-      <div className="relative z-10 flex-1 flex flex-col items-center justify-center w-full px-4 pt-12 md:static">
+      {/* 2. Floating Hero Watch (Top 45%) */}
+      <motion.div 
+        initial={{ opacity: 0, y: 50, scale: 0.9 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        transition={{ duration: 1.2, ease: "easeOut" }}
+        className="absolute top-[45%] left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-20 w-[80%] max-w-[350px]"
+      >
+        <img 
+          src="/hero-watch.png" 
+          alt="The Hour Signature Timepiece" 
+          className="w-full h-auto object-contain drop-shadow-[0_45px_45px_rgba(0,0,0,0.6)]"
+          onError={(e) => {
+            (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1523170335258-f5ed11844a49?q=80&w=800&auto=format&fit=crop';
+          }}
+        />
+        
+        {/* Subtle Glow Overlay */}
+        <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black/20 to-transparent blur-2xl -z-10" />
+      </motion.div>
 
-        {/* TOP: Logo */}
-        <div className="absolute top-6 left-6 z-20 md:hidden">
-          <img
-            src="/image_3.png"
-            alt="The Hour Logo - Metallic Gold Emblem"
-            className="object-contain h-10 w-auto"
-            onError={(e) => {
-              const target = e.target as HTMLElement;
-              target.style.display = 'none';
-              if (target.nextElementSibling) {
-                (target.nextElementSibling as HTMLElement).style.display = 'block';
-              }
-            }}
-          />
-          <span className="font-serif text-[#C5A059] uppercase tracking-[0.3em] font-bold text-xl hidden">
-            THE HOUR
-          </span>
-        </div>
+      {/* 3. Hero Text Content (Bottom Center) */}
+      <div className="absolute bottom-[10%] left-0 w-full z-30 flex flex-col items-center text-center px-6">
+        <motion.h1 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.5, duration: 0.8 }}
+          className="font-playfair text-white text-5xl md:text-7xl font-black uppercase tracking-[0.2em] mb-2"
+        >
+          The Hour
+        </motion.h1>
+        
+        <motion.p 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.8, duration: 0.8 }}
+          className="text-white font-sans font-black text-6xl md:text-8xl mb-8 tracking-tighter"
+        >
+          $4,999
+        </motion.p>
 
-        {/* MIDDLE: Floating Watch */}
-        <div className="relative z-20 w-[280px] h-[280px] md:w-[600px] md:h-auto my-8 md:absolute md:top-1/2 md:left-1/2 md:transform md:-translate-x-1/2 md:-translate-y-1/2 flex justify-center items-center">
-          {!hasImageError ? (
-            <img
-              src="/hero-watch.png"
-              alt="Luxury Watch"
-              className="object-contain w-full h-full drop-shadow-2xl"
-              onError={() => setHasImageError(true)}
-            />
-          ) : (
-            <div className="w-full h-full aspect-square bg-gradient-to-tr from-gray-800 to-gray-600 rounded-full animate-pulse shadow-2xl" />
-          )}
-
-          {/* Floating "+" Button */}
-          <button
-            onClick={() => addItem(product)}
-            className="absolute z-30 w-12 h-12 rounded-full bg-black/40 backdrop-blur-md flex items-center justify-center border border-white/10 hover:bg-black/60 hover:scale-110 cursor-pointer transition-all bottom-2 right-4 md:bottom-20 md:right-12 pointer-events-auto shadow-2xl"
-            aria-label="Add to cart"
-          >
-            <span className="text-[#C8A97E] text-2xl font-light mb-1">+</span>
-          </button>
-        </div>
-
-        {/* BOTTOM: Text and Button */}
-        <div className="relative z-20 flex flex-col items-center text-center mt-6 md:absolute md:left-24 md:top-1/2 md:-translate-y-1/2 md:items-start md:text-left md:mt-0">
-          <h1 className="text-white md:text-[#C8A97E] text-4xl md:text-7xl font-serif font-black mb-2 md:mb-4 uppercase tracking-tighter">Garner & Spruces</h1>
-          <p className="hidden md:block text-[10px] md:text-sm tracking-widest text-[#C8A97E]/60 uppercase mb-4 md:mb-8">
-            PRECISION, ELEGANCE, AND A LEGACY OF TIME.
-          </p>
-          <p className="text-[#C5A059] md:text-white text-5xl md:text-7xl font-bold font-sans mb-8 tracking-tight">$4,999</p>
-          <button
-            onClick={() => addItem(product)}
-            className="bg-[#DBC197] text-black px-10 py-3 md:px-12 md:py-4 rounded-full font-bold uppercase tracking-widest hover:scale-105 transition-transform"
-          >
-            Buy Now
-          </button>
-        </div>
+        <motion.button
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          transition={{ delay: 1.1, duration: 0.5 }}
+          onClick={() => addItem(product)}
+          className="bg-[#E3CBA8] text-black px-12 py-4 rounded-full font-bold uppercase tracking-widest shadow-2xl hover:bg-white transition-all transform"
+        >
+          Buy Now
+        </motion.button>
       </div>
+
+      {/* Aesthetic Accents */}
+      <div className="absolute top-1/2 left-0 w-full h-[1px] bg-white/5 z-10" />
+      <div className="absolute top-0 left-1/2 w-[1px] h-full bg-white/5 z-10" />
     </section>
   );
 }

@@ -3,13 +3,13 @@
 
 :root {
   --gs-black: #0a0a0a;
-  --gs-charcoal: #1a1a1a;
-  --gs-gold: #b8973a;
-  --gs-gold-light: #d4b478;
-  --gs-beige: #d4c0a1;
-  --gs-white: #f5f5f5;
-  --glass: rgba(255, 255, 255, 0.03);
-  --glass-border: rgba(255, 255, 255, 0.08);
+  --gs-charcoal: #141414;
+  --gs-gold: #c8a97e;
+  --gs-gold-light: #dfc195;
+  --gs-beige: #e3cba8;
+  --gs-white: #fcfaf7;
+  --glass: rgba(255, 255, 255, 0.02);
+  --glass-border: rgba(255, 255, 255, 0.05);
 }
 
 @theme inline {
@@ -20,6 +20,7 @@
   --color-gs-beige: var(--gs-beige);
   --color-gs-white: var(--gs-white);
   --font-inter: 'Inter', sans-serif;
+  --font-playfair: 'Playfair Display', serif;
 }
 
 *, *::before, *::after {

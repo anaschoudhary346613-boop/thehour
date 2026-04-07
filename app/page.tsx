@@ -24,7 +24,7 @@ export default async function Home() {
   const gridProducts = validProducts.filter(p => p.id !== featuredProduct?.id);
 
   return (
-    <main className="relative min-h-screen bg-black pb-20 md:pb-0 selection:bg-[#C8A97E] selection:text-black">
+    <main className="relative min-h-screen bg-black pb-32 md:pb-0 selection:bg-[#C8A97E] selection:text-black font-sans">
       {/* Navigation */}
       <Navbar />
 

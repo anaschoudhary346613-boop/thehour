@@ -1,7 +1,5 @@
-'use client';
-
 import { useState } from 'react';
-import { Menu, ShoppingBag, User, X, ChevronRight } from 'lucide-react';
+import { Menu, ShoppingBag, User, X, ChevronRight, Search } from 'lucide-react';
 import { useCart } from '@/store/useCart';
 import Logo from './Logo';
 import Link from 'next/link';
@@ -12,7 +10,7 @@ import { useUser } from '@/hooks/useUser';
 
 export default function Navbar() {
   const { toggleCart, items } = useCart();
-  const { openAuthModal } = useUIStore();
+  const { openSearch, openAccount, openCategories } = useUIStore();
   const { user } = useUser();
   const [menuOpen, setMenuOpen] = useState(false);
   const cartItemCount = items.reduce((acc, item) => acc + item.quantity, 0);
@@ -26,56 +24,50 @@ export default function Navbar() {
 
   return (
     <>
-      <nav className="absolute top-0 w-full p-8 flex justify-between items-center z-50 text-white hidden md:flex">
-        {/* Left Side: Logo */}
-        <Link href="/" onClick={() => setMenuOpen(false)}>
-          <Logo size={24} className="justify-start text-white" />
-        </Link>
-        
-        {/* Right Side: Links & Icons */}
-        <div className="flex items-center gap-8 font-sans font-bold">
-          {navLinks.map(link => (
-            <Link key={link.name} href={link.path} className="hover:text-[#C5A059] transition-colors uppercase tracking-wider text-sm">
-              {link.name}
-            </Link>
-          ))}
-          
-          <div className="flex items-center gap-6 ml-4">
-            <button 
-              onClick={user ? undefined : openAuthModal}
-              className="hover:text-[#C5A059] transition-colors"
-              aria-label="Account"
-            >
-              {user ? (
-                <Link href="/dashboard">
-                  <div className="w-5 h-5 rounded-full bg-[#C5A059]/20 flex items-center justify-center border border-[#C5A059]/40 hover:bg-[#C5A059]/40 transition-all">
-                    <User size={12} className="text-[#C5A059]" />
-                  </div>
-                </Link>
-              ) : (
-                <User size={20} />
-              )}
-            </button>
+      <nav className="fixed top-0 w-full z-[90] bg-[#0A0A0A]/80 backdrop-blur-md border-b border-[#C8A97E]/10">
+        <div className="max-w-7xl mx-auto px-6 h-20 flex justify-between items-center">
+          {/* Logo Monogram */}
+          <Link href="/" className="transition-transform hover:scale-105 active:scale-95">
+            <Logo size={40} />
+          </Link>
 
+          {/* Global Boutique Controls */}
+          <div className="flex items-center gap-6 text-[#C8A97E]">
             <button 
-              onClick={() => toggleCart()}
-              className="relative hover:text-[#C5A059] transition-colors"
+              onClick={openSearch} 
+              className="hover:scale-110 transition-transform hidden md:block"
+              aria-label="Search"
+            >
+              <Search size={22} strokeWidth={1.5} />
+            </button>
+            
+            <button 
+              onClick={() => toggleCart(true)}
+              className="relative hover:scale-110 transition-transform"
               aria-label="Toggle Cart"
             >
-              <ShoppingBag size={20} />
+              <ShoppingBag size={22} strokeWidth={1.5} />
               {cartItemCount > 0 && (
-                <span className="absolute -top-2 -right-3 bg-white text-black text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center">
+                <span className="absolute -top-2 -right-2 bg-[#C8A97E] text-black text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center border-2 border-black animate-cart-bounce">
                   {cartItemCount}
                 </span>
               )}
             </button>
-            
+
+            <button 
+              onClick={openAccount}
+              className="hover:scale-110 transition-transform"
+              aria-label="Account"
+            >
+              <User size={22} strokeWidth={1.5} />
+            </button>
+
             <button 
               onClick={() => setMenuOpen(true)}
-              className="hover:text-[#C5A059] transition-colors"
+              className="hover:scale-110 transition-transform ml-2"
               aria-label="Menu"
             >
-              <Menu size={24} />
+              <Menu size={24} strokeWidth={1.5} />
             </button>
           </div>
         </div>
@@ -133,7 +125,7 @@ export default function Navbar() {
                     </Link>
                   ) : (
                     <button 
-                      onClick={() => { setMenuOpen(false); openAuthModal(); }} 
+                      onClick={() => { setMenuOpen(false); openAccount(); }} 
                       className="text-2xl text-gray-400 hover:text-white mb-4 transition-colors text-left"
                     >
                       Client Portal

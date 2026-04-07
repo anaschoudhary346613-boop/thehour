@@ -1,19 +1,33 @@
 import { create } from 'zustand';
 
 interface UIStore {
-  isAuthModalOpen: boolean;
+  isAccountOpen: boolean;
+  isSearchOpen: boolean;
+  isCategoriesOpen: boolean;
   isCheckoutModalOpen: boolean;
-  openAuthModal: () => void;
-  closeAuthModal: () => void;
+  
+  openAccount: () => void;
+  closeAccount: () => void;
+  openSearch: () => void;
+  closeSearch: () => void;
+  openCategories: () => void;
+  closeCategories: () => void;
   openCheckoutModal: () => void;
   closeCheckoutModal: () => void;
 }
 
 export const useUIStore = create<UIStore>((set) => ({
-  isAuthModalOpen: false,
+  isAccountOpen: false,
+  isSearchOpen: false,
+  isCategoriesOpen: false,
   isCheckoutModalOpen: false,
-  openAuthModal: () => set({ isAuthModalOpen: true }),
-  closeAuthModal: () => set({ isAuthModalOpen: false }),
+  
+  openAccount: () => set({ isAccountOpen: true }),
+  closeAccount: () => set({ isAccountOpen: false }),
+  openSearch: () => set({ isSearchOpen: true }),
+  closeSearch: () => set({ isSearchOpen: false }),
+  openCategories: () => set({ isCategoriesOpen: true }),
+  closeCategories: () => set({ isCategoriesOpen: false }),
   openCheckoutModal: () => set({ isCheckoutModalOpen: true }),
   closeCheckoutModal: () => set({ isCheckoutModalOpen: false }),
 }));
