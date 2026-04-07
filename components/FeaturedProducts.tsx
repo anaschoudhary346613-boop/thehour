@@ -1,121 +1,121 @@
 'use client';
 
+import React from 'react';
 import { motion } from 'framer-motion';
-import { useCart } from '@/store/useCart';
-import { Plus, Check } from 'lucide-react';
+import { ArrowRight, Star, ShieldCheck, Clock } from 'lucide-react';
 
-export default function FeaturedProducts({ products: dbProducts }: { products?: any[] }) {
-  const { addItem } = useCart();
+const PRODUCTS = [
+  {
+    id: '1',
+    name: 'Royal Heritage Chrono',
+    price: '$12,400',
+    image: 'https://images.unsplash.com/photo-1523170335258-f5ed11844a49?auto=format&fit=crop&q=80',
+    category: 'Grand Complication'
+  },
+  {
+    id: '2',
+    name: 'Midnight Obsidian',
+    price: '$8,900',
+    image: 'https://images.unsplash.com/photo-1542496658-e33a6d0d50f6?auto=format&fit=crop&q=80',
+    category: 'Minimalist'
+  },
+  {
+    id: '3',
+    name: 'Azure Navigator',
+    price: '$15,200',
+    image: 'https://images.unsplash.com/photo-1614164185128-e4ec99c436d7?auto=format&fit=crop&q=80',
+    category: 'Professional'
+  }
+];
 
-  const products = dbProducts && dbProducts.length > 0 ? dbProducts : [
-    {
-      id: 'th-grant-watch',
-      name: 'Grant Watch',
-      brand: 'The Hour',
-      price: 1200,
-      image_url: '/watch_1.png',
-    },
-    {
-      id: 'th-outdoor-sports',
-      name: 'Outdoor Sports',
-      brand: 'The Hour',
-      price: 1550,
-      image_url: '/watch_2.png',
-    },
-    {
-      id: 'th-chronograph-black',
-      name: 'Black Chrono',
-      brand: 'The Hour',
-      price: 2100,
-      image_url: '/watch_3.png',
-    }
-  ];
-
-  const formatPrice = (price: number) => new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD',
-  }).format(price);
-
+export default function FeaturedProducts() {
   return (
-    <section className="bg-[#0A0A0A] py-20 pb-32">
-      {/* 1. Key Features Highlight Card */}
-      <div className="relative z-20 mx-6 mb-16 bg-[#E3CBA8] rounded-[2.5rem] p-8 md:p-12 shadow-2xl text-black overflow-hidden group">
-        <div className="md:flex items-center justify-between">
-          <div className="md:w-1/2">
-            <h2 className="font-playfair text-4xl md:text-6xl font-black uppercase mb-6 leading-none">
-              The Hour <br /> Standard
-            </h2>
-            <ul className="space-y-4 mb-10">
-              {['Bespoke Caliber 9', 'Hand-Polished Steel', 'Museum-Grade Crystal'].map((feature) => (
-                <li key={feature} className="flex items-center gap-3 font-sans font-bold text-sm md:text-lg">
-                  <span className="w-6 h-6 rounded-full bg-black flex items-center justify-center">
-                    <Check size={14} className="text-[#E3CBA8]" />
-                  </span>
-                  {feature}
-                </li>
-              ))}
-            </ul>
-            <button 
-              onClick={() => addItem(products[0])}
-              className="bg-black text-[#E3CBA8] px-10 py-4 rounded-full font-bold uppercase tracking-widest hover:bg-white hover:text-black transition-all"
-            >
-              Acquire Piece
-            </button>
+    <section className="relative w-full z-20 flex flex-col pt-24 bg-[#0A0A0A]">
+      <div className="max-w-7xl mx-auto px-6 w-full">
+        {/* Section Header */}
+        <div className="flex flex-col md:flex-row justify-between items-end mb-16 space-y-6 md:space-y-0">
+          <div className="space-y-4">
+            <h3 className="text-[#C8A97E] uppercase tracking-[0.4em] text-xs font-medium">Selected masterpieces</h3>
+            <h2 className="text-4xl md:text-6xl font-serif text-white">Current Exhibits</h2>
           </div>
-          <div className="hidden md:block md:w-1/3">
-            <img 
-              src="/hero-watch.png" 
-              alt="Featured Piece" 
-              className="w-full object-contain filter drop-shadow-2xl transform rotate-12 group-hover:rotate-0 transition-transform duration-700" 
-            />
+          <button className="flex items-center space-x-3 text-[#E3CBA8] uppercase tracking-[0.3em] text-[10px] font-bold group">
+            <span>View Full Gallery</span>
+            <ArrowRight size={14} className="group-hover:translate-x-2 transition-transform" />
+          </button>
+        </div>
+
+        {/* Feature Highlight Card - Modern Glassmorphism */}
+        <div className="mb-24 relative overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-r from-[#C8A97E]/10 to-transparent z-0"></div>
+          <div className="relative z-10 border border-[#C8A97E]/20 bg-[#141414]/50 backdrop-blur-sm p-8 md:p-12 flex flex-col md:flex-row items-center gap-12">
+             <div className="w-full md:w-1/3">
+                <img 
+                  src="https://images.unsplash.com/photo-1547996160-81dfa63595aa?auto=format&fit=crop&q=80" 
+                  className="w-full h-auto grayscale hover:grayscale-0 transition-all duration-700" 
+                  alt="Feature Detail" 
+                />
+             </div>
+             <div className="w-full md:w-2/3 space-y-8">
+                <h3 className="text-3xl font-serif text-white">The Caliber 321 Movement</h3>
+                <p className="text-[#E3CBA8]/60 font-light leading-relaxed max-w-xl">
+                  Each timepiece is powered by a hand-assembled movement, featuring a 72-hour power reserve and a patented anti-magnetic escapement.
+                </p>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                   <div className="space-y-2">
+                      <ShieldCheck size={20} className="text-[#C8A97E]" />
+                      <p className="text-[10px] uppercase text-white tracking-widest">Lifetime Warranty</p>
+                   </div>
+                   <div className="space-y-2">
+                      <Clock size={20} className="text-[#C8A97E]" />
+                      <p className="text-[10px] uppercase text-white tracking-widest">Swiss Precision</p>
+                   </div>
+                   <div className="space-y-2">
+                      <Star size={20} className="text-[#C8A97E]" />
+                      <p className="text-[10px] uppercase text-white tracking-widest">Limited Edition</p>
+                   </div>
+                </div>
+             </div>
           </div>
         </div>
-      </div>
 
-      {/* 2. Horizontal Scroll Grid */}
-      <h3 className="mx-8 mb-8 font-playfair text-[#C8A97E] text-2xl uppercase tracking-widest">
-        The Collection
-      </h3>
-      
-      <div className="relative z-20 flex gap-6 overflow-x-auto pb-12 px-6 snap-x scrollbar-hide no-scrollbar">
-        {products.map((product) => (
-          <motion.div
-            key={product.id}
-            whileHover={{ y: -10 }}
-            className="bg-[#E3CBA8] rounded-[2rem] p-6 min-w-[280px] md:min-w-[320px] shrink-0 snap-center shadow-xl relative overflow-hidden group"
-          >
-            <div className="relative z-10">
-              <span className="text-[10px] font-bold uppercase tracking-widest text-black/40 mb-1 block">
-                {product.brand}
-              </span>
-              <h4 className="font-playfair text-2xl font-black text-black mb-1">
-                {product.name}
-              </h4>
-              <p className="font-sans font-black text-xl text-black mb-6">
-                {formatPrice(product.price)}
-              </p>
-              
-              <button 
-                onClick={() => addItem(product)}
-                className="w-12 h-12 bg-black rounded-full flex items-center justify-center text-[#E3CBA8] shadow-lg hover:scale-110 transition-transform"
-              >
-                <Plus size={24} />
-              </button>
-            </div>
+        {/* Product Grid - Horizontal Snap for Mobile, Grid for Desktop */}
+         <div className="flex md:grid md:grid-cols-3 gap-8 overflow-x-auto snap-x snap-mandatory pb-8 md:pb-0 scrollbar-hide">
+          {PRODUCTS.map((product) => (
+            <motion.div 
+              key={product.id}
+              whileHover={{ y: -10 }}
+              className="min-w-[85vw] md:min-w-0 snap-center bg-[#E3CBA8] p-1 group cursor-pointer"
+            >
+              <div className="bg-[#0A0A0A] p-6 h-full flex flex-col">
+                <div className="relative aspect-[4/5] overflow-hidden mb-6">
+                  <img 
+                    src={product.image} 
+                    alt={product.name}
+                    className="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-110 transition-all duration-1000"
+                  />
+                  <div className="absolute top-4 right-4 bg-black/80 backdrop-blur-sm px-3 py-1 border border-[#C8A97E]/30">
+                    <p className="text-[10px] text-[#C8A97E] uppercase tracking-tighter">New Arrival</p>
+                  </div>
+                </div>
+                
+                <div className="flex justify-between items-start mb-4">
+                  <div>
+                    <p className="text-[10px] uppercase tracking-[0.2em] text-[#C8A97E] mb-2">{product.category}</p>
+                    <h4 className="text-xl font-serif text-white">{product.name}</h4>
+                  </div>
+                  <p className="text-sm font-medium text-[#C8A97E]">{product.price}</p>
+                </div>
 
-            {/* Absolute Positioned Floating Watch Asset */}
-            <div className="absolute -bottom-4 -right-10 w-48 h-48 opacity-90 pointer-events-none transform group-hover:scale-110 group-hover:-rotate-6 transition-transform duration-500">
-              <img 
-                src={product.image_url} 
-                alt={product.name} 
-                className="w-full h-full object-contain filter drop-shadow-xl"
-                onError={(e) => {
-                  (e.target as HTMLImageElement).src = '/hero-watch.png';
-                }}
-              />
-            </div>
-          </motion.div>
-        ))}
+                <div className="mt-auto pt-6 border-t border-white/5 flex justify-between items-center">
+                   <button className="text-[10px] uppercase tracking-[0.2em] text-white/40 hover:text-[#C8A97E] transition-colors leading-none">View Specs</button>
+                   <div className="w-8 h-8 rounded-full border border-white/10 flex items-center justify-center group-hover:border-[#C8A97E] group-hover:bg-[#C8A97E] transition-all">
+                      <ArrowRight size={14} className="text-white group-hover:text-black transition-colors" />
+                   </div>
+                </div>
+              </div>
+            </motion.div>
+          ))}
+        </div>
       </div>
     </section>
   );
