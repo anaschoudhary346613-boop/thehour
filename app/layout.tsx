@@ -4,6 +4,8 @@ import "./globals.css";
 import { Providers } from "@/components/Providers";
 import Script from 'next/script';
 import ModalProvider from '@/components/ModalProvider';
+import Navbar from '@/components/Navbar';
+import BottomNav from '@/components/BottomNav';
 
 const inter = Inter({
   subsets: ["latin"],
@@ -46,7 +48,9 @@ export default function RootLayout({
       </head>
       <body className="bg-gs-black text-gs-gold font-inter antialiased overflow-x-hidden selection:bg-gs-gold selection:text-gs-black">
         <Providers>
+          <Navbar />
           {children}
+          <BottomNav />
           <ModalProvider />
         </Providers>
         
