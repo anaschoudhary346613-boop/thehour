@@ -1,36 +1,15 @@
 import type { Metadata } from "next";
-import { Inter, Playfair_Display } from "next/font/google";
 import "./globals.css";
 import { Providers } from "@/components/Providers";
 import Script from 'next/script';
 import ModalProvider from '@/components/ModalProvider';
-import Navbar from '@/components/Navbar';
-import BottomNav from '@/components/BottomNav';
+import FloatingNav from '@/components/FloatingNav';
 import CartDrawer from '@/components/CartDrawer';
 
-const inter = Inter({
-  subsets: ["latin"],
-  variable: "--font-inter",
-  weight: ["300", "400", "500", "600", "700", "900"],
-  display: "swap",
-});
-
-const playfair = Playfair_Display({
-  subsets: ["latin"],
-  variable: "--font-playfair",
-  weight: ["400", "700", "900"],
-  display: "swap",
-});
-
 export const metadata: Metadata = {
-  title: "THE HOUR — Exclusive Luxury Timepieces",
-  description: "Curating the world's most sought-after watches for collectors who demand perfection. Experience the pinnacle of horology.",
-  keywords: ["luxury watches", "haute horlogerie", "THE HOUR", "Geneva", "Swiss watches"],
-  openGraph: {
-    title: "THE HOUR — Exclusive Luxury Timepieces",
-    description: "Discover exceptional timepieces that transcend time.",
-    type: "website",
-  },
+  title: "THE HOUR — Digital Flagship",
+  description: "Experience the pinnacle of Swiss horology through a cinematic digital flagship. THE HOUR curates exclusively for the world's most discerning collectors.",
+  viewport: "width=device-width, initial-scale=1, maximum-scale=1",
 };
 
 export default function RootLayout({
@@ -39,7 +18,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${inter.variable} ${playfair.variable}`}>
+    <html lang="en" className="bg-black">
       <head>
         <Script 
           src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.1.1/model-viewer.min.js" 
@@ -47,11 +26,22 @@ export default function RootLayout({
           strategy="afterInteractive"
         />
       </head>
-      <body className="bg-gs-black text-gs-gold font-inter antialiased overflow-x-hidden selection:bg-gs-gold selection:text-gs-black">
+      <body className="bg-black text-white antialiased overflow-x-hidden selection:bg-[#C8A97E] selection:text-black">
         <Providers>
-          <Navbar />
-          {children}
-          <BottomNav />
+          {/* Fixed Logo Anchor */}
+          <div className="fixed top-8 left-8 z-[100] w-14 h-14 md:w-16 md:h-16 group pointer-events-auto cursor-pointer">
+            <img 
+              src="/logo.png" 
+              alt="THE HOUR" 
+              className="w-full h-full object-contain filter drop-shadow-[0_0_10px_rgba(255,255,255,0.2)] transition-transform duration-500 group-hover:scale-110"
+            />
+          </div>
+
+          <main className="relative z-0">
+            {children}
+          </main>
+          
+          <FloatingNav />
           <CartDrawer />
           <ModalProvider />
         </Providers>
