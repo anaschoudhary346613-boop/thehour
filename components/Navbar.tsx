@@ -1,3 +1,5 @@
+'use client';
+
 import { useState } from 'react';
 import { Menu, ShoppingBag, User, X, ChevronRight, Search } from 'lucide-react';
 import { useCart } from '@/store/useCart';
