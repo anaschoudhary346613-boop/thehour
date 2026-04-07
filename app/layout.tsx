@@ -6,6 +6,7 @@ import Script from 'next/script';
 import ModalProvider from '@/components/ModalProvider';
 import Navbar from '@/components/Navbar';
 import BottomNav from '@/components/BottomNav';
+import CartDrawer from '@/components/CartDrawer';
 
 const inter = Inter({
   subsets: ["latin"],
@@ -51,6 +52,7 @@ export default function RootLayout({
           <Navbar />
           {children}
           <BottomNav />
+          <CartDrawer />
           <ModalProvider />
         </Providers>
         

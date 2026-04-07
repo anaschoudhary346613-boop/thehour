@@ -1,25 +1,18 @@
 'use client';
 
-import { use, useState, useEffect } from 'react';
+import React, { use, useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { motion, AnimatePresence } from 'framer-motion';
-import { ShoppingBag, ArrowLeft, Shield, Clock, Award, Check } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { ShoppingBag, ArrowLeft, Shield, Clock, Award } from 'lucide-react';
 import { useCart } from '@/store/useCart';
 import { PRODUCTS, formatPrice, Product } from '@/lib/products';
-import Navbar from '@/components/Navbar';
-import BottomNav from '@/components/BottomNav';
-import AuthModal from '@/components/AuthModal';
-import CheckoutModal from '@/components/CheckoutModal';
-import CartDrawer from '@/components/CartDrawer';
 
 export default function ProductPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
   const { addItem, toggleCart } = useCart();
   const [product, setProduct] = useState<Product | null>(null);
   const [activeTab, setActiveTab] = useState('SPECIFICATIONS');
-  const [showAuth, setShowAuth] = useState(false);
-  const [showCheckout, setShowCheckout] = useState(false);
 
   useEffect(() => {
     const foundProduct = PRODUCTS.find((p) => p.id === id);
@@ -29,24 +22,22 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
   }, [id]);
 
   if (!product) return (
-    <div className="min-h-screen bg-gs-black flex flex-col items-center justify-center p-6 text-center">
-      <h1 className="text-4xl text-gs-gold-light mb-6 uppercase tracking-widest font-black">TIMEPIECE NOT FOUND</h1>
-      <Link href="/" className="text-gs-gold hover:text-gs-gold-light transition-colors uppercase tracking-[0.2em] text-xs underline underline-offset-8">Return to Collection</Link>
+    <div className="min-h-screen bg-[#0A0A0A] flex flex-col items-center justify-center p-6 text-center">
+      <h1 className="text-4xl text-white mb-6 uppercase tracking-widest font-serif">TIMEPIECE NOT FOUND</h1>
+      <Link href="/shop" className="text-[#C8A97E] hover:text-white transition-colors uppercase tracking-[0.2em] text-xs underline underline-offset-8 font-bold">Return to Collection</Link>
     </div>
   );
 
   return (
-    <div className="min-h-screen bg-gs-black text-gs-gold pb-32 md:pb-0">
-      <Navbar />
-      
-      <main className="pt-24 md:pt-32 px-6 lg:px-12 max-w-7xl mx-auto">
+    <div className="min-h-screen bg-[#0A0A0A] text-[#C8A97E] font-inter">
+      <main className="pt-24 md:pt-32 px-6 lg:px-12 max-w-7xl mx-auto pb-[120px]">
         {/* Back Link */}
         <motion.div 
           initial={{ opacity: 0, x: -10 }}
           animate={{ opacity: 1, x: 0 }}
           className="mb-8"
         >
-          <Link href="/shop" className="group inline-flex items-center gap-2 text-gs-gold/40 hover:text-gs-gold transition-colors text-xs uppercase tracking-widest">
+          <Link href="/shop" className="group inline-flex items-center gap-2 text-[#C8A97E]/40 hover:text-[#C8A97E] transition-colors text-xs uppercase tracking-widest font-bold">
             <ArrowLeft size={14} className="group-hover:-translate-x-1 transition-transform" />
             Back to Collection
           </Link>
@@ -60,9 +51,8 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.8 }}
-              className="relative aspect-[4/5] rounded-[40px] overflow-hidden bg-gs-charcoal border border-gs-gold/10 group"
+              className="relative aspect-[4/5] bg-[#141414] border border-[#C8A97E]/10 group overflow-hidden"
             >
-              <div className="absolute inset-0 bg-split-hero-mobile md:bg-split-hero opacity-10 pointer-events-none" />
               <Image
                 src={product.image}
                 alt={product.name}
@@ -74,13 +64,13 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
             
             {/* Asset Details Grid */}
             <div className="grid grid-cols-2 gap-6">
-              <div className="bg-gs-charcoal rounded-[30px] p-8 border border-gs-gold/5 flex flex-col justify-center">
-                <span className="text-[10px] text-gs-gold/40 uppercase tracking-[0.3em] font-black mb-2">Heritage</span>
-                <p className="text-gs-gold/70 text-sm leading-relaxed italic">
+              <div className="bg-[#141414] p-8 border border-[#C8A97E]/5 flex flex-col justify-center">
+                <span className="text-[10px] text-[#C8A97E]/40 uppercase tracking-[0.3em] font-bold mb-2">Heritage</span>
+                <p className="text-[#C8A97E]/70 text-sm leading-relaxed italic font-serif">
                   "Each watch requires over 800 hours of hand-finishing in our private atelier in Geneva."
                 </p>
               </div>
-              <div className="relative aspect-square rounded-[30px] overflow-hidden bg-gs-charcoal border border-gs-gold/5">
+              <div className="relative aspect-square overflow-hidden bg-[#141414] border border-[#C8A97E]/5">
                 <Image src={product.image} alt="Detail" fill className="object-contain p-8 rotate-12 opacity-50" />
               </div>
             </div>
@@ -94,47 +84,47 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
               transition={{ duration: 0.8 }}
             >
               <div className="flex items-center gap-4 mb-6">
-                <span className="text-xs text-gs-gold font-black uppercase tracking-[0.4em]">{product.category}</span>
-                <span className="w-8 h-[1px] bg-gs-gold/20" />
-                <span className="text-[10px] text-gs-gold/40 uppercase tracking-widest font-bold">MASTER SERIES</span>
+                <span className="text-xs text-[#C8A97E] font-bold uppercase tracking-[0.4em]">{product.category}</span>
+                <span className="w-8 h-[1px] bg-[#C8A97E]/20" />
+                <span className="text-[10px] text-[#C8A97E]/40 uppercase tracking-widest font-bold">MASTER SERIES</span>
               </div>
 
-              <h1 className="text-4xl md:text-6xl font-black text-gs-gold-light uppercase tracking-tighter leading-none mb-6">
+              <h1 className="text-4xl md:text-6xl font-serif text-white uppercase tracking-tighter leading-none mb-6">
                 {product.name}
               </h1>
 
-              <p className="text-gs-gold/60 text-base leading-relaxed mb-8 max-w-lg">
+              <p className="text-[#C8A97E]/60 text-base leading-relaxed mb-8 max-w-lg">
                 {product.description}
               </p>
 
               <div className="flex items-baseline gap-4 mb-12">
-                <span className="text-4xl font-black text-gs-gold-light">{formatPrice(product.price)}</span>
-                <span className="text-[10px] text-gs-gold/40 font-bold uppercase tracking-widest">PRIVATE ACQUISITION</span>
+                <span className="text-4xl font-serif text-white">{formatPrice(product.price)}</span>
+                <span className="text-[10px] text-[#C8A97E]/40 font-bold uppercase tracking-widest">PRIVATE ACQUISITION</span>
               </div>
 
               {/* Specifications Tabs */}
-              <div className="mb-12 border-t border-gs-gold/10 pt-8">
+              <div className="mb-12 border-t border-[#C8A97E]/10 pt-8">
                 <div className="flex gap-8 mb-8">
                   {['SPECIFICATIONS', 'HERITAGE'].map((tab) => (
                     <button
                       key={tab}
                       onClick={() => setActiveTab(tab)}
-                      className={`text-[10px] font-black tracking-[0.3em] transition-all uppercase ${
-                        activeTab === tab ? 'text-gs-gold-light' : 'text-gs-gold/30 hover:text-gs-gold'
+                      className={`text-[10px] font-bold tracking-[0.3em] transition-all uppercase ${
+                        activeTab === tab ? 'text-white' : 'text-[#C8A97E]/30 hover:text-[#C8A97E]'
                       } relative pb-2`}
                     >
                       {tab}
                       {activeTab === tab && (
-                        <motion.div layoutId="tabLine" className="absolute bottom-0 left-0 w-full h-[1px] bg-gs-gold" />
+                        <motion.div layoutId="tabLine" className="absolute bottom-0 left-0 w-full h-[1px] bg-[#C8A97E]" />
                       )}
                     </button>
                   ))}
                 </div>
 
                 <div className="space-y-4">
-                  <SpecLine label="Material" value={product.material || "Gold-Tone Steel"} />
-                  <SpecLine label="Movement" value="Elite Precision Series V" />
-                  <SpecLine label="Resistance" value="Certified 100M" />
+                  <SpecLine label="Material" value={product.material || "904L Satin Steel"} />
+                  <SpecLine label="Movement" value="Swiss Calibre TH-01" />
+                  <SpecLine label="Resistance" value="Professional 10BAR" />
                 </div>
               </div>
 
@@ -149,7 +139,7 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
                     image_url: product.image,
                     quantity: 1
                   }); toggleCart(true); }}
-                  className="w-full btn-beige py-5 text-sm shadow-2xl shadow-gs-gold/5 flex items-center justify-center gap-3"
+                  className="w-full bg-[#C8A97E] text-black py-5 text-xs uppercase tracking-[0.4em] font-bold shadow-2xl shadow-[#C8A97E]/5 flex items-center justify-center gap-3 hover:bg-white transition-colors"
                 >
                   <ShoppingBag size={18} />
                   Secure Acquisition
@@ -157,16 +147,16 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
                 
                 <div className="flex items-center justify-between px-2 pt-4">
                   <div className="flex items-center gap-2">
-                    <Shield size={14} className="text-gs-gold/40" />
-                    <span className="text-[10px] text-gs-gold/40 font-bold uppercase tracking-widest">Verified Asset</span>
+                    <Shield size={14} className="text-[#C8A97E]/40" />
+                    <span className="text-[9px] text-[#C8A97E]/40 font-bold uppercase tracking-widest">Verified Asset</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <Award size={14} className="text-gs-gold/40" />
-                    <span className="text-[10px] text-gs-gold/40 font-bold uppercase tracking-widest">Master Certified</span>
+                    <Award size={14} className="text-[#C8A97E]/40" />
+                    <span className="text-[9px] text-[#C8A97E]/40 font-bold uppercase tracking-widest">Master Certified</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <Clock size={14} className="text-gs-gold/40" />
-                    <span className="text-[10px] text-gs-gold/40 font-bold uppercase tracking-widest">Lifetime Service</span>
+                    <Clock size={14} className="text-[#C8A97E]/40" />
+                    <span className="text-[9px] text-[#C8A97E]/40 font-bold uppercase tracking-widest">Lifetime Service</span>
                   </div>
                 </div>
               </div>
@@ -174,21 +164,15 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
           </div>
         </div>
       </main>
-
-      <BottomNav />
-      <CartDrawer />
-
-      {/* Noise Texture Overlay */}
-      <div className="noise-overlay pointer-events-none" />
     </div>
   );
 }
 
 function SpecLine({ label, value }: { label: string; value: string }) {
   return (
-    <div className="flex justify-between items-center py-3 border-b border-gs-gold/5 group hover:bg-gs-gold/5 transition-colors px-2">
-      <span className="text-[10px] text-gs-gold/40 font-bold uppercase tracking-widest">{label}</span>
-      <span className="text-xs text-gs-gold font-bold">{value}</span>
+    <div className="flex justify-between items-center py-3 border-b border-[#C8A97E]/5 group hover:bg-[#C8A97E]/5 transition-colors px-2">
+      <span className="text-[10px] text-[#C8A97E]/40 font-bold uppercase tracking-widest">{label}</span>
+      <span className="text-xs text-white font-serif">{value}</span>
     </div>
   );
 }
