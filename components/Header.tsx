@@ -30,17 +30,17 @@ export default function Header() {
   return (
     <>
       <header 
-        className={`fixed top-0 left-0 w-full z-[5000] transition-all duration-500 px-6 py-4 flex justify-between items-center ${
+        className={`fixed top-0 left-0 w-full z-[5000] transition-all duration-500 px-6 py-4 flex justify-between items-center pointer-events-none ${
           scrolled || isMenuOpen ? 'bg-[#0A0A0A]/90 backdrop-blur-xl border-b border-white/10' : 'bg-transparent'
         }`}
       >
         {/* Left: Logo */}
-        <Link href="/" className="relative z-[5001]">
+        <Link href="/" className="relative z-[5001] pointer-events-auto">
           <Logo className="w-10 h-10 md:w-12 md:h-12" />
         </Link>
 
         {/* Right: Cart & Menu Toggle */}
-        <div className="flex items-center gap-6">
+        <div className="flex items-center gap-6 pointer-events-auto">
           <button 
             onClick={() => toggleCart(true)}
             className="relative p-2 text-white hover:text-[#C8A97E] transition-colors"

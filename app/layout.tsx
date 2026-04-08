@@ -33,9 +33,9 @@ export default function RootLayout({
       </head>
       <body className="bg-black text-white antialiased selection:bg-[#C8A97E] selection:text-black">
         <Providers>
+          <Preloader />
+          <Header />
           <SmoothScrollProvider>
-            <Preloader />
-            <Header />
             
             <main className="relative z-0">
               {children}
@@ -44,7 +44,6 @@ export default function RootLayout({
             <CartDrawer />
             <AuthModal />
             <ModalProvider />
-            <Preloader />
           </SmoothScrollProvider>
         </Providers>
         
