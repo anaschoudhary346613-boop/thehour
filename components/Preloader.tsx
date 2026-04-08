@@ -1,40 +1,56 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useProgress } from '@react-three/drei';
 import { useLoadingStore } from '@/store/useLoadingStore';
 
 export default function Preloader() {
   const { progress: r3fProgress } = useProgress();
-  const { progress: storeProgress, setProgress, isLoading, finishLoading } = useLoadingStore();
+  const { isLoading, finishLoading } = useLoadingStore();
   const [displayProgress, setDisplayProgress] = useState(0);
+  const finishTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Sync state and handle minimum durations for smooth aesthetics
   useEffect(() => {
-    const target = r3fProgress > 0 ? r3fProgress : storeProgress;
-    setProgress(target);
-    
-    // Smooth counter animation
-    const timer = setInterval(() => {
+    // 1. Guaranteed incremental progress for first-visit UX
+    // Even if assets are cached or reporting 0, we show activity.
+    const progressInterval = setInterval(() => {
       setDisplayProgress(prev => {
-        if (prev < target) return Math.min(prev + 1, target);
-        return prev;
+        // If R3F reports a significantly higher progress, jump to it
+        if (r3fProgress > prev) return r3fProgress;
+        
+        // Otherwise, crawl slow but steady up to 90%
+        if (prev < 90) return prev + (90 - prev) * 0.05 + 0.1;
+        
+        // If R3F is done (100) or we are near 99, stay until forced
+        if (r3fProgress === 100) return 100;
+        
+        return prev >= 99 ? 99 : prev + 0.01;
       });
-    }, 20);
+    }, 50);
 
-    return () => clearInterval(timer);
-  }, [r3fProgress, storeProgress, setProgress]);
+    // 2. Safety "Mechanical Fault" Bypass (10 second max wait)
+    // Prevents the user from being stuck indefinitely if a texture/model fails.
+    const safetyBypass = setTimeout(() => {
+      setDisplayProgress(100);
+    }, 8000);
+
+    return () => {
+      clearInterval(progressInterval);
+      clearTimeout(safetyBypass);
+    };
+  }, [r3fProgress]);
 
   useEffect(() => {
-    if (displayProgress >= 100) {
-      // Small buffer for premium feel
-      const timeout = setTimeout(() => {
+    // 3. Final trigger to clear the screen
+    if (displayProgress >= 100 || r3fProgress === 100) {
+      if (finishTimeoutRef.current) clearTimeout(finishTimeoutRef.current);
+      
+      finishTimeoutRef.current = setTimeout(() => {
         finishLoading();
-      }, 800);
-      return () => clearTimeout(timeout);
+      }, 1000); // 1s buffer for the split-screen animation prep
     }
-  }, [displayProgress, finishLoading]);
+  }, [displayProgress, r3fProgress, finishLoading]);
 
   return (
     <AnimatePresence>
@@ -43,54 +59,73 @@ export default function Preloader() {
           initial={{ opacity: 1 }}
           exit={{ 
             y: '-100%',
-            transition: { duration: 1, ease: [0.76, 0, 0.24, 1] } 
+            transition: { duration: 1.2, ease: [0.76, 0, 0.24, 1] } 
           }}
-          className="fixed inset-0 z-[9999] bg-black flex flex-col items-center justify-center pointer-events-auto"
+          className="fixed inset-0 z-[10000] bg-[#050505] flex flex-col items-center justify-center pointer-events-auto"
         >
           {/* Main Monogram */}
-          <div className="relative mb-12 overflow-hidden">
+          <div className="relative mb-16 overflow-hidden">
             <motion.div
-              initial={{ y: '100%' }}
-              animate={{ y: 0 }}
-              transition={{ duration: 1, ease: "easeOut" }}
-              className="text-6xl md:text-8xl font-serif text-white tracking-[0.2em] relative z-10"
+              initial={{ y: '100%', opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ duration: 1.5, ease: [0.22, 1, 0.36, 1] }}
+              className="text-7xl md:text-9xl font-serif text-white tracking-[0.3em] font-black relative z-10 select-none"
             >
               TH
             </motion.div>
+            
+            {/* Volumetric Pulse behind Logo */}
             <motion.div 
-               className="absolute inset-0 bg-[#C8A97E] mix-blend-difference"
-               initial={{ scaleX: 0 }}
-               animate={{ scaleX: 1 }}
-               transition={{ duration: 1.5, ease: "easeInOut", repeat: Infinity }}
+               className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 bg-[#C8A97E]/20 rounded-full blur-3xl"
+               animate={{ scale: [1, 1.5, 1], opacity: [0.2, 0.5, 0.2] }}
+               transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
             />
           </div>
 
           {/* Progress Section */}
-          <div className="flex flex-col items-center gap-4 w-64">
-            <div className="flex justify-between w-full text-[10px] uppercase tracking-[0.5em] text-white/40 mb-2 font-sans font-bold">
-              <span>Initializing</span>
-              <span>{Math.round(displayProgress)}%</span>
+          <div className="flex flex-col items-center gap-6 w-72">
+            <div className="flex justify-between w-full text-[10px] uppercase tracking-[0.6em] text-[#C8A97E] font-sans font-black">
+              <motion.span
+                animate={{ opacity: [0.4, 1, 0.4] }}
+                transition={{ duration: 2, repeat: Infinity }}
+              >
+                Synchronizing
+              </motion.span>
+              <span className="tabular-nums">{Math.round(displayProgress)}%</span>
             </div>
             
-            {/* Minimal Progress Bar */}
-            <div className="w-full h-[1px] bg-white/10 relative overflow-hidden">
+            {/* Premium Gold Micro-Tracker */}
+            <div className="w-full h-[1px] bg-white/5 relative overflow-hidden">
+              <motion.div 
+                className="absolute inset-y-0 left-0 bg-gradient-to-r from-transparent via-[#C8A97E] to-transparent w-full"
+                animate={{ x: [`-100%`, `100%`] }}
+                transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+              />
               <motion.div 
                 className="absolute inset-y-0 left-0 bg-[#C8A97E]"
                 style={{ width: `${displayProgress}%` }}
-                transition={{ type: "spring", stiffness: 100, damping: 20 }}
+                transition={{ type: "spring", stiffness: 50, damping: 25 }}
               />
             </div>
           </div>
 
           {/* Luxury Branding Tagline */}
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.5, duration: 1 }}
-            className="absolute bottom-12 text-[9px] uppercase tracking-[0.6em] text-white/20 font-sans"
-          >
-            The New Era of Luxury Timekeeping
-          </motion.p>
+          <div className="absolute bottom-16 overflow-hidden">
+            <motion.p
+              initial={{ y: '100%', opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ delay: 0.8, duration: 1.5, ease: [0.22, 1, 0.36, 1] }}
+              className="text-[9px] uppercase tracking-[0.8em] text-white/30 font-sans font-bold"
+            >
+              Exclusively Swiss Made
+            </motion.p>
+          </div>
+
+          {/* Corner Decals for Premium Look */}
+          <div className="absolute top-10 left-10 w-4 h-4 border-t border-l border-white/10" />
+          <div className="absolute top-10 right-10 w-4 h-4 border-t border-r border-white/10" />
+          <div className="absolute bottom-10 left-10 w-4 h-4 border-b border-l border-white/10" />
+          <div className="absolute bottom-10 right-10 w-4 h-4 border-b border-r border-white/10" />
         </motion.div>
       )}
     </AnimatePresence>
