@@ -118,6 +118,71 @@ function ShopContent() {
               </span>
            </div>
         </div>
+
+        {/* Filter Drawer Overlay */}
+        <AnimatePresence>
+          {isFilterOpen && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.8, ease: LUXURY_EASE }}
+              className="overflow-hidden bg-[#0A0A0A] border-x border-b border-white/10 mt-2 rounded-3xl"
+            >
+              <div className="p-10 grid grid-cols-1 md:grid-cols-2 gap-12">
+                 {/* Gender Vaults */}
+                 <div className="space-y-6">
+                    <span className="text-[10px] uppercase tracking-[0.4em] text-white/20 font-black">Target Vault</span>
+                    <div className="flex flex-wrap gap-3">
+                       {['Men', 'Women', 'Unisex'].map((gender) => (
+                         <button
+                           key={gender}
+                           onClick={() => {
+                             const params = new URLSearchParams(searchParams.toString());
+                             params.set('gender', gender);
+                             router.push(`?${params.toString()}`);
+                             setIsFilterOpen(false);
+                           }}
+                           className={`px-8 py-3 rounded-full text-[10px] font-black uppercase tracking-widest border transition-all ${
+                             activeGender === gender 
+                             ? 'bg-[#C8A97E] text-black border-[#C8A97E]' 
+                             : 'border-white/5 bg-white/5 text-white/40 hover:text-white'
+                           }`}
+                         >
+                           {gender}'s Vault
+                         </button>
+                       ))}
+                    </div>
+                 </div>
+
+                 {/* Categories */}
+                 <div className="space-y-6">
+                    <span className="text-[10px] uppercase tracking-[0.4em] text-white/20 font-black">Movement Classification</span>
+                    <div className="flex flex-wrap gap-3">
+                       {['Automatic', 'Chronograph', 'Heritage'].map((cat) => (
+                         <button
+                           key={cat}
+                           onClick={() => {
+                             const params = new URLSearchParams(searchParams.toString());
+                             params.set('category', cat);
+                             router.push(`?${params.toString()}`);
+                             setIsFilterOpen(false);
+                           }}
+                           className={`px-8 py-3 rounded-full text-[10px] font-black uppercase tracking-widest border transition-all ${
+                             activeCategory === cat 
+                             ? 'bg-[#C8A97E] text-black border-[#C8A97E]' 
+                             : 'border-white/5 bg-white/5 text-white/40 hover:text-white'
+                           }`}
+                         >
+                           {cat}
+                         </button>
+                       ))}
+                    </div>
+                 </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
 
       {/* Product Grid */}
