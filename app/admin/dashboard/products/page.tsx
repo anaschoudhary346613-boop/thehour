@@ -13,7 +13,8 @@ import {
   Image as ImageIcon,
   Check,
   Tag,
-  Database
+  Database,
+  ShieldHalf
 } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { formatPrice } from '@/lib/products';
@@ -27,18 +28,20 @@ export default function InventoryPage() {
   const [editingWatch, setEditingWatch] = useState<any>(null);
   const [searchQuery, setSearchQuery] = useState('');
   
-  // Dynamic Options
-  const [categories, setCategories] = useState<string[]>(['Luxury', 'Mechanical', 'Chronograph', 'Heritage']);
-  const [brands, setBrands] = useState<string[]>(['Rolex', 'Patek Philippe', 'Audemars Piguet', 'G-Shock']);
+  // Strict Standardized Options
+  const BRANDS = ['Rolex', 'Audemars Piguet', 'Patek Philippe', 'Omega', 'Cartier', 'Richard Mille', 'Other'];
+  const CATEGORIES = ['Automatic', 'Chronograph', 'Heritage'];
+  const GENDERS = ['Men', 'Women', 'Unisex'];
 
   // Form State
   const [formData, setFormData] = useState({
     name: '',
-    brand: '',
+    brand: 'Rolex',
     subtitle: '',
     description: '',
     price: '',
-    category: 'Luxury',
+    category: 'Automatic',
+    gender: 'Men',
     stock: 1,
     hero_image_url: '',
     lifestyle_image_url: '',
@@ -49,7 +52,6 @@ export default function InventoryPage() {
 
   useEffect(() => {
     fetchWatches();
-    fetchDynamicOptions();
   }, []);
 
   async function fetchWatches() {
@@ -63,27 +65,17 @@ export default function InventoryPage() {
     setLoading(false);
   }
 
-  async function fetchDynamicOptions() {
-    const { data } = await supabase.from('watches').select('category, brand');
-    if (data) {
-      const uniqueCats = Array.from(new Set(data.map(i => i.category))).filter(Boolean);
-      const uniqueBrands = Array.from(new Set(data.map(i => i.brand))).filter(Boolean);
-      
-      if (uniqueCats.length > 0) setCategories(prev => Array.from(new Set([...prev, ...uniqueCats])));
-      if (uniqueBrands.length > 0) setBrands(prev => Array.from(new Set([...prev, ...uniqueBrands])));
-    }
-  }
-
   const handleOpenModal = (watch: any = null) => {
     if (watch) {
       setEditingWatch(watch);
       setFormData({
         name: watch.name,
-        brand: watch.brand,
+        brand: watch.brand || 'Rolex',
         subtitle: watch.subtitle || '',
         description: watch.description || '',
         price: watch.price.toString(),
-        category: watch.category || 'Luxury',
+        category: watch.category || 'Automatic',
+        gender: watch.gender || 'Men',
         stock: watch.stock || 1,
         hero_image_url: watch.hero_image_url,
         lifestyle_image_url: watch.lifestyle_image_url || '',
@@ -93,11 +85,12 @@ export default function InventoryPage() {
       setEditingWatch(null);
       setFormData({
         name: '',
-        brand: '',
+        brand: 'Rolex',
         subtitle: '',
         description: '',
         price: '',
-        category: categories[0] || 'Luxury',
+        category: 'Automatic',
+        gender: 'Men',
         stock: 1,
         hero_image_url: '',
         lifestyle_image_url: '',
@@ -169,7 +162,6 @@ export default function InventoryPage() {
       toast.success(editingWatch ? 'Asset updated.' : 'New timepiece added to the vault.');
       setIsModalOpen(false);
       fetchWatches();
-      fetchDynamicOptions();
     }
     setLoading(false);
   };
@@ -267,10 +259,10 @@ export default function InventoryPage() {
                         <div className="w-16 h-16 rounded-2xl bg-[#050505] border border-white/5 flex items-center justify-center p-2 group-hover:border-[#C8A97E]/30 transition-all duration-700 relative overflow-hidden">
                            {watch.hero_image_url ? (
                              <Image 
-                               src={watch.hero_image_url} 
-                               alt={watch.name} 
-                               fill 
-                               className="object-contain p-2"
+                                src={watch.hero_image_url} 
+                                alt={watch.name} 
+                                fill 
+                                className="object-contain p-2"
                              />
                            ) : <ImageIcon className="text-white/5" />}
                         </div>
@@ -282,7 +274,7 @@ export default function InventoryPage() {
                   </td>
                   <td className="px-10 py-8">
                      <div className="flex flex-col gap-1">
-                        <span className="text-[10px] font-black text-white/40 uppercase tracking-widest">{watch.category} Collection</span>
+                        <span className="text-[10px] font-black text-white/40 uppercase tracking-widest">{watch.category} — {watch.gender} Vault</span>
                         <div className="flex items-center gap-2">
                            <div className={`w-1 h-1 rounded-full ${watch.stock > 0 ? 'bg-green-500' : 'bg-red-500'}`} />
                            <span className="text-[9px] font-bold text-white/20 uppercase tracking-widest">{watch.stock} Units</span>
@@ -357,9 +349,11 @@ export default function InventoryPage() {
                 <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-12 space-y-12 custom-scrollbar">
                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
                       {/* Left: Metadata */}
-                      <div className="space-y-10">
-                         <div className="space-y-4">
-                            <label className="text-[10px] font-black uppercase tracking-[0.4em] text-white/20 ml-6">Primary ID</label>
+                      <div className="space-y-12">
+                         <div className="space-y-6">
+                            <label className="text-[10px] font-black uppercase tracking-[0.4em] text-white/20 ml-6">Primary ID & Heritage</label>
+                            
+                            {/* Watch Name */}
                             <input 
                               required
                               placeholder="WATCH MODEL NAME..."
@@ -368,33 +362,23 @@ export default function InventoryPage() {
                               className="w-full bg-white/[0.03] border border-white/5 rounded-3xl px-8 py-6 text-xs text-white placeholder:text-white/10 focus:border-[#C8A97E]/30 focus:ring-0 transition-all font-black tracking-widest"
                             />
                             
-                            {/* DYNAMIC BRAND SELECT */}
+                            {/* Strict Brand Selector */}
                             <div className="relative group">
                               <select 
                                 required
                                 value={formData.brand}
                                 onChange={(e) => setFormData({...formData, brand: e.target.value})}
-                                className="w-full bg-white/[0.03] border border-white/5 rounded-3xl px-8 py-6 text-xs text-white focus:border-[#C8A97E]/30 focus:ring-0 transition-all font-black tracking-widest uppercase appearance-none"
+                                className="w-full bg-white/[0.03] border border-white/5 rounded-3xl px-8 py-6 text-xs text-white focus:border-[#C8A97E]/30 focus:ring-0 transition-all font-black tracking-widest uppercase appearance-none cursor-pointer"
                               >
-                                <option value="" disabled>SELECT PRESTIGE BRAND...</option>
-                                {brands.map(b => <option key={b} value={b}>{b.toUpperCase()}</option>)}
-                                <option value="NEW">+ INDUCT NEW BRAND</option>
+                                {BRANDS.map(b => <option key={b} value={b} className="bg-[#0A0A0A]">{b.toUpperCase()}</option>)}
                               </select>
-                              {formData.brand === 'NEW' && (
-                                <input 
-                                  placeholder="ENTER NEW BRAND NAME..."
-                                  onBlur={(e) => {
-                                    if(e.target.value) {
-                                      setBrands(prev => [...prev, e.target.value]);
-                                      setFormData({...formData, brand: e.target.value});
-                                    } else setFormData({...formData, brand: ''});
-                                  }}
-                                  className="mt-4 w-full bg-white/[0.03] border border-[#C8A97E]/30 rounded-3xl px-8 py-6 text-xs text-white placeholder:text-white/20 focus:ring-0 transition-all font-black tracking-widest"
-                                />
-                              )}
+                              <div className="absolute right-6 top-1/2 -translate-y-1/2 pointer-events-none opacity-20">
+                                 <Plus size={14} className="rotate-45" />
+                              </div>
                             </div>
                          </div>
 
+                         {/* Valuation & Volume */}
                          <div className="grid grid-cols-2 gap-6">
                             <div className="space-y-4">
                                <label className="text-[10px] font-black uppercase tracking-[0.4em] text-white/20 ml-6">Market Valuation</label>
@@ -420,48 +404,57 @@ export default function InventoryPage() {
                             </div>
                          </div>
 
-                         <div className="space-y-4">
-                            <label className="text-[10px] font-black uppercase tracking-[0.4em] text-white/20 ml-6">Asset Classification</label>
-                            <div className="flex flex-wrap gap-3">
-                               {categories.map(cat => (
+                         {/* Strict Movement Classification */}
+                         <div className="space-y-6">
+                            <label className="text-[10px] font-black uppercase tracking-[0.4em] text-white/20 ml-6">Movement & Heritage</label>
+                            <div className="flex flex-wrap gap-4">
+                               {CATEGORIES.map(cat => (
                                  <button
                                    key={cat}
                                    type="button"
                                    onClick={() => setFormData({...formData, category: cat})}
-                                   className={`px-6 py-4 rounded-2xl text-[9px] font-black uppercase tracking-widest transition-all ${
+                                   className={`px-8 py-4 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] transition-all duration-500 border ${
                                      formData.category === cat 
-                                     ? 'bg-[#C8A97E] text-black shadow-[0_0_20px_rgba(200,169,126,0.3)]' 
-                                     : 'bg-white/5 text-white/20 hover:text-white hover:bg-white/10'
+                                     ? 'border-[#C8A97E] bg-[#C8A97E]/10 text-[#C8A97E] shadow-[0_0_25px_rgba(200,169,126,0.2)]' 
+                                     : 'border-white/5 bg-white/5 text-white/20 hover:text-white hover:border-white/20'
                                    }`}
                                  >
                                    {cat}
                                  </button>
                                ))}
-                               <button
-                                 type="button"
-                                 onClick={() => {
-                                   const newCat = prompt('Envision New Category:');
-                                   if (newCat) {
-                                     setCategories(prev => [...prev, newCat]);
-                                     setFormData({...formData, category: newCat});
-                                   }
-                                 }}
-                                 className="px-6 py-4 rounded-2xl bg-white/5 text-[#C8A97E] text-[9px] font-black uppercase tracking-widest border border-[#C8A97E]/10"
-                               >
-                                 + ADAPT
-                               </button>
+                            </div>
+                         </div>
+
+                         {/* Target Vault Selector */}
+                         <div className="space-y-6">
+                            <label className="text-[10px] font-black uppercase tracking-[0.4em] text-white/20 ml-6">Target Vault (Gender)</label>
+                            <div className="flex flex-wrap gap-4">
+                               {GENDERS.map(gender => (
+                                 <button
+                                   key={gender}
+                                   type="button"
+                                   onClick={() => setFormData({...formData, gender: gender})}
+                                   className={`px-8 py-4 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] transition-all duration-500 border ${
+                                     formData.gender === gender 
+                                     ? 'border-[#C8A97E] bg-[#C8A97E]/10 text-[#C8A97E] shadow-[0_0_25px_rgba(200,169,126,0.2)]' 
+                                     : 'border-white/5 bg-white/5 text-white/20 hover:text-white hover:border-white/20'
+                                   }`}
+                                 >
+                                   {gender}
+                                 </button>
+                               ))}
                             </div>
                          </div>
                       </div>
 
                       {/* Right: Visual Assets */}
-                      <div className="space-y-10">
+                      <div className="space-y-12">
                          <div className="space-y-6">
                             <label className="text-[10px] font-black uppercase tracking-[0.4em] text-white/20 ml-6">Vanguard Presentation (HERO)</label>
-                            <div className="group relative w-full aspect-[4/3] bg-[#050505] rounded-[3rem] border-2 border-dashed border-white/5 flex flex-col items-center justify-center cursor-pointer hover:border-[#C8A97E]/30 transition-all overflow-hidden p-8">
+                            <div className="group relative w-full aspect-[4/3] bg-[#050505] rounded-[3.5rem] border-2 border-dashed border-white/5 flex flex-col items-center justify-center cursor-pointer hover:border-[#C8A97E]/30 transition-all overflow-hidden p-8">
                                {formData.hero_image_url ? (
                                  <>
-                                   <Image src={formData.hero_image_url} alt="Hero" fill className="object-contain p-8 group-hover:scale-105 transition-transform duration-1000 ease-[0.25,1,0.5,1]" />
+                                   <Image src={formData.hero_image_url} alt="Hero" fill className="object-contain p-12 group-hover:scale-105 transition-transform duration-1000 ease-[0.25,1,0.5,1]" />
                                    <div className="absolute inset-0 bg-black/70 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                                       <Upload className="text-[#C8A97E] mb-4" />
                                       <span className="text-[10px] font-black text-white uppercase tracking-[0.3em]">REPLACE MASTER PNG</span>
@@ -478,36 +471,38 @@ export default function InventoryPage() {
                                  accept="image/*" 
                                  onChange={(e) => handleUpload(e, 'hero')}
                                  className="absolute inset-0 opacity-0 cursor-pointer" 
-                               />
-                               {uploading && <div className="absolute inset-0 bg-black/90 flex flex-col items-center justify-center z-50"><Loader2 className="animate-spin text-[#C8A97E] mb-4" /><span className="text-[9px] font-black text-[#C8A97E] uppercase tracking-widest">TRANSMITTING...</span></div>}
+                                />
+                               {uploading && <div className="absolute inset-0 bg-black/95 flex flex-col items-center justify-center z-50"><Loader2 className="animate-spin text-[#C8A97E] mb-4" /><span className="text-[9px] font-black text-[#C8A97E] uppercase tracking-widest">TRANSMITTING TO VAULT...</span></div>}
                             </div>
                          </div>
                          
-                         <div className="space-y-4">
+                         <div className="space-y-6">
                             <label className="text-[10px] font-black uppercase tracking-[0.4em] text-white/20 ml-6">Artisanal Storytelling</label>
                             <textarea 
                               placeholder="NARRATE THE HERITAGE OF THIS TIMEPIECE..."
                               value={formData.description}
                               onChange={(e) => setFormData({...formData, description: e.target.value})}
-                              rows={5}
-                              className="w-full bg-white/[0.03] border border-white/5 rounded-[2.5rem] px-8 py-8 text-xs text-white placeholder:text-white/10 focus:border-[#C8A97E]/30 focus:ring-0 transition-all font-medium leading-loose"
+                              rows={6}
+                              className="w-full bg-white/[0.03] border border-white/5 rounded-[3rem] px-8 py-8 text-xs text-white placeholder:text-white/10 focus:border-[#C8A97E]/30 focus:ring-0 transition-all font-medium leading-[2.2] custom-scrollbar"
                             />
                          </div>
                       </div>
                    </div>
 
+                   {/* Footer Actions */}
                    <div className="pt-12 border-t border-white/5 flex gap-6">
                       <button 
                         type="submit" 
                         disabled={loading || uploading}
-                        className="flex-1 bg-white text-black py-7 rounded-3xl text-sm font-black uppercase tracking-[0.4em] hover:bg-[#C8A97E] transition-all duration-700 flex items-center justify-center gap-4 disabled:opacity-50 shadow-[0_20px_40px_rgba(255,255,255,0.1)] group"
+                        className="flex-1 bg-white text-black py-8 rounded-3xl text-[11px] font-black uppercase tracking-[0.5em] hover:bg-[#C8A97E] transition-all duration-700 flex items-center justify-center gap-4 disabled:opacity-50 shadow-[0_25px_50px_rgba(255,255,255,0.1)] group overflow-hidden relative"
                       >
-                         {loading ? <Loader2 className="animate-spin" /> : <><Check size={20} className="group-hover:scale-125 transition-transform" /> SECURE DISCOVERY ENTRY</>}
+                         <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
+                         {loading ? <Loader2 className="animate-spin" /> : <><Check size={20} className="group-hover:scale-125 transition-transform" /> SECURE ASSET ENTRY</>}
                       </button>
                       <button 
                          type="button" 
                          onClick={() => setIsModalOpen(false)}
-                         className="px-14 py-7 rounded-3xl border border-white/10 text-white/30 text-[10px] font-black uppercase tracking-[0.5em] hover:text-white hover:border-white/40 transition-all"
+                         className="px-14 py-8 rounded-3xl border border-white/10 text-white/20 text-[10px] font-black uppercase tracking-[0.5em] hover:text-white hover:border-white/40 transition-all font-syne"
                       >
                         ABORT
                       </button>
@@ -518,14 +513,16 @@ export default function InventoryPage() {
         )}
       </AnimatePresence>
 
+      {/* Database Node Status */}
       <div className="fixed bottom-12 right-12 z-50 hidden lg:block">
-         <div className="flex items-center gap-6 bg-[#0A0A0A]/80 border border-[#C8A97E]/30 px-8 py-5 rounded-full backdrop-blur-2xl shadow-2xl">
-            <div className="flex items-center gap-3">
+         <div className="flex items-center gap-6 bg-[#0A0A0A]/90 border border-[#C8A97E]/30 px-8 py-5 rounded-3xl backdrop-blur-3xl shadow-2xl">
+            <div className="flex items-center gap-4">
+               <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse shadow-[0_0_10px_#22c55e]" />
                <Database size={16} className="text-[#C8A97E]" />
-               <span className="text-[10px] font-black text-white uppercase tracking-widest">VAULT.ONLINE</span>
+               <span className="text-[10px] font-black text-white uppercase tracking-[0.3em]">VAULT_SYMMETRY.LIVE</span>
             </div>
-            <div className="w-px h-4 bg-white/10" />
-            <span className="text-[9px] font-bold text-white/40 tracking-widest">{watches.length} ASSETS REGISTERED</span>
+            <div className="w-px h-5 bg-white/10" />
+            <span className="text-[9px] font-bold text-white/30 tracking-widest">{watches.length} PERSISTENT ENTRIES</span>
          </div>
       </div>
     </div>

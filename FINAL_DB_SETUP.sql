@@ -11,6 +11,7 @@ CREATE TABLE IF NOT EXISTS public.watches (
     description TEXT,
     price DECIMAL NOT NULL,
     category TEXT,
+    gender TEXT DEFAULT 'Unisex',
     stock INTEGER DEFAULT 1,
     hero_image_url TEXT,
     lifestyle_image_url TEXT,

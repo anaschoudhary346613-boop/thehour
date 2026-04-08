@@ -37,6 +37,7 @@ function ShopContent() {
           brand: item.brand,
           price: item.price,
           category: item.category,
+          gender: item.gender,
           image: item.hero_image_url || '/watch.png',
           stock: item.stock
         }));
@@ -59,9 +60,7 @@ function ShopContent() {
       list = list.filter(p => p.category === activeCategory);
     }
     if (activeGender) {
-        // Logic for gender tagging if available, otherwise just show all
-        // In a real DB, gender would be a column
-        // list = list.filter(p => p.gender === activeGender);
+      list = list.filter(p => p.gender === activeGender || p.gender === 'Unisex');
     }
     return list;
   }, [allProducts, activeCategory, activeGender]);
