@@ -1,176 +1,139 @@
 'use client';
 
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Eye, EyeOff, Mail, Lock, User, ArrowRight, Check, Loader2 } from 'lucide-react';
+import { X, Lock, Mail, ArrowRight } from 'lucide-react';
+import { useStore } from '@/store/useStore';
 import { supabase } from '@/lib/supabase';
-import Logo from './Logo';
 
-type Mode = 'login' | 'signup';
-
-interface AuthModalProps {
-  onClose: () => void;
-}
-
-export default function AuthModal({ onClose }: AuthModalProps) {
-  const [mode, setMode] = useState<Mode>('login');
+export default function AuthModal() {
+  const { isAuthOpen, toggleAuth, setUser } = useStore();
+  const [isSignUp, setIsSignUp] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [name, setName] = useState('');
-  const [showPass, setShowPass] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState(false);
-  const [error, setError] = useState('');
+  const [message, setMessage] = useState('');
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
     setLoading(true);
+    setMessage('');
 
     try {
-      if (mode === 'signup') {
-        const { error: signUpError } = await supabase.auth.signUp({
-          email,
-          password,
-          options: {
-            data: {
-              full_name: name,
-            },
-          },
-        });
-        if (signUpError) throw signUpError;
+      if (isSignUp) {
+        const { data, error } = await supabase.auth.signUp({ email, password });
+        if (error) throw error;
+        setMessage('Access Request Sent. Please check your secure email line.');
       } else {
-        const { error: signInError } = await supabase.auth.signInWithPassword({
-          email,
-          password,
-        });
-        if (signInError) throw signInError;
+        const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+        if (error) throw error;
+        setUser(data.user);
+        toggleAuth(false);
       }
-
-      setSuccess(true);
-      setTimeout(onClose, 1800);
     } catch (err: any) {
-      setError(err.message || 'An error occurred during authentication');
+      setMessage(err.message);
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      className="fixed inset-0 z-[100] bg-black/80 backdrop-blur-xl flex items-center justify-center p-4"
-      onClick={onClose}
-    >
-      <motion.div
-        initial={{ opacity: 0, scale: 0.95, y: 10 }}
-        animate={{ opacity: 1, scale: 1, y: 0 }}
-        exit={{ opacity: 0, scale: 0.95, y: 10 }}
-        className="bg-[#0F0F0F] border border-[#C5A059]/30 p-12 rounded-2xl w-full max-w-md flex flex-col items-center text-center shadow-2xl relative"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <button
-          onClick={onClose}
-          className="absolute top-4 right-4 text-gray-500 hover:text-white transition-colors"
-        >
-          <X size={20} />
-        </button>
+    <AnimatePresence>
+      {isAuthOpen && (
+        <div className="fixed inset-0 z-[10000] flex items-center justify-center p-6">
+          {/* Backdrop */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => toggleAuth(false)}
+            className="absolute inset-0 bg-black/80 backdrop-blur-2xl"
+          />
 
-        {success ? (
-          <div className="py-8">
-            <h2 className="text-3xl font-serif text-[#C5A059] mb-4">ACCESS GRANTED</h2>
-            <p className="text-gray-400">Welcome to the inner circle of The Hour.</p>
-          </div>
-        ) : (
-          <>
-            <h2 className="text-3xl font-serif text-[#C5A059] mb-4">
-              {mode === 'login' ? 'THE HOUR PRIVATE ACCESS' : 'JOIN THE LEGACY'}
-            </h2>
-            <p className="text-gray-400 mb-8">
-              {mode === 'login' ? 'Sign in to access your curated collection.' : 'Register to begin your journey with High Horology.'}
-            </p>
+          {/* Modal Card */}
+          <motion.div
+            initial={{ scale: 0.9, opacity: 0, y: 20 }}
+            animate={{ scale: 1, opacity: 1, y: 0 }}
+            exit={{ scale: 0.9, opacity: 0, y: 20 }}
+            className="relative w-full max-w-md bg-[#0A0A0A] border border-white/10 p-12 rounded-[2.5rem] shadow-[0_30px_60px_rgba(0,0,0,0.8)] overflow-hidden"
+          >
+            {/* Corner Decorative Ornaments */}
+            <div className="absolute top-0 right-0 p-8 opacity-10">
+               <Lock size={120} />
+            </div>
 
-            <form onSubmit={handleSubmit} className="w-full flex flex-col">
-              <AnimatePresence>
-                {mode === 'signup' && (
-                  <motion.div
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: 'auto' }}
-                    exit={{ opacity: 0, height: 0 }}
-                    className="overflow-hidden w-full"
-                  >
-                    <input
-                      type="text"
-                      placeholder="Full Name"
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
-                      className="w-full bg-transparent border border-gray-600 rounded-lg p-4 text-white mb-4 focus:border-[#C5A059] outline-none"
-                      required={mode === 'signup'}
-                    />
-                  </motion.div>
-                )}
-              </AnimatePresence>
+            <button 
+              onClick={() => toggleAuth(false)}
+              className="absolute top-8 right-10 text-white/30 hover:text-white transition-colors"
+            >
+              <X size={24} />
+            </button>
 
-              <input
-                type="email"
-                placeholder="Email Address"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="w-full bg-transparent border border-gray-600 rounded-lg p-4 text-white mb-4 focus:border-[#C5A059] outline-none"
-                required
-              />
-
-              <div className="relative w-full">
-                <input
-                  type={showPass ? 'text' : 'password'}
-                  placeholder="Password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="w-full bg-transparent border border-gray-600 rounded-lg p-4 text-white mb-4 focus:border-[#C5A059] outline-none"
-                  required
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPass(!showPass)}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 -mt-2 text-gray-500 hover:text-[#C5A059] transition-colors"
-                >
-                  {showPass ? <EyeOff size={16} /> : <Eye size={16} />}
-                </button>
+            <div className="relative z-10">
+              <div className="mb-12">
+                <h2 className="text-[#C8A97E] text-xs font-bold uppercase tracking-[0.5em] mb-4">Private Access</h2>
+                <h3 className="text-3xl md:text-4xl font-serif text-white tracking-tight uppercase leading-none">
+                  {isSignUp ? 'Request Entrance' : 'Authenticated Entry'}
+                </h3>
               </div>
 
-              {error && (
-                <p className="text-red-400 text-sm mb-4">{error}</p>
-              )}
-
-              {mode === 'login' && (
-                <div className="w-full text-right mb-4">
-                  <button type="button" className="text-gray-500 hover:text-[#C5A059] text-xs transition-colors">
-                    Forgot Password?
-                  </button>
+              <form onSubmit={handleAuth} className="space-y-10">
+                <div className="space-y-8">
+                  <div className="relative group">
+                    <Mail className="absolute left-0 top-3 text-white/20 group-focus-within:text-[#C8A97E] transition-colors" size={16} />
+                    <input 
+                      type="email" 
+                      placeholder="SECURE EMAIL ADDRESS" 
+                      required
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      className="w-full bg-transparent border-b border-white/10 py-3 pl-8 text-[11px] uppercase tracking-widest text-white outline-none focus:border-[#C8A97E] transition-all placeholder:text-white/10"
+                    />
+                  </div>
+                  
+                  <div className="relative group">
+                    <Lock className="absolute left-0 top-3 text-white/20 group-focus-within:text-[#C8A97E] transition-colors" size={16} />
+                    <input 
+                      type="password" 
+                      placeholder="ACCESS KEY" 
+                      required
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      className="w-full bg-transparent border-b border-white/10 py-3 pl-8 text-[11px] uppercase tracking-widest text-white outline-none focus:border-[#C8A97E] transition-all placeholder:text-white/10"
+                    />
+                  </div>
                 </div>
-              )}
 
-              <button
-                type="submit"
-                disabled={loading}
-                className="w-full bg-[#C5A059] text-black py-4 rounded-full font-bold mt-4 hover:bg-white transition-colors flex justify-center items-center gap-2"
-              >
-                {loading ? <Loader2 size={20} className="animate-spin" /> : (mode === 'login' ? 'SIGN IN' : 'REGISTER')}
-              </button>
+                {message && (
+                  <p className="text-[9px] text-[#C8A97E] uppercase tracking-widest font-bold text-center bg-[#C8A97E]/5 py-3 rounded-lg border border-[#C8A97E]/20">
+                    {message}
+                  </p>
+                )}
 
-              <button 
-                type="button" 
-                onClick={() => setMode(mode === 'login' ? 'signup' : 'login')} 
-                className="text-gray-500 hover:text-white mt-6 text-sm transition-colors"
-               >
-                 {mode === 'login' ? 'Need an account? Register' : 'Already a member? Sign in'}
-               </button>
-            </form>
-          </>
-        )}
-      </motion.div>
-    </motion.div>
+                <button 
+                  disabled={loading}
+                  className="w-full bg-white text-black py-5 text-[10px] font-black uppercase tracking-[0.4em] hover:bg-[#C8A97E] transition-all active:scale-95 flex items-center justify-center gap-3 rounded-xl disabled:opacity-50"
+                >
+                  {loading ? 'Verifying...' : (isSignUp ? 'Submit Request' : 'Enter Vault')}
+                  <ArrowRight size={16} />
+                </button>
+              </form>
+
+              <div className="mt-12 pt-8 border-t border-white/5 flex flex-col items-center gap-4">
+                <button 
+                  onClick={() => setIsSignUp(!isSignUp)}
+                  className="text-[9px] text-white/30 uppercase tracking-[0.2em] hover:text-[#C8A97E] transition-colors font-bold"
+                >
+                  {isSignUp ? 'Already a registered collector? Sign In' : 'New Collector? Request Access'}
+                </button>
+              </div>
+            </div>
+
+            {/* Subtle Volumetric lighting */}
+            <div className="absolute -bottom-20 -left-20 w-64 h-64 bg-[#C8A97E]/5 rounded-full blur-[100px] pointer-events-none" />
+          </motion.div>
+        </div>
+      )}
+    </AnimatePresence>
   );
 }

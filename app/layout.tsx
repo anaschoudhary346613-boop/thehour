@@ -2,9 +2,11 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { Providers } from "@/components/Providers";
 import Script from 'next/script';
+import Link from 'next/link';
 import ModalProvider from '@/components/ModalProvider';
 import FloatingNav from '@/components/FloatingNav';
 import CartDrawer from '@/components/CartDrawer';
+import AuthModal from '@/components/AuthModal';
 import SmoothScrollProvider from '@/components/SmoothScrollProvider';
 import Preloader from '@/components/Preloader';
 
@@ -34,21 +36,24 @@ export default function RootLayout({
           <SmoothScrollProvider>
             <Preloader />
             
-            {/* Fixed Logo Anchor */}
+            {/* Clickable Fixed Logo with Link to Home */}
             <div className="fixed top-8 left-8 z-[100] w-12 h-12 group pointer-events-auto cursor-pointer">
-              <img 
-                src="/logo.png" 
-                alt="THE HOUR" 
-                className="w-full h-full object-contain mix-blend-screen opacity-90 filter drop-shadow-[0_0_10px_rgba(255,255,255,0.1)]"
-              />
+              <Link href="/">
+                <img 
+                  src="/logo.png" 
+                  alt="THE HOUR" 
+                  className="w-full h-full object-contain mix-blend-exclusion transition-transform group-hover:scale-110 duration-500"
+                />
+              </Link>
             </div>
 
-            <main className="relative z-0 pb-[120px] md:pb-[150px]">
+            <main className="relative z-0">
               {children}
             </main>
             
             <FloatingNav />
             <CartDrawer />
+            <AuthModal />
             <ModalProvider />
           </SmoothScrollProvider>
         </Providers>

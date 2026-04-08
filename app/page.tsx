@@ -1,14 +1,34 @@
 import CinematicHero from "@/components/CinematicHero";
 import BentoCollection from "@/components/BentoCollection";
 import MagneticButton from "@/components/MagneticButton";
+import Link from 'next/link';
+import { supabase } from "@/lib/supabase";
 
-export default function Home() {
+export const revalidate = 3600; // Cache for 1 hour
+
+async function getFeaturedWatches() {
+  const { data, error } = await supabase
+    .from('watches')
+    .select('*')
+    .eq('is_featured', true)
+    .limit(3);
+  
+  if (error) {
+    console.error('Error fetching featured watches:', error);
+    return [];
+  }
+  return data;
+}
+
+export default async function Home() {
+  const watches = await getFeaturedWatches();
+
   return (
     <div className="bg-black reveal-content">
       <CinematicHero />
       
       <div id="collection">
-        <BentoCollection />
+        <BentoCollection watches={watches} />
       </div>
       
       {/* Dynamic CTA Section */}
@@ -28,10 +48,12 @@ export default function Home() {
           
           <div className="pt-12 flex justify-center">
             <MagneticButton>
-              <button className="bg-white text-black px-16 py-6 text-[11px] font-bold uppercase tracking-[0.5em] transition-all hover:scale-105 active:scale-95 group relative overflow-hidden">
-                <span className="relative z-10">Enter the Boutique</span>
-                <div className="absolute inset-0 bg-[#C8A97E] translate-y-full group-hover:translate-y-0 transition-transform duration-500" />
-              </button>
+              <Link href="/shop" className="block outline-none">
+                <button className="bg-white text-black px-16 py-6 text-[11px] font-bold uppercase tracking-[0.5em] transition-all hover:scale-105 active:scale-95 group relative overflow-hidden">
+                  <span className="relative z-10">Enter the Boutique</span>
+                  <div className="absolute inset-0 bg-[#C8A97E] translate-y-full group-hover:translate-y-0 transition-transform duration-500" />
+                </button>
+              </Link>
             </MagneticButton>
           </div>
         </div>
@@ -44,7 +66,9 @@ export default function Home() {
 
       {/* Footer Branding */}
       <footer className="py-24 border-t border-white/5 flex flex-col items-center space-y-10 bg-[#050505]">
-        <img src="/logo.png" className="w-14 h-14 filter grayscale brightness-200 opacity-30" alt="TH Logo" />
+        <Link href="/">
+           <img src="/logo.png" className="w-14 h-14 filter grayscale brightness-200 opacity-30 cursor-pointer mix-blend-exclusion" alt="TH Logo" />
+        </Link>
         
         <div className="flex flex-wrap justify-center gap-x-16 gap-y-6 px-6">
            {['Archive', 'Atelier', 'Legal', 'Privacy'].map((item) => (

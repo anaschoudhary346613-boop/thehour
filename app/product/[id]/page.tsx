@@ -90,15 +90,17 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
                 <span className="text-[9px] text-gray-500 uppercase tracking-widest font-bold">Limited Acquisition</span>
               </div>
 
-              {/* Header Fix: Restoring Normal Flow & Side-by-Side Logo */}
+              {/* Header Fix: Clickable Logo with side-by-side Layout */}
               <div className="flex flex-col md:flex-row items-start md:items-center gap-6 mb-8 group">
-                <div className="w-16 h-16 md:w-20 md:h-20 bg-white/[0.03] border border-white/10 p-3 rounded-2xl transition-transform group-hover:scale-105 duration-500">
-                  <img 
-                    src="/logo.png" 
-                    alt="Logo"
-                    className="w-full h-full object-contain" 
-                  />
-                </div>
+                <Link href="/" className="cursor-pointer z-50">
+                  <div className="w-16 h-16 md:w-20 md:h-20 bg-white/[0.03] border border-white/10 p-3 rounded-2xl transition-all group-hover:bg-white/10">
+                    <img 
+                      src="/logo.png" 
+                      alt="Logo"
+                      className="w-full h-full object-contain mix-blend-exclusion" 
+                    />
+                  </div>
+                </Link>
                 <h1 className="text-4xl md:text-6xl font-serif text-white uppercase tracking-tighter leading-tight">
                   {product.name}
                 </h1>
@@ -132,7 +134,7 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
                   Secure Acquisition
                 </button>
 
-                {/* Fixed: Wired up Anchor Tag for WhatsApp */}
+                {/* Secure Anchor Tag for WhatsApp Contact */}
                 <a 
                   href={whatsappUrl} 
                   target="_blank" 
@@ -178,8 +180,8 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
         </div>
       </main>
 
-      {/* Sticky Mobile Buy Bar: Highest Z-Index & PB Safe */}
-      <div className="fixed bottom-0 left-0 w-full bg-[#050505] border-t border-white/10 p-5 px-6 pb-safe flex justify-between items-center z-[9999] md:hidden">
+      {/* Sticky Mobile Buy Bar: Highest Z-Index, PB Safe, and No Nav Interruption */}
+      <div className="fixed bottom-0 left-0 w-full bg-[#050505]/95 backdrop-blur-xl border-t border-white/10 p-4 px-6 pb-safe flex justify-between items-center z-[9999] md:hidden">
         <div className="flex flex-col">
           <span className="text-[9px] uppercase tracking-widest text-gray-500 font-bold mb-1">Total Price</span>
           <span className="text-[#C8A97E] font-bold text-lg leading-none">
@@ -191,7 +193,7 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
           href={whatsappUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="bg-[#25D366] text-black px-6 py-3.5 rounded-full font-bold text-[10px] uppercase tracking-widest flex items-center gap-2 shadow-[0_4px_20px_rgba(37,211,102,0.3)] active:scale-95 transition-transform"
+          className="bg-[#25D366] text-black px-6 py-3.5 rounded-full font-bold text-[10px] uppercase tracking-widest flex items-center gap-2 shadow-[0_8px_30px_rgba(37,211,102,0.4)] active:scale-95 transition-transform"
         >
           <MessageCircle size={16} />
           Order Now
