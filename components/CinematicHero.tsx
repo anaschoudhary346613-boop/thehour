@@ -95,7 +95,6 @@ export default function CinematicHero() {
           className="border border-white/20 bg-white/5 backdrop-blur-md text-white px-10 py-5 rounded-full text-[10px] md:text-xs font-black tracking-[0.4em] uppercase hover:bg-[#C8A97E] hover:text-black hover:border-[#C8A97E] transition-all duration-700 shadow-2xl overflow-hidden group relative"
         >
           <span className="relative z-10">Discover Collection</span>
-          <div className="absolute inset-0 bg-white translate-y-full group-hover:translate-y-0 transition-transform duration-700 ease-in-out" />
         </Link>
       </motion.div>
 
