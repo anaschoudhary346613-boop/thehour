@@ -40,7 +40,7 @@ export default function AdminLayout({
 
   const menuItems = [
     { name: 'Overview', href: '/admin/dashboard', icon: BarChart3 },
-    { name: 'Inventory', href: '/admin/dashboard/products', icon: Package },
+    { name: 'Inventory', href: '/admin/inventory', icon: Package },
     { name: 'Transactions', href: '/admin/dashboard/orders', icon: ShoppingBag },
     { name: 'Inquiries', href: '/admin/dashboard/inquiries', icon: MessageSquare },
   ];
