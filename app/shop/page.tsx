@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, Suspense } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -9,7 +9,7 @@ import { SlidersHorizontal, ArrowRight, X } from 'lucide-react';
 import BrandStrip from '@/components/BrandStrip';
 import { useSearchParams, useRouter } from 'next/navigation';
 
-export default function ShopPage() {
+function ShopContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const activeCategory = searchParams.get('category');
@@ -22,8 +22,6 @@ export default function ShopPage() {
     if (activeCategory) {
       list = list.filter(p => p.category === activeCategory);
     }
-    // Note: Local data doesn't have a 'gender' field yet, 
-    // but we can simulate logic or just show everything for now.
     return list;
   }, [activeCategory]);
 
@@ -83,7 +81,6 @@ export default function ShopPage() {
                      Access <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
                    </button>
                 </div>
-                {/* Magnetic-like gradient accent */}
                 <div className="absolute inset-0 opacity-0 group-hover:opacity-100 bg-gradient-to-tr from-[#C8A97E]/10 to-transparent transition-opacity duration-1000 pointer-events-none" />
              </motion.div>
            ))}
@@ -139,8 +136,6 @@ export default function ShopPage() {
                 className="relative group w-full aspect-[4/5] bg-[#0F0F0F] rounded-[2rem] overflow-hidden border border-white/5 cursor-pointer flex items-center justify-center p-4 transition-all duration-700 hover:border-[#C8A97E]/20"
               >
                 <Link href={`/product/${product.id}`} className="absolute inset-0 z-40" />
-
-                {/* Watch Image with Magnetic Hover */}
                 <div className="relative w-full h-full flex items-center justify-center p-4 z-10 transition-transform duration-1000 group-hover:scale-110 ease-[0.25,1,0.5,1]">
                   <Image
                     src={product.image}
@@ -149,8 +144,6 @@ export default function ShopPage() {
                     className="object-contain p-6 md:p-10 drop-shadow-[0_25px_60px_rgba(0,0,0,0.9)]"
                   />
                 </div>
-
-                {/* Badge Reveal */}
                 <div className="absolute top-4 left-4 z-20 flex flex-col gap-2">
                    <h3 className="text-white text-[9px] font-black uppercase tracking-[0.3em] bg-black/60 backdrop-blur-md px-4 py-2 rounded-full border border-white/10 group-hover:border-[#C8A97E]/40 transition-all duration-700">
                     {product.name}
@@ -159,8 +152,6 @@ export default function ShopPage() {
                     {product.category}
                    </span>
                 </div>
-
-                {/* The Secret Drawer UI */}
                 <div className="absolute bottom-0 left-0 w-full p-8 bg-gradient-to-t from-black via-black/95 to-transparent translate-y-[100%] group-hover:translate-y-0 transition-all duration-700 ease-[0.22,1,0.36,1] z-30 flex flex-col items-center">
                   <div className="w-12 h-[1px] bg-[#C8A97E] mb-6 opacity-40" />
                   <span className="text-[#C8A97E] text-xl font-serif mb-8 tracking-wider">
@@ -170,8 +161,6 @@ export default function ShopPage() {
                     Acquire
                   </button>
                 </div>
-
-                {/* Subtle Grainy Overlay */}
                 <div className="absolute inset-0 opacity-[0.03] pointer-events-none bg-[url('https://grainy-gradients.vercel.app/noise.svg')]" />
               </motion.div>
             ))}
@@ -179,7 +168,6 @@ export default function ShopPage() {
         </motion.div>
       </div>
 
-      {/* Load More Mimic */}
       {filteredProducts.length > 0 && (
         <div className="mt-32 flex flex-col items-center gap-8 px-6">
            <div className="w-px h-24 bg-gradient-to-b from-[#C8A97E] to-transparent opacity-30" />
@@ -187,5 +175,13 @@ export default function ShopPage() {
         </div>
       )}
     </main>
+  );
+}
+
+export default function ShopPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-black" />}>
+      <ShopContent />
+    </Suspense>
   );
 }
