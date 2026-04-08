@@ -32,28 +32,22 @@ export default function CinematicHero() {
       </div>
 
       {/* Hero Content Overlay */}
-      <div className="absolute inset-0 z-20 flex flex-col items-center justify-end pb-12 md:pb-24 px-6 text-center pointer-events-none">
+      <div className="absolute inset-0 z-20 flex flex-col items-center justify-start px-6 text-center pointer-events-none">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, delay: 0.5, ease: "easeOut" }}
-          className="max-w-xl"
+          className="flex flex-col items-center text-center mt-[120px] md:mt-[160px] relative z-30 max-w-2xl px-6"
         >
-          <div className="flex flex-col items-center gap-4 mb-4">
-             <h2 className="text-[10px] md:text-sm uppercase tracking-[0.5em] text-[#C8A97E] font-sans font-medium">
-               Best Luxury Watches
-             </h2>
-          </div>
-          
-          <h3 className="text-3xl md:text-6xl font-serif text-white mb-8 tracking-tight leading-tight">
-            Premium Watches <br /> for Every Person
-          </h3>
+          <h1 className="text-4xl md:text-7xl font-serif text-white leading-[1.1] mb-10 uppercase tracking-tighter">
+            Premium Watches<br/>for Every Person
+          </h1>
           
           <div className="flex justify-center pointer-events-auto">
             <MagneticButton>
               <Link href="/shop" className="block">
-                <button className="backdrop-blur-md bg-white/5 border border-white/20 text-white px-10 py-5 rounded-full uppercase tracking-[0.2em] text-[10px] md:text-xs hover:bg-[#C8A97E] hover:text-black hover:border-[#C8A97E] transition-all duration-300 active:scale-95">
-                  See Our Watches
+                <button className="backdrop-blur-xl bg-white/5 border border-white/10 text-white px-12 py-5 rounded-full uppercase tracking-[0.4em] text-[10px] md:text-xs hover:bg-white hover:text-black transition-all duration-500 active:scale-95 shadow-2xl">
+                  Discover Collection
                 </button>
               </Link>
             </MagneticButton>

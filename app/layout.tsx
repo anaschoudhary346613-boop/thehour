@@ -9,6 +9,7 @@ import CartDrawer from '@/components/CartDrawer';
 import AuthModal from '@/components/AuthModal';
 import SmoothScrollProvider from '@/components/SmoothScrollProvider';
 import Preloader from '@/components/Preloader';
+import Header from '@/components/Header';
 
 export const viewport = "width=device-width, initial-scale=1, maximum-scale=1";
 
@@ -35,18 +36,8 @@ export default function RootLayout({
         <Providers>
           <SmoothScrollProvider>
             <Preloader />
+            <Header />
             
-            {/* Clickable Fixed Logo with Link to Home */}
-            <div className="fixed top-8 left-8 z-[100] w-12 h-12 group pointer-events-auto cursor-pointer">
-              <Link href="/">
-                <img 
-                  src="/logo.png" 
-                  alt="THE HOUR" 
-                  className="w-full h-full object-contain mix-blend-exclusion transition-transform group-hover:scale-110 duration-500"
-                />
-              </Link>
-            </div>
-
             <main className="relative z-0">
               {children}
             </main>

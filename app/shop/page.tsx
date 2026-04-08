@@ -86,70 +86,48 @@ export default function ShopPage() {
       </div>
 
       {/* 2-Column Product Grid */}
-      <div className="max-w-7xl mx-auto w-full px-6 md:px-12">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-x-4 gap-y-12 md:gap-x-12 md:gap-y-24">
-          {PRODUCTS.map((product, idx) => {
-            const discount = product.originalPrice 
-              ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100) 
-              : 0;
+      <div className="max-w-[1800px] mx-auto w-full px-6 md:px-12">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8">
+          {PRODUCTS.map((product, idx) => (
+            <motion.div 
+              key={product.id}
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: idx * 0.05 }}
+              className="relative group w-full aspect-[4/5] bg-[#0F0F0F] rounded-2xl overflow-hidden border border-white/5 cursor-pointer flex items-center justify-center"
+            >
+              <Link href={`/product/${product.id}`} className="absolute inset-0 z-40" />
 
-            return (
-              <motion.div 
-                key={product.id}
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: idx * 0.05 }}
-                className="flex flex-col group cursor-pointer"
-              >
-                <Link href={`/product/${product.id}`} className="block">
-                  {/* Image Wrapper */}
-                  <div className="relative aspect-[3/4] bg-white/[0.02] rounded-3xl overflow-hidden mb-6 border border-white/5 transition-all duration-700 group-hover:border-[#C8A97E]/40 group-hover:bg-white/[0.05]">
-                    <Image
-                      src={product.image}
-                      alt={product.name}
-                      fill
-                      className="object-contain p-8 md:p-12 drop-shadow-2xl transition-transform duration-[1.5s] group-hover:scale-110 ease-out"
-                    />
+              {/* Watch Image */}
+              <div className="relative w-full h-full flex items-center justify-center p-8 md:p-12 z-10 transition-transform duration-1000 group-hover:scale-110 ease-out">
+                <Image
+                  src={product.image}
+                  alt={product.name}
+                  fill
+                  className="object-contain p-8 md:p-12 drop-shadow-[0_20px_50px_rgba(0,0,0,0.8)]"
+                />
+              </div>
 
-                    {/* Discount Badge */}
-                    {discount > 0 && (
-                      <div className="absolute top-4 left-4 bg-[#C8A97E] text-black text-[9px] font-black uppercase tracking-widest px-2.5 py-1 rounded-full">
-                        -{discount}%
-                      </div>
-                    )}
-                    
-                    {/* Hover Quick Add Overlay */}
-                    <div className="absolute bottom-6 right-6 translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500">
-                       <div className="w-12 h-12 rounded-full bg-white flex items-center justify-center text-black shadow-2xl">
-                          <ShoppingBag size={20} />
-                       </div>
-                    </div>
-                  </div>
+              {/* Title Tag */}
+              <h3 className="absolute top-4 left-4 text-white text-[9px] font-sans font-black z-20 uppercase tracking-[0.3em] drop-shadow-md bg-black/40 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/5 group-hover:border-[#C8A97E]/30 transition-colors">
+                {product.name}
+              </h3>
 
-                  {/* Card Text Data */}
-                  <div className="px-2">
-                    <h3 className="text-[9px] font-black uppercase tracking-[0.4em] text-[#C8A97E] mb-2">
-                      {product.brand}
-                    </h3>
-                    <h2 className="text-sm md:text-lg font-serif text-white mb-3 leading-tight uppercase tracking-tight group-hover:text-[#C8A97E] transition-colors line-clamp-1">
-                      {product.name}
-                    </h2>
-                    
-                    <div className="flex items-center gap-4">
-                      <span className="text-base md:text-xl font-serif text-white/90">
-                        {formatPrice(product.price)}
-                      </span>
-                      {product.originalPrice && (
-                        <span className="text-xs text-white/20 line-through">
-                          {formatPrice(product.originalPrice)}
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                </Link>
-              </motion.div>
-            );
-          })}
+              {/* The Reveal UI */}
+              <div className="absolute bottom-0 left-0 w-full p-6 bg-gradient-to-t from-black via-black/90 to-transparent translate-y-[120%] group-hover:translate-y-0 transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] z-30 flex flex-col items-center">
+                <div className="w-10 h-[1px] bg-[#C8A97E] mb-4 opacity-50" />
+                <span className="text-[#C8A97E] text-base font-serif mb-6 tracking-wide">
+                  {formatPrice(product.price)}
+                </span>
+                <button className="w-full bg-white text-black text-[10px] uppercase tracking-[0.4em] font-black py-4 rounded-full hover:bg-[#C8A97E] transition-all duration-300 active:scale-95 shadow-2xl">
+                  View Artifact
+                </button>
+              </div>
+
+              {/* Corner Accent */}
+              <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-white/[0.03] to-transparent pointer-events-none" />
+            </motion.div>
+          ))}
         </div>
       </div>
     </main>
