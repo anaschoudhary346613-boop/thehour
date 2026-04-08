@@ -7,7 +7,7 @@ import { motion } from 'framer-motion';
 import { ShoppingBag, ArrowLeft, ShieldCheck, Truck, Banknote, MessageCircle } from 'lucide-react';
 import { useStore } from '@/store/useStore';
 import { supabase } from '@/lib/supabase';
-import { formatPrice } from '@/lib/products';
+import { PRODUCTS, formatPrice } from '@/lib/products';
 
 export default function ProductPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
@@ -17,13 +17,32 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
 
   useEffect(() => {
     async function fetchProduct() {
-      const { data, error } = await supabase
-        .from('watches')
-        .select('*')
-        .eq('id', id)
-        .single();
+      // 1. Check local catalog first
+      const localProduct = PRODUCTS.find((p) => p.id === id);
       
-      if (data) setProduct(data);
+      if (localProduct) {
+        // Normalize local data to match DB fields
+        setProduct({
+          ...localProduct,
+          hero_image_url: localProduct.image, // Map local 'image' to 'hero_image_url'
+        });
+        setLoading(false);
+        return;
+      }
+
+      // 2. Fallback to Supabase
+      try {
+        const { data, error } = await supabase
+          .from('watches')
+          .select('*')
+          .eq('id', id)
+          .single();
+        
+        if (data) setProduct(data);
+      } catch (err) {
+        console.error('Error fetching from Supabase:', err);
+      }
+      
       setLoading(false);
     }
     fetchProduct();
@@ -38,7 +57,7 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
   if (!product) return (
     <div className="min-h-screen bg-[#0A0A0A] flex flex-col items-center justify-center p-6 text-center">
       <h1 className="text-4xl text-white mb-6 uppercase tracking-widest font-serif">Watch Not Found</h1>
-      <Link href="/" className="text-[#C8A97E] hover:text-white transition-colors uppercase tracking-[0.2em] text-xs underline underline-offset-8 font-bold">Back to Home</Link>
+      <Link href="/shop" className="text-[#C8A97E] hover:text-white transition-colors uppercase tracking-[0.2em] text-xs underline underline-offset-8 font-bold">Return to Shop</Link>
     </div>
   );
 
@@ -53,7 +72,7 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
           animate={{ opacity: 1, x: 0 }}
           className="mb-8"
         >
-          <Link href="/" className="group inline-flex items-center gap-2 text-[#C8A97E]/40 hover:text-[#C8A97E] transition-colors text-[10px] uppercase tracking-widest font-bold">
+          <Link href="/shop" className="group inline-flex items-center gap-2 text-[#C8A97E]/40 hover:text-[#C8A97E] transition-colors text-[10px] uppercase tracking-widest font-bold">
             <ArrowLeft size={12} className="group-hover:-translate-x-1 transition-transform" />
             Back to All Watches
           </Link>

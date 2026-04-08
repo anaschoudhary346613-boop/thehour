@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, ShoppingBag, User, Instagram, Search, ChevronRight } from 'lucide-react';
+import { Menu, X, ShoppingBag, User, Instagram, Search, ChevronRight, Camera } from 'lucide-react';
 import { useStore } from '@/store/useStore';
 import Logo from './Logo';
 
@@ -81,7 +81,7 @@ export default function Header() {
               animate={{ x: 0 }}
               exit={{ x: '-100%' }}
               transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-              className="fixed inset-y-0 left-0 w-[85%] md:w-[400px] bg-[#0A0A0A] border-r border-white/10 z-[9999] flex flex-col shadow-2xl"
+              className="fixed inset-y-0 left-0 w-[85%] md:w-[400px] bg-[#0A0A0A] border-r border-white/10 z-[11000] flex flex-col shadow-2xl"
             >
               {/* Top Bar */}
               <div className="flex items-center justify-between p-6 border-b border-white/5">
