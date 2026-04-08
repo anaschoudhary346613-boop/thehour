@@ -3,59 +3,69 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-import MagneticButton from './MagneticButton';
-import WatchScene from './WatchScene';
 
 export default function CinematicHero() {
   return (
-    <section className="relative w-full h-[100dvh] bg-black overflow-hidden flex items-center justify-center">
-      {/* Volumetric Spotlight Background */}
-      <div className="absolute inset-0 z-0 flex items-center justify-center">
-        <div className="w-[80vw] h-[80vw] max-w-[800px] max-h-[800px] bg-[#C8A97E]/10 rounded-full blur-[120px] mix-blend-screen opacity-50 animate-pulse" />
+    <section className="relative w-full min-h-[100dvh] flex flex-col items-center justify-center pt-32 pb-40 overflow-hidden bg-black font-sans">
+      {/* 5. THE BACKGROUND TEXT (BEHIND EVERYTHING) */}
+      <h2 className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[15vw] font-serif text-white/[0.03] whitespace-nowrap z-0 pointer-events-none select-none uppercase tracking-tighter">
+        THE HOUR
+      </h2>
+
+      {/* Volumetric Spotlight (Aesthetic Support) */}
+      <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 z-0 flex justify-center pointer-events-none">
+        <div className="w-[60vw] h-[60vw] bg-[#C8A97E]/5 rounded-full blur-[120px]" />
       </div>
 
-      {/* Cinematic Perspective Text (Behind 3D) */}
-      <div className="absolute inset-0 z-0 flex items-center justify-center pointer-events-none select-none overflow-hidden">
-        <motion.h1 
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 0.05, scale: 1 }}
-          transition={{ duration: 2, ease: "easeOut" }}
-          className="text-[20vw] font-serif font-black text-white whitespace-nowrap tracking-tighter"
+      {/* 2. THE HEADING (TOP) */}
+      <motion.div 
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 1.2, ease: "easeOut" }}
+        className="z-30 text-center mb-8 md:mb-12 px-6"
+      >
+        <h1 className="text-4xl md:text-6xl font-serif text-white uppercase tracking-[0.2em] leading-tight md:leading-[1.2]">
+          Premium Watches<br />For Every Person
+        </h1>
+      </motion.div>
+
+      {/* 3. THE WATCH (MIDDLE) */}
+      <motion.div 
+        initial={{ opacity: 0, scale: 0.9, y: 20 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        transition={{ duration: 1.5, delay: 0.2, ease: "easeOut" }}
+        className="relative z-20 w-full max-w-[400px] md:max-w-[500px] flex justify-center items-center"
+      >
+        <img 
+          src="/hero-watch.png" 
+          className="w-[80%] md:w-full object-contain drop-shadow-[0_35px_60px_rgba(0,0,0,0.8)] filter brightness-110" 
+          alt="Luxury Watch" 
+        />
+        
+        {/* Subtle Glow behind watch */}
+        <div className="absolute inset-0 bg-[#C8A97E]/10 rounded-full blur-[80px] -z-10 animate-pulse" />
+      </motion.div>
+
+      {/* 4. THE BUTTON (BOTTOM) */}
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 1, delay: 0.8 }}
+        className="z-30 mt-12 md:mt-16"
+      >
+        <Link 
+          href="/shop" 
+          className="border border-[#C8A97E]/40 bg-black/40 backdrop-blur-md text-white px-10 py-5 rounded-full text-[10px] md:text-xs font-bold tracking-[0.4em] uppercase hover:bg-[#C8A97E] hover:text-black hover:border-[#C8A97E] transition-all duration-500 shadow-2xl inline-block"
         >
-          THE HOUR
-        </motion.h1>
-      </div>
+          Discover Collection
+        </Link>
+      </motion.div>
 
-      {/* WebGL 3D Canvas Layer */}
-      <div className="absolute inset-0 z-10 py-20 md:py-32">
-        <WatchScene />
+      {/* Aesthetic Accents */}
+      <div className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-4 opacity-20">
+         <div className="w-[1px] h-12 bg-gradient-to-b from-white to-transparent" />
+         <span className="text-[8px] uppercase tracking-[0.5em] font-bold text-white">Scroll</span>
       </div>
-
-      {/* Hero Content Overlay */}
-      <div className="absolute inset-0 z-20 flex flex-col items-center justify-start px-6 text-center pointer-events-none">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, delay: 0.5, ease: "easeOut" }}
-          className="flex flex-col items-center text-center mt-[120px] md:mt-[160px] relative z-30 max-w-2xl px-6"
-        >
-          <h1 className="text-4xl md:text-7xl font-serif text-white leading-[1.1] mb-10 uppercase tracking-tighter">
-            Premium Watches<br/>for Every Person
-          </h1>
-          
-          <div className="flex justify-center pointer-events-auto">
-            <MagneticButton>
-              <Link href="/shop" className="block">
-                <button className="backdrop-blur-xl bg-white/5 border border-white/10 text-white px-12 py-5 rounded-full uppercase tracking-[0.4em] text-[10px] md:text-xs hover:bg-white hover:text-black transition-all duration-500 active:scale-95 shadow-2xl">
-                  Discover Collection
-                </button>
-              </Link>
-            </MagneticButton>
-          </div>
-        </motion.div>
-      </div>
-
-      {/* Cleanup: Removed the stray vertical scroll line */}
     </section>
   );
 }
