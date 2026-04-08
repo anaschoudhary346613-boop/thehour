@@ -3,12 +3,15 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { ShoppingBag, Menu } from 'lucide-react';
-import { useCart } from '@/lib/store';
+import { useStore } from '@/store/useStore';
+import { useUIStore } from '@/store/useUIStore';
 
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
-  const { items } = useCart();
-  const itemCount = items.reduce((acc, item) => acc + item.quantity, 0);
+  const { cart, toggleCart } = useStore();
+  const { openCategories } = useUIStore();
+  
+  const itemCount = cart.reduce((acc, item) => acc + item.quantity, 0);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -45,7 +48,7 @@ export default function Header() {
         <div className="flex items-center gap-8 md:gap-12 relative z-[1000]">
           {/* Minimalist Cart Icon */}
           <button 
-            onClick={() => document.dispatchEvent(new CustomEvent('open-cart'))}
+            onClick={() => toggleCart(true)}
             className="group relative flex items-center gap-3 text-white transition-all"
           >
             <span className="text-[9px] font-black uppercase tracking-[0.3em] opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all duration-500 hidden md:block">
@@ -63,7 +66,7 @@ export default function Header() {
 
           {/* Minimalist Menu Icon */}
           <button 
-             onClick={() => document.dispatchEvent(new CustomEvent('open-categories'))}
+             onClick={openCategories}
              className="group flex items-center gap-3 text-white transition-all"
           >
             <span className="text-[9px] font-black uppercase tracking-[0.3em] opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all duration-500 hidden md:block">
