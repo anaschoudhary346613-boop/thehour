@@ -132,7 +132,7 @@ export default function Header() {
                 
                 <div className="flex items-center gap-6">
                    <Link href="#" className="text-white/40 hover:text-white transition-colors">
-                    <Instagram size={20} />
+                    <Camera size={20} />
                    </Link>
                    <span className="text-[10px] text-white/20 uppercase tracking-[0.3em]">Follow the Vault</span>
                 </div>
