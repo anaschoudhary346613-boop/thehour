@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { MessageCircle, Mail, Phone, MapPin, ArrowRight, CheckCircle2 } from 'lucide-react';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
@@ -13,7 +13,7 @@ export default function ConciergePage() {
     name: '',
     email: '',
     phone: '',
-    type: 'Sourcing Request',
+    type: 'Help with Booking',
     details: ''
   });
 
@@ -43,33 +43,33 @@ export default function ConciergePage() {
          <div className="absolute inset-0 z-0">
             <img 
               src="https://images.unsplash.com/photo-1585123334904-845d60e97b29?q=80&w=2000&auto=format&fit=crop" 
-              alt="Boutique" 
+              alt="Our Store" 
               className="w-full h-full object-cover opacity-40 grayscale"
             />
             <div className="absolute inset-0 bg-gradient-to-t md:bg-gradient-to-r from-black via-black/40 to-transparent" />
          </div>
 
          <div className="relative z-10 h-full flex flex-col justify-end p-12 md:p-24 space-y-8">
-            <h2 className="text-[#C8A97E] text-[10px] uppercase tracking-[0.5em] font-black">Private Commission</h2>
-            <h1 className="text-5xl md:text-8xl font-serif uppercase tracking-tighter leading-none text-white">The Concierge <br/> Desk</h1>
+            <h2 className="text-[#C8A97E] text-[10px] uppercase tracking-[0.5em] font-black">Get in Touch</h2>
+            <h1 className="text-5xl md:text-8xl font-serif uppercase tracking-tighter leading-none text-white">Customer <br/> Support</h1>
             <p className="max-w-md text-white/40 text-[11px] uppercase tracking-widest leading-relaxed font-sans font-bold italic">
-              "To request an artifact not listed in our public vault, or to commission white-glove maintenance for your existing collection, please speak to a representative."
+              "If you need a special watch or have any questions about your order, please message our team. We are here to help you."
             </p>
 
             <div className="pt-12 grid grid-cols-1 md:grid-cols-2 gap-8 border-t border-white/10">
                <div className="space-y-2">
-                 <span className="text-[9px] text-[#C8A97E] uppercase tracking-widest font-black">Atelier Geneva</span>
-                 <p className="text-[10px] text-white/40 tracking-widest leading-none">Rue du Rhône 12, 1204</p>
+                 <span className="text-[9px] text-[#C8A97E] uppercase tracking-widest font-black">Main Office</span>
+                 <p className="text-[10px] text-white/40 tracking-widest leading-none">Geneva Office, Switzerland</p>
                </div>
                <div className="space-y-2">
-                 <span className="text-[9px] text-[#C8A97E] uppercase tracking-widest font-black">Digital Flagship</span>
-                 <p className="text-[10px] text-white/40 tracking-widest leading-none">concierge@thehour.swiss</p>
+                 <span className="text-[9px] text-[#C8A97E] uppercase tracking-widest font-black">Email Us</span>
+                 <p className="text-[10px] text-white/40 tracking-widest leading-none">support@thehour.com</p>
                </div>
             </div>
          </div>
       </div>
 
-      {/* RIGHT SIDE: The Commission Card */}
+      {/* RIGHT SIDE: Message Form */}
       <div className="w-full md:w-1/2 bg-[#0A0A0A] p-12 md:p-24 flex flex-col justify-center">
          <div className="max-w-md mx-auto w-full">
             <AnimatePresence mode="wait">
@@ -84,20 +84,20 @@ export default function ConciergePage() {
                   <form onSubmit={handleSubmit} className="space-y-10">
                     <div className="space-y-8">
                       <div className="group">
-                        <label className="text-[9px] text-white/20 uppercase tracking-widest mb-3 block group-focus-within:text-[#C8A97E] transition-colors font-bold">Inquiry Classification</label>
+                        <label className="text-[9px] text-white/20 uppercase tracking-widest mb-3 block group-focus-within:text-[#C8A97E] transition-colors font-bold">What do you need help with?</label>
                         <select 
                           value={formData.type}
                           onChange={(e) => setFormData({...formData, type: e.target.value})}
                           className="w-full bg-transparent border-b border-white/10 py-4 text-xs uppercase tracking-[0.2em] outline-none focus:border-[#C8A97E] transition-all text-white/60 focus:text-white"
                         >
-                          <option value="Sourcing Request" className="bg-[#0A0A0A]">Sourcing Request</option>
-                          <option value="Maintenance" className="bg-[#0A0A0A]">Maintenance & Servicing</option>
-                          <option value="General" className="bg-[#0A0A0A]">Bespoke General Inquiry</option>
+                          <option value="Help with Booking" className="bg-[#0A0A0A]">Help with Buying</option>
+                          <option value="Repair" className="bg-[#0A0A0A]">Repair & Service</option>
+                          <option value="Other" className="bg-[#0A0A0A]">Other Questions</option>
                         </select>
                       </div>
 
                       <div className="group">
-                        <label className="text-[9px] text-white/20 uppercase tracking-widest mb-3 block group-focus-within:text-[#C8A97E] transition-colors font-bold">Full Legal Name</label>
+                        <label className="text-[9px] text-white/20 uppercase tracking-widest mb-3 block group-focus-within:text-[#C8A97E] transition-colors font-bold">Your Full Name</label>
                         <input 
                           type="text" 
                           required
@@ -109,7 +109,7 @@ export default function ConciergePage() {
 
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                          <div className="group">
-                            <label className="text-[9px] text-white/20 uppercase tracking-widest mb-3 block group-focus-within:text-[#C8A97E] transition-colors font-bold">Secure Email</label>
+                            <label className="text-[9px] text-white/20 uppercase tracking-widest mb-3 block group-focus-within:text-[#C8A97E] transition-colors font-bold">Your Email</label>
                             <input 
                               type="email" 
                               required
@@ -119,7 +119,7 @@ export default function ConciergePage() {
                             />
                          </div>
                          <div className="group">
-                            <label className="text-[9px] text-white/20 uppercase tracking-widest mb-3 block group-focus-within:text-[#C8A97E] transition-colors font-bold">Direct Line</label>
+                            <label className="text-[9px] text-white/20 uppercase tracking-widest mb-3 block group-focus-within:text-[#C8A97E] transition-colors font-bold">Phone Number</label>
                             <input 
                               type="tel" 
                               required
@@ -131,13 +131,13 @@ export default function ConciergePage() {
                       </div>
 
                       <div className="group">
-                        <label className="text-[9px] text-white/20 uppercase tracking-widest mb-3 block group-focus-within:text-[#C8A97E] transition-colors font-bold">Details of your request</label>
+                        <label className="text-[9px] text-white/20 uppercase tracking-widest mb-3 block group-focus-within:text-[#C8A97E] transition-colors font-bold">Message</label>
                         <textarea 
                           required
                           rows={4}
                           value={formData.details}
                           onChange={(e) => setFormData({...formData, details: e.target.value})}
-                          placeholder="Please describe the artifact or service required..."
+                          placeholder="Tell us what you need..."
                           className="w-full bg-transparent border-b border-white/10 py-4 text-xs uppercase tracking-[0.1em] outline-none focus:border-[#C8A97E] transition-all resize-none placeholder:text-white/5"
                         />
                       </div>
@@ -148,7 +148,7 @@ export default function ConciergePage() {
                       disabled={loading}
                       className="w-full bg-white text-black py-6 text-[11px] font-black uppercase tracking-[0.5em] hover:bg-[#C8A97E] transition-all rounded-xl flex items-center justify-center gap-3"
                     >
-                      {loading ? 'Transmitting Inbound...' : 'Transmit Commission'}
+                      {loading ? 'Sending...' : 'Send Message'}
                       <ArrowRight size={18} />
                     </button>
                   </form>
@@ -164,15 +164,15 @@ export default function ConciergePage() {
                       <CheckCircle2 size={48} />
                    </div>
                    <div className="space-y-4">
-                      <h2 className="text-[#C8A97E] text-xs font-bold uppercase tracking-[0.5em]">Inbound Transmitted</h2>
-                      <h3 className="text-4xl md:text-5xl font-serif tracking-tight uppercase">Confirmed</h3>
+                      <h2 className="text-[#C8A97E] text-xs font-bold uppercase tracking-[0.5em]">Message Sent</h2>
+                      <h3 className="text-4xl md:text-5xl font-serif tracking-tight uppercase">Thank You</h3>
                       <p className="text-white/40 text-[10px] uppercase tracking-widest font-bold leading-relaxed max-w-sm mx-auto">
-                        Your private commission has been received. A concierge will reach out to you within our operational hours.
+                        We have received your request. Our team will contact you soon on your phone or email.
                       </p>
                    </div>
                    <Link href="/" className="inline-block pt-12">
                       <button className="text-[11px] text-[#C8A97E] uppercase tracking-[0.4em] border-b border-[#C8A97E]/30 pb-2 hover:border-[#C8A97E] transition-all">
-                        Return to Flagship
+                        Back to Home
                       </button>
                    </Link>
                 </motion.div>

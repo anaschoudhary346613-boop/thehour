@@ -11,13 +11,13 @@ interface BentoCollectionProps {
 }
 
 export default function BentoCollection({ watches }: BentoCollectionProps) {
-  // If no watches are found, render a placeholder or empty state
+  // If no watches are found, render nothing
   if (!watches || watches.length === 0) return null;
 
-  // Explicitly map watches to their specific shapes to maintain the Bento asymmetry
-  const heroWatch = watches[0];          // md:col-span-2 (Large)
-  const specWatch = watches[1] || null;  // md:row-span-2 (Tall Specs)
-  const editorialWatch = watches[2] || null; // md:col-span-3 (Wide Editorial - below others if needed)
+  // Map watches to specific positions
+  const heroWatch = watches[0];          
+  const specWatch = watches[1] || null;  
+  const editorialWatch = watches[2] || null;
 
   return (
     <section id="collection" className="relative w-full py-32 bg-black px-6 overflow-hidden">
@@ -30,7 +30,7 @@ export default function BentoCollection({ watches }: BentoCollectionProps) {
               viewport={{ once: true }}
               className="text-[#C8A97E] uppercase tracking-[0.3em] text-xs mb-4 font-bold"
             >
-              The Featured Selection
+              Our Best Watches
             </motion.p>
             <motion.h2 
               initial={{ opacity: 0, y: 20 }}
@@ -38,7 +38,7 @@ export default function BentoCollection({ watches }: BentoCollectionProps) {
               viewport={{ once: true }}
               className="text-4xl md:text-5xl font-serif text-white tracking-tight uppercase"
             >
-              Masterpieces of <br /> Engineering
+              Top Quality <br /> Luxury Watches
             </motion.h2>
           </div>
           <motion.div
@@ -47,7 +47,7 @@ export default function BentoCollection({ watches }: BentoCollectionProps) {
             viewport={{ once: true }}
           >
             <Link href="/shop" className="group flex items-center gap-2 text-white/50 hover:text-[#C8A97E] transition-colors uppercase tracking-widest text-[10px] font-bold">
-              View Entire Catalog
+              View All Watches
               <ArrowUpRight className="w-4 h-4 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
             </Link>
           </motion.div>
@@ -55,7 +55,7 @@ export default function BentoCollection({ watches }: BentoCollectionProps) {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:auto-rows-[450px]">
           
-          {/* ITEM 0: THE HERO CARD (md:col-span-2) */}
+          {/* ITEM 0: THE HERO CARD */}
           {heroWatch && (
             <motion.div
               initial={{ opacity: 0, y: 30 }}
@@ -73,7 +73,7 @@ export default function BentoCollection({ watches }: BentoCollectionProps) {
                 </div>
                 <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-60" />
                 <div className="absolute inset-0 z-10 p-10 flex flex-col justify-end">
-                   <span className="text-[#C8A97E] text-[10px] font-bold uppercase tracking-widest mb-2 block">Signature Artifact</span>
+                   <span className="text-[#C8A97E] text-[10px] font-bold uppercase tracking-widest mb-2 block">Our Speciality</span>
                    <h3 className="text-3xl md:text-4xl font-serif text-white mb-4 uppercase tracking-tighter">{heroWatch.name}</h3>
                    <div className="flex items-center gap-6">
                       <span className="text-xl font-serif text-white/50">{formatPrice(heroWatch.price)}</span>
@@ -86,7 +86,7 @@ export default function BentoCollection({ watches }: BentoCollectionProps) {
             </motion.div>
           )}
 
-          {/* ITEM 1: THE SPEC CARD (Tall Vertical) */}
+          {/* ITEM 1: THE SPEC CARD */}
           {specWatch && (
             <motion.div
               initial={{ opacity: 0, y: 30 }}
@@ -109,7 +109,7 @@ export default function BentoCollection({ watches }: BentoCollectionProps) {
                          <span className="uppercase tracking-[0.2em] font-medium">{spec}</span>
                       </div>
                     )) : (
-                      <span className="opacity-40 uppercase tracking-widest">Specifications Enclosed</span>
+                      <span className="opacity-40 uppercase tracking-widest">Watch Details</span>
                     )}
                   </div>
                </div>
@@ -124,13 +124,13 @@ export default function BentoCollection({ watches }: BentoCollectionProps) {
                  </div>
                  <div className="flex justify-between items-end">
                     <span className="text-[#C8A97E] text-2xl font-serif">{formatPrice(specWatch.price)}</span>
-                    <button className="bg-white/5 border border-white/10 px-5 py-2.5 rounded-full text-[9px] uppercase tracking-widest text-white hover:bg-white hover:text-black transition-all">Explore</button>
+                    <button className="bg-white/5 border border-white/10 px-5 py-2.5 rounded-full text-[9px] uppercase tracking-widest text-white hover:bg-white hover:text-black transition-all">Check Now</button>
                  </div>
                </Link>
             </motion.div>
           )}
 
-          {/* ITEM 2: THE WIDE EDITORIAL CARD (md:col-span-2 Bottom or Side) */}
+          {/* ITEM 2: THE WIDE EDITORIAL CARD */}
           {editorialWatch && (
             <motion.div
               initial={{ opacity: 0, y: 30 }}
@@ -144,17 +144,17 @@ export default function BentoCollection({ watches }: BentoCollectionProps) {
                 <div className="absolute inset-0 z-0">
                   <img 
                     src={editorialWatch.lifestyle_image_url || editorialWatch.hero_image_url} 
-                    alt="Atmosphere"
+                    alt="Lifestyle"
                     className="w-full h-full object-cover opacity-30 transition-transform duration-1000 group-hover:scale-105"
                   />
                   <div className="absolute inset-0 bg-gradient-to-r from-black via-black/40 to-transparent" />
                 </div>
 
                 <div className="absolute inset-0 z-10 p-10 flex flex-col justify-center max-w-md">
-                   <span className="text-[#C8A97E] text-[10px] font-bold uppercase tracking-[0.4em] mb-4">Editorial Dossier</span>
+                   <span className="text-[#C8A97E] text-[10px] font-bold uppercase tracking-[0.4em] mb-4">Latest Arrival</span>
                    <h3 className="text-3xl md:text-5xl font-serif text-white mb-6 uppercase tracking-tighter leading-none">{editorialWatch.name}</h3>
                    <button className="w-fit bg-white text-black px-8 py-4 text-[10px] font-bold uppercase tracking-widest hover:bg-[#C8A97E] transition-colors rounded-full">
-                     Acquire Artifact — {formatPrice(editorialWatch.price)}
+                     Buy Watch — {formatPrice(editorialWatch.price)}
                    </button>
                 </div>
               </Link>

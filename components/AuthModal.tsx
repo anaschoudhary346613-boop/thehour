@@ -23,7 +23,7 @@ export default function AuthModal() {
       if (isSignUp) {
         const { data, error } = await supabase.auth.signUp({ email, password });
         if (error) throw error;
-        setMessage('Access Request Sent. Please check your secure email line.');
+        setMessage('Registration sent. Please check your email and confirm.');
       } else {
         const { data, error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
@@ -57,11 +57,6 @@ export default function AuthModal() {
             exit={{ scale: 0.9, opacity: 0, y: 20 }}
             className="relative w-full max-w-md bg-[#0A0A0A] border border-white/10 p-12 rounded-[2.5rem] shadow-[0_30px_60px_rgba(0,0,0,0.8)] overflow-hidden"
           >
-            {/* Corner Decorative Ornaments */}
-            <div className="absolute top-0 right-0 p-8 opacity-10">
-               <Lock size={120} />
-            </div>
-
             <button 
               onClick={() => toggleAuth(false)}
               className="absolute top-8 right-10 text-white/30 hover:text-white transition-colors"
@@ -71,9 +66,9 @@ export default function AuthModal() {
 
             <div className="relative z-10">
               <div className="mb-12">
-                <h2 className="text-[#C8A97E] text-xs font-bold uppercase tracking-[0.5em] mb-4">Private Access</h2>
+                <h2 className="text-[#C8A97E] text-xs font-bold uppercase tracking-[0.5em] mb-4">Customer Login</h2>
                 <h3 className="text-3xl md:text-4xl font-serif text-white tracking-tight uppercase leading-none">
-                  {isSignUp ? 'Request Entrance' : 'Authenticated Entry'}
+                  {isSignUp ? 'New Account' : 'Welcome Back'}
                 </h3>
               </div>
 
@@ -83,7 +78,7 @@ export default function AuthModal() {
                     <Mail className="absolute left-0 top-3 text-white/20 group-focus-within:text-[#C8A97E] transition-colors" size={16} />
                     <input 
                       type="email" 
-                      placeholder="SECURE EMAIL ADDRESS" 
+                      placeholder="ENTER EMAIL" 
                       required
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
@@ -95,7 +90,7 @@ export default function AuthModal() {
                     <Lock className="absolute left-0 top-3 text-white/20 group-focus-within:text-[#C8A97E] transition-colors" size={16} />
                     <input 
                       type="password" 
-                      placeholder="ACCESS KEY" 
+                      placeholder="PASSWORD" 
                       required
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
@@ -114,7 +109,7 @@ export default function AuthModal() {
                   disabled={loading}
                   className="w-full bg-white text-black py-5 text-[10px] font-black uppercase tracking-[0.4em] hover:bg-[#C8A97E] transition-all active:scale-95 flex items-center justify-center gap-3 rounded-xl disabled:opacity-50"
                 >
-                  {loading ? 'Verifying...' : (isSignUp ? 'Submit Request' : 'Enter Vault')}
+                  {loading ? 'Please wait...' : (isSignUp ? 'Create My Account' : 'Login Now')}
                   <ArrowRight size={16} />
                 </button>
               </form>
@@ -124,7 +119,7 @@ export default function AuthModal() {
                   onClick={() => setIsSignUp(!isSignUp)}
                   className="text-[9px] text-white/30 uppercase tracking-[0.2em] hover:text-[#C8A97E] transition-colors font-bold"
                 >
-                  {isSignUp ? 'Already a registered collector? Sign In' : 'New Collector? Request Access'}
+                  {isSignUp ? 'Already have an account? Sign In' : 'New here? Create an Account'}
                 </button>
               </div>
             </div>

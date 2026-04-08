@@ -12,25 +12,15 @@ export default function Preloader() {
   const finishTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
-    // 1. Guaranteed incremental progress for first-visit UX
-    // Even if assets are cached or reporting 0, we show activity.
     const progressInterval = setInterval(() => {
       setDisplayProgress(prev => {
-        // If R3F reports a significantly higher progress, jump to it
         if (r3fProgress > prev) return r3fProgress;
-        
-        // Otherwise, crawl slow but steady up to 90%
         if (prev < 90) return prev + (90 - prev) * 0.05 + 0.1;
-        
-        // If R3F is done (100) or we are near 99, stay until forced
         if (r3fProgress === 100) return 100;
-        
         return prev >= 99 ? 99 : prev + 0.01;
       });
     }, 50);
 
-    // 2. Safety "Mechanical Fault" Bypass (10 second max wait)
-    // Prevents the user from being stuck indefinitely if a texture/model fails.
     const safetyBypass = setTimeout(() => {
       setDisplayProgress(100);
     }, 8000);
@@ -42,13 +32,12 @@ export default function Preloader() {
   }, [r3fProgress]);
 
   useEffect(() => {
-    // 3. Final trigger to clear the screen
     if (displayProgress >= 100 || r3fProgress === 100) {
       if (finishTimeoutRef.current) clearTimeout(finishTimeoutRef.current);
       
       finishTimeoutRef.current = setTimeout(() => {
         finishLoading();
-      }, 1000); // 1s buffer for the split-screen animation prep
+      }, 1000);
     }
   }, [displayProgress, r3fProgress, finishLoading]);
 
@@ -89,7 +78,7 @@ export default function Preloader() {
                 animate={{ opacity: [0.4, 1, 0.4] }}
                 transition={{ duration: 2, repeat: Infinity }}
               >
-                Synchronizing
+                Opening Store
               </motion.span>
               <span className="tabular-nums">{Math.round(displayProgress)}%</span>
             </div>
@@ -109,7 +98,7 @@ export default function Preloader() {
             </div>
           </div>
 
-          {/* Luxury Branding Tagline */}
+          {/* Tagline */}
           <div className="absolute bottom-16 overflow-hidden">
             <motion.p
               initial={{ y: '100%', opacity: 0 }}
@@ -117,11 +106,11 @@ export default function Preloader() {
               transition={{ delay: 0.8, duration: 1.5, ease: [0.22, 1, 0.36, 1] }}
               className="text-[9px] uppercase tracking-[0.8em] text-white/30 font-sans font-bold"
             >
-              Exclusively Swiss Made
+              Exclusively Made For You
             </motion.p>
           </div>
 
-          {/* Corner Decals for Premium Look */}
+          {/* Corner Decals */}
           <div className="absolute top-10 left-10 w-4 h-4 border-t border-l border-white/10" />
           <div className="absolute top-10 right-10 w-4 h-4 border-t border-r border-white/10" />
           <div className="absolute bottom-10 left-10 w-4 h-4 border-b border-l border-white/10" />

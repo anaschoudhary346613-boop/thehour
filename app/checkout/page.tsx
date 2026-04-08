@@ -23,7 +23,7 @@ export default function CheckoutPage() {
     e.preventDefault();
     if (step === 1) setStep(2);
     else if (step === 2) {
-      // In a real app, we would call the Server Action here to save the order to Supabase
+      // Order completion logic
       setStep(3);
       clearCart();
     }
@@ -32,8 +32,8 @@ export default function CheckoutPage() {
   if (cart.length === 0 && step !== 3) {
     return (
       <div className="min-h-screen bg-[#0A0A0A] flex flex-col items-center justify-center p-6 text-center">
-        <h1 className="text-4xl text-white mb-6 uppercase tracking-widest font-serif">Vault is Empty</h1>
-        <Link href="/shop" className="text-[#C8A97E] hover:text-white transition-colors uppercase tracking-[0.2em] text-xs underline underline-offset-8 font-bold font-sans">Return to Collection</Link>
+        <h1 className="text-4xl text-white mb-6 uppercase tracking-widest font-serif">Your Bag is Empty</h1>
+        <Link href="/shop" className="text-[#C8A97E] hover:text-white transition-colors uppercase tracking-[0.2em] text-xs underline underline-offset-8 font-bold font-sans">Return to Store</Link>
       </div>
     );
   }
@@ -41,11 +41,11 @@ export default function CheckoutPage() {
   return (
     <div className="min-h-screen bg-[#050505] text-white font-sans flex flex-col md:flex-row overflow-hidden">
       
-      {/* LEFT SIDE: Acquisition Process */}
+      {/* LEFT SIDE: Buying Process */}
       <div className="w-full md:w-1/2 p-8 md:p-16 lg:p-24 flex flex-col overflow-y-auto max-h-screen custom-scrollbar">
         <Link href="/" className="group flex items-center gap-3 text-white/30 hover:text-[#C8A97E] transition-colors mb-16 uppercase tracking-widest text-[10px] font-bold">
           <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" />
-          Exit Boutique
+          Keep Shopping
         </Link>
 
         <AnimatePresence mode="wait">
@@ -58,14 +58,14 @@ export default function CheckoutPage() {
               className="space-y-12"
             >
               <div>
-                <h2 className="text-[#C8A97E] text-xs font-bold uppercase tracking-[0.5em] mb-4">Phase 01</h2>
-                <h3 className="text-4xl md:text-5xl font-serif tracking-tight uppercase">Acquisition Intake</h3>
+                <h2 className="text-[#C8A97E] text-xs font-bold uppercase tracking-[0.5em] mb-4">Step 1 of 2</h2>
+                <h3 className="text-4xl md:text-5xl font-serif tracking-tight uppercase">Enter Your Details</h3>
               </div>
 
               <form onSubmit={handleConfirm} className="space-y-10">
                 <div className="space-y-8">
                   <div className="group">
-                    <label className="text-[9px] text-white/30 uppercase tracking-widest mb-3 block group-focus-within:text-[#C8A97E] transition-colors font-bold">Collector Full Name</label>
+                    <label className="text-[9px] text-white/30 uppercase tracking-widest mb-3 block group-focus-within:text-[#C8A97E] transition-colors font-bold">Your Full Name</label>
                     <input 
                       type="text" 
                       required
@@ -75,7 +75,7 @@ export default function CheckoutPage() {
                     />
                   </div>
                   <div className="group">
-                    <label className="text-[9px] text-white/30 uppercase tracking-widest mb-3 block group-focus-within:text-[#C8A97E] transition-colors font-bold">Direct Secure Line</label>
+                    <label className="text-[9px] text-white/30 uppercase tracking-widest mb-3 block group-focus-within:text-[#C8A97E] transition-colors font-bold">Phone Number</label>
                     <input 
                       type="tel" 
                       required
@@ -85,7 +85,7 @@ export default function CheckoutPage() {
                     />
                   </div>
                   <div className="group">
-                    <label className="text-[9px] text-white/30 uppercase tracking-widest mb-3 block group-focus-within:text-[#C8A97E] transition-colors font-bold">Destination Address</label>
+                    <label className="text-[9px] text-white/30 uppercase tracking-widest mb-3 block group-focus-within:text-[#C8A97E] transition-colors font-bold">Shipping Address</label>
                     <textarea 
                       required
                       rows={3}
@@ -100,7 +100,7 @@ export default function CheckoutPage() {
                   type="submit"
                   className="w-full bg-white text-black py-6 text-[11px] font-black uppercase tracking-[0.5em] hover:bg-[#C8A97E] transition-all rounded-xl"
                 >
-                  Configure Transfer
+                  Continue to Payment
                 </button>
               </form>
             </motion.div>
@@ -115,8 +115,8 @@ export default function CheckoutPage() {
               className="space-y-12"
             >
               <div>
-                <h2 className="text-[#C8A97E] text-xs font-bold uppercase tracking-[0.5em] mb-4">Phase 02</h2>
-                <h3 className="text-4xl md:text-5xl font-serif tracking-tight uppercase">Transfer Protocol</h3>
+                <h2 className="text-[#C8A97E] text-xs font-bold uppercase tracking-[0.5em] mb-4">Step 2 of 2</h2>
+                <h3 className="text-4xl md:text-5xl font-serif tracking-tight uppercase">Select Payment</h3>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -125,20 +125,20 @@ export default function CheckoutPage() {
                   className={`p-8 border rounded-2xl flex flex-col items-center gap-4 transition-all ${paymentMethod === 'wire' ? 'bg-white/10 border-[#C8A97E]' : 'bg-white/[0.03] border-white/5 opacity-40 hover:opacity-100'}`}
                 >
                   <Landmark className={paymentMethod === 'wire' ? 'text-[#C8A97E]' : 'text-white'} size={32} />
-                  <span className="text-[9px] uppercase tracking-[0.3em] font-bold">Secure Bank Wire</span>
+                  <span className="text-[9px] uppercase tracking-[0.3em] font-bold">Bank Transfer</span>
                 </button>
                 <button 
                   onClick={() => setPaymentMethod('upi')}
                   className={`p-8 border rounded-2xl flex flex-col items-center gap-4 transition-all ${paymentMethod === 'upi' ? 'bg-white/10 border-[#C8A97E]' : 'bg-white/[0.03] border-white/5 opacity-40 hover:opacity-100'}`}
                 >
                   <QrCode className={paymentMethod === 'upi' ? 'text-[#C8A97E]' : 'text-white'} size={32} />
-                  <span className="text-[9px] uppercase tracking-[0.3em] font-bold">Concierge UPI</span>
+                  <span className="text-[9px] uppercase tracking-[0.3em] font-bold">Pay via UPI</span>
                 </button>
               </div>
 
               <div className="bg-white/5 border border-white/10 p-8 rounded-2xl">
                  <p className="text-[10px] text-white/40 leading-relaxed uppercase tracking-widest italic font-sans">
-                  "Upon confirmation, your personal concierge will generate a secure invoice and initiate the white-glove logistics protocol. Payments are verified within our Geneva clearing house."
+                  "After you place the order, our team will send you a bill and help you with the delivery. We make sure your payment is safe."
                  </p>
               </div>
 
@@ -147,9 +147,9 @@ export default function CheckoutPage() {
                   onClick={handleConfirm}
                   className="w-full bg-white text-black py-6 text-[11px] font-black uppercase tracking-[0.5em] hover:bg-[#C8A97E] transition-all rounded-xl"
                 >
-                   Finalize Acquisition
+                   Place Order Now
                 </button>
-                <button onClick={() => setStep(1)} className="text-[9px] text-white/20 uppercase tracking-widest hover:text-white transition-colors py-4 font-bold">Edit Acquisition Details</button>
+                <button onClick={() => setStep(1)} className="text-[9px] text-white/20 uppercase tracking-widest hover:text-white transition-colors py-4 font-bold">Go Back to Details</button>
               </div>
             </motion.div>
           )}
@@ -168,38 +168,38 @@ export default function CheckoutPage() {
               </div>
               
               <div className="space-y-4">
-                <h2 className="text-[#C8A97E] text-xs font-bold uppercase tracking-[0.5em]">Artifact Secured</h2>
-                <h3 className="text-4xl md:text-5xl font-serif tracking-tight uppercase">Invoice Generated</h3>
+                <h2 className="text-[#C8A97E] text-xs font-bold uppercase tracking-[0.5em]">Order Successful</h2>
+                <h3 className="text-4xl md:text-5xl font-serif tracking-tight uppercase">Congratulations</h3>
                 <p className="text-white/40 text-[10px] uppercase tracking-[0.2em] max-w-sm mx-auto leading-relaxed font-sans">
-                  The documentation has been dispatched to your secure line. Please complete the transfer using the instructions provided.
+                  We have sent the order details to your phone. Please follow the instructions to complete your payment.
                 </p>
               </div>
 
               <div className="bg-[#0A0A0A] border border-white/5 p-10 rounded-3xl space-y-8 text-left max-w-md mx-auto">
                  <div>
-                    <span className="text-[9px] text-white/20 uppercase tracking-widest block mb-2 font-bold">Transfer Reference</span>
-                    <span className="text-[#C8A97E] font-mono text-xl uppercase tracking-tighter">THE-HOUR-ACQ-{Math.floor(Math.random() * 90000) + 10000}</span>
+                    <span className="text-[9px] text-white/20 uppercase tracking-widest block mb-2 font-bold">Order Reference</span>
+                    <span className="text-[#C8A97E] font-mono text-xl uppercase tracking-tighter">ORDER-{Math.floor(Math.random() * 90000) + 10000}</span>
                  </div>
                  
                  {paymentMethod === 'wire' ? (
                    <div className="space-y-4 text-[10px] uppercase tracking-widest text-[#C8A97E]/70 font-bold">
-                      <div className="flex justify-between border-b border-white/5 pb-2"><span>Bank</span> <span>Swiss Private Bank</span></div>
-                      <div className="flex justify-between border-b border-white/5 pb-2"><span>Recipient</span> <span>THE HOUR LUXURY LTD.</span></div>
-                      <div className="flex justify-between border-b border-white/5 pb-2"><span>SWIFT/BIC</span> <span>THLH-CH-8892</span></div>
+                      <div className="flex justify-between border-b border-white/5 pb-2"><span>Bank Name</span> <span>Official Bank</span></div>
+                      <div className="flex justify-between border-b border-white/5 pb-2"><span>Pay to</span> <span>THE HOUR STORE</span></div>
+                      <div className="flex justify-between border-b border-white/5 pb-2"><span>IFSC Code</span> <span>THLH8892</span></div>
                    </div>
                  ) : (
                    <div className="flex flex-col items-center gap-4 py-4">
                       <div className="w-40 h-40 bg-white p-2 rounded-xl">
-                         <img src="https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=thehour@concierge" alt="UPI QR" className="w-full h-full" />
+                         <img src="https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=thehour@upi" alt="UPI QR" className="w-full h-full" />
                       </div>
-                      <span className="text-[10px] text-white/30 uppercase tracking-widest font-bold">Scan with BHIM/UPI</span>
+                      <span className="text-[10px] text-white/30 uppercase tracking-widest font-bold">Scan to Pay using Any App</span>
                    </div>
                  )}
               </div>
 
               <Link href="/dashboard" className="block pt-8">
                  <button className="w-full max-w-md bg-white text-black py-6 text-[11px] font-black uppercase tracking-[0.5em] hover:bg-[#C8A97E] transition-all rounded-xl">
-                   Enter My Vault
+                   Go to My Orders
                  </button>
               </Link>
             </motion.div>
@@ -211,7 +211,7 @@ export default function CheckoutPage() {
       <div className="w-full md:w-1/2 bg-[#0A0A0A] p-8 md:p-16 lg:p-24 border-l border-white/5 flex flex-col justify-center min-h-[400px]">
          <div className="max-w-md mx-auto w-full space-y-12">
             <div>
-              <h2 className="text-white/40 text-[9px] uppercase tracking-[0.5em] font-bold mb-8">Acquisition Summary</h2>
+              <h2 className="text-white/40 text-[9px] uppercase tracking-[0.5em] font-bold mb-8">Your Order Summary</h2>
               <div className="space-y-10">
                 {cart.map((item) => (
                   <div key={item.id} className="flex gap-6 items-center">
@@ -231,11 +231,11 @@ export default function CheckoutPage() {
 
             <div className="pt-12 border-t border-white/10 space-y-6">
                <div className="flex justify-between items-end text-white/40 text-[10px] uppercase tracking-[0.3em] font-bold">
-                  <span>Logistics & Authentication</span>
-                  <span className="text-white">Complementary</span>
+                  <span>Shipping & Checking</span>
+                  <span className="text-white">Free</span>
                </div>
                <div className="flex justify-between items-end pt-4">
-                  <span className="text-white/40 text-[10px] uppercase tracking-[0.5em] font-black">Total Acquisition</span>
+                  <span className="text-white/40 text-[10px] uppercase tracking-[0.5em] font-black">Total to Pay</span>
                   <span className="text-4xl md:text-5xl font-serif text-[#C8A97E] leading-none">{formatPrice(getCartTotal())}</span>
                </div>
             </div>
@@ -246,7 +246,7 @@ export default function CheckoutPage() {
                   <Landmark size={20} />
                </div>
                <p className="text-[9px] text-white/30 uppercase tracking-widest leading-relaxed font-bold">
-                  Encrypted secure transfer protocols applied to all high-value shipments.
+                  We use safe and secure payment methods for every order.
                </p>
             </div>
          </div>

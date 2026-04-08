@@ -34,8 +34,8 @@ export default function CartDrawer() {
             {/* Header */}
             <div className="p-8 border-b border-white/10 flex justify-between items-center">
               <div>
-                <h2 className="text-[#C8A97E] text-xs font-bold uppercase tracking-[0.4em] mb-1">Your Collection</h2>
-                <p className="text-[9px] text-white/30 uppercase tracking-widest">{cart.length} Artifacts Selected</p>
+                <h2 className="text-[#C8A97E] text-xs font-bold uppercase tracking-[0.4em] mb-1">Your Shopping Bag</h2>
+                <p className="text-[9px] text-white/30 uppercase tracking-widest">{cart.length} Watches Selected</p>
               </div>
               <button 
                 onClick={() => toggleCart(false)}
@@ -52,12 +52,12 @@ export default function CartDrawer() {
                   <div className="w-16 h-16 rounded-full bg-white/5 flex items-center justify-center text-white/20">
                     <ShoppingBag size={32} />
                   </div>
-                  <p className="text-white/40 uppercase tracking-widest text-[10px] font-bold">The vault is currently empty</p>
+                  <p className="text-white/40 uppercase tracking-widest text-[10px] font-bold">Your bag is empty</p>
                   <button 
                     onClick={() => toggleCart(false)}
                     className="text-[#C8A97E] text-[10px] uppercase tracking-widest border-b border-[#C8A97E]/30 pb-2 hover:border-[#C8A97E] transition-all"
                   >
-                    Continue Exploring
+                    Start Shopping
                   </button>
                 </div>
               ) : (
@@ -109,18 +109,18 @@ export default function CartDrawer() {
             {cart.length > 0 && (
               <div className="p-8 border-t border-white/10 bg-black/20 space-y-6">
                 <div className="flex justify-between items-end">
-                  <span className="text-[10px] text-white/40 uppercase tracking-[0.4em] font-bold">Total Acquisition</span>
+                  <span className="text-[10px] text-white/40 uppercase tracking-[0.4em] font-bold">Total Amount</span>
                   <span className="text-3xl font-serif text-[#C8A97E]">{formatPrice(getCartTotal())}</span>
                 </div>
                 
                 <Link href="/checkout" className="block" onClick={() => toggleCart(false)}>
                   <button className="w-full bg-white text-black py-6 text-[11px] font-black uppercase tracking-[0.5em] hover:bg-[#C8A97E] transition-all active:scale-95 shadow-[0_20px_40px_rgba(200,169,126,0.15)] rounded-xl">
-                    Secure Acquisition
+                    Buy Now
                   </button>
                 </Link>
                 
                 <p className="text-center text-[8px] text-white/20 uppercase tracking-widest">
-                  Invoicing & Logistics managed by THE HOUR Concierge Desk
+                  Our team will help you with payment and delivery.
                 </p>
               </div>
             )}

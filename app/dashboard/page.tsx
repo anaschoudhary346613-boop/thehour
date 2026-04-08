@@ -61,7 +61,7 @@ export default function DashboardPage() {
     <div className="min-h-screen bg-black flex items-center justify-center">
       <div className="animate-pulse flex flex-col items-center gap-4">
         <div className="w-12 h-12 bg-[#C8A97E]/20 rounded-full" />
-        <span className="text-[10px] text-[#C8A97E] uppercase tracking-widest font-bold">Synchronizing Vault...</span>
+        <span className="text-[10px] text-[#C8A97E] uppercase tracking-widest font-bold">Loading Your Account...</span>
       </div>
     </div>
   );
@@ -76,9 +76,9 @@ export default function DashboardPage() {
         </div>
         
         <div className="relative z-10 space-y-4">
-          <h2 className="text-[#C8A97E] text-xs font-bold uppercase tracking-[0.5em]">Private Client Portal</h2>
-          <h1 className="text-5xl md:text-7xl font-serif tracking-tighter uppercase leading-none">The Vault</h1>
-          <p className="text-white/30 text-[10px] uppercase tracking-widest font-bold">Provenance & Acquisition History for {user?.email}</p>
+          <h2 className="text-[#C8A97E] text-xs font-bold uppercase tracking-[0.5em]">Your Account</h2>
+          <h1 className="text-5xl md:text-7xl font-serif tracking-tighter uppercase leading-none">My Collection</h1>
+          <p className="text-white/30 text-[10px] uppercase tracking-widest font-bold">Order History for {user?.email}</p>
         </div>
 
         <button 
@@ -86,7 +86,7 @@ export default function DashboardPage() {
           className="absolute top-12 right-8 md:right-16 flex items-center gap-3 text-white/20 hover:text-red-500 transition-colors uppercase tracking-widest text-[9px] font-bold"
         >
           <LogOut size={16} />
-          Safe Terminate
+          Sign Out
         </button>
       </div>
 
@@ -95,21 +95,21 @@ export default function DashboardPage() {
         {/* Left: Sidebar Navigation */}
         <div className="lg:col-span-3 space-y-12">
            <div className="space-y-6">
-              <span className="text-[10px] text-white/20 uppercase tracking-widest font-black block border-b border-white/5 pb-4">Secure Compartments</span>
+              <span className="text-[10px] text-white/20 uppercase tracking-widest font-black block border-b border-white/5 pb-4">Menu</span>
               <nav className="flex flex-col gap-4">
                  <button className="flex items-center gap-4 text-[#C8A97E] font-bold text-[11px] uppercase tracking-widest group">
                     <Shield size={18} className="opacity-60" />
-                    Artifact Vault
+                    My Watches
                     <ChevronRight size={14} className="ml-auto opacity-40 group-hover:translate-x-1 transition-transform" />
                  </button>
                  <button className="flex items-center gap-4 text-white/30 hover:text-white transition-colors font-bold text-[11px] uppercase tracking-widest group">
                     <Clock size={18} className="opacity-60" />
-                    Transfer Logs
+                    Order History
                     <ChevronRight size={14} className="ml-auto opacity-20 group-hover:translate-x-1 transition-transform" />
                  </button>
                  <button className="flex items-center gap-4 text-white/30 hover:text-white transition-colors font-bold text-[11px] uppercase tracking-widest group">
                     <MessageSquare size={18} className="opacity-60" />
-                    Concierge Line
+                    Help & Support
                     <ChevronRight size={14} className="ml-auto opacity-20 group-hover:translate-x-1 transition-transform" />
                  </button>
               </nav>
@@ -117,23 +117,23 @@ export default function DashboardPage() {
 
            <div className="p-8 bg-white/[0.02] border border-white/5 rounded-3xl space-y-4">
               <Award className="text-[#C8A97E]" size={24} />
-              <h4 className="text-white uppercase tracking-widest text-[10px] font-bold">Elite Status</h4>
-              <p className="text-white/20 text-[9px] uppercase tracking-widest leading-relaxed">Your account holds priority access to all upcoming Swiss artifact allocations.</p>
+              <h4 className="text-white uppercase tracking-widest text-[10px] font-bold">Member Status</h4>
+              <p className="text-white/20 text-[9px] uppercase tracking-widest leading-relaxed">As a valued customer, you will get early access to our new watch collections.</p>
            </div>
         </div>
 
-        {/* Right: Main Content (Acquisitions) */}
+        {/* Right: Main Content (Orders) */}
         <div className="lg:col-span-9 space-y-10">
            <div className="flex justify-between items-end border-b border-white/5 pb-6">
-              <h3 className="text-white font-serif text-3xl uppercase tracking-tight">Active Artifacts</h3>
-              <span className="text-[10px] text-white/20 uppercase tracking-widest font-bold">{orders.length} Verified Records</span>
+              <h3 className="text-white font-serif text-3xl uppercase tracking-tight">Active Orders</h3>
+              <span className="text-[10px] text-white/20 uppercase tracking-widest font-bold">{orders.length} Orders Found</span>
            </div>
 
            {orders.length === 0 ? (
              <div className="py-24 text-center space-y-6 border border-dashed border-white/10 rounded-3xl">
                 <Package className="text-white/10 mx-auto" size={48} />
-                <p className="text-white/30 uppercase tracking-widest text-[10px] font-bold">No active acquisitions detected in this sector.</p>
-                <Link href="/shop" className="inline-block text-[#C8A97E] border-b border-[#C8A97E]/20 pb-1 text-[10px] uppercase tracking-widest font-bold">Browse the Collection</Link>
+                <p className="text-white/30 uppercase tracking-widest text-[10px] font-bold">You have not ordered any watches yet.</p>
+                <Link href="/shop" className="inline-block text-[#C8A97E] border-b border-[#C8A97E]/20 pb-1 text-[10px] uppercase tracking-widest font-bold">Browse the Store</Link>
              </div>
            ) : (
              <div className="space-y-8">
@@ -147,13 +147,13 @@ export default function DashboardPage() {
                    {/* Order Header */}
                    <div className="p-8 border-b border-white/5 flex flex-wrap justify-between items-center gap-4 bg-white/[0.01]">
                       <div className="flex flex-col gap-1">
-                        <span className="text-[9px] text-white/20 uppercase tracking-widest font-bold">Acquisition ID</span>
-                        <span className="text-[#C8A97E] font-mono text-sm tracking-tighter">ACQ-{order.id.slice(0,8).toUpperCase()}</span>
+                        <span className="text-[9px] text-white/20 uppercase tracking-widest font-bold">Order ID</span>
+                        <span className="text-[#C8A97E] font-mono text-sm tracking-tighter">ORDER-{order.id.slice(0,8).toUpperCase()}</span>
                       </div>
                       <div className="flex flex-col gap-1 md:items-end">
-                        <span className="text-[9px] text-white/20 uppercase tracking-widest font-bold">Transfer Status</span>
+                        <span className="text-[9px] text-white/20 uppercase tracking-widest font-bold">Order Status</span>
                         <span className={`text-[10px] uppercase tracking-[0.2em] font-black ${order.status === 'Awaiting Payment' ? 'text-[#C8A97E]' : 'text-green-500'}`}>
-                          {order.status}
+                          {order.status === 'Awaiting Payment' ? 'Waiting for Payment' : order.status}
                         </span>
                       </div>
                    </div>
@@ -168,7 +168,7 @@ export default function DashboardPage() {
                            <div className="flex-1 flex flex-col justify-center">
                               <h4 className="text-[#C8A97E] text-[10px] font-bold uppercase tracking-widest mb-1">{item.watches?.brand}</h4>
                               <h3 className="text-white font-serif text-xl tracking-tight uppercase">{item.watches?.name}</h3>
-                              <p className="text-[9px] text-white/20 uppercase tracking-widest font-bold">Serial Number Mapping: Verified</p>
+                              <p className="text-[9px] text-white/20 uppercase tracking-widest font-bold">Serial Number Check: Success</p>
                            </div>
                            <div className="text-white font-serif text-lg">{formatPrice(item.price_at_purchase)}</div>
                         </div>
@@ -177,9 +177,9 @@ export default function DashboardPage() {
 
                    {/* Order Footer */}
                    <div className="p-8 bg-white/[0.01] border-t border-white/5 flex justify-between items-center">
-                      <div className="text-[9px] text-white/20 uppercase tracking-widest font-bold">Executed on {new Date(order.created_at).toLocaleDateString()}</div>
+                      <div className="text-[9px] text-white/20 uppercase tracking-widest font-bold">Ordered on {new Date(order.created_at).toLocaleDateString()}</div>
                       <div className="flex items-center gap-4">
-                        <span className="text-[9px] text-white/20 uppercase tracking-widest font-bold">Total Acquisition Value</span>
+                        <span className="text-[9px] text-white/20 uppercase tracking-widest font-bold">Total Paid</span>
                         <span className="text-2xl font-serif text-[#C8A97E]">{formatPrice(order.total_amount)}</span>
                       </div>
                    </div>
