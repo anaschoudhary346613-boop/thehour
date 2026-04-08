@@ -3,139 +3,134 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, ShoppingBag, User, Instagram, Search, ChevronRight, Camera } from 'lucide-react';
+import { Menu, X, ShoppingBag, User, Instagram, Search, ChevronRight, Camera, Twitter } from 'lucide-react';
 import { useStore } from '@/store/useStore';
 import Logo from './Logo';
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const { toggleCart, cart } = useStore();
+  const { toggleCart, toggleAuth } = useStore();
 
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 20);
+    const handleScroll = () => setScrolled(window.scrollY > 50);
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const navLinks = [
-    { name: 'Home page', href: '/' },
-    { name: 'The Collection', href: '/shop' },
-    { name: 'Heritage & Craft', href: '/heritage' },
-    { name: 'Verify Authenticity', href: '/verify' },
-    { name: 'Bespoke Sourcing', href: '/concierge' },
-    { name: 'Shop All', href: '/shop' },
+  const menuItems = [
+    { name: 'Discovery', href: '/shop', subtitle: 'Global Vault' },
+    { name: 'Heritage', href: '/heritage', subtitle: 'Artisanal Craft' },
+    { name: 'Provenance', href: '/verify', subtitle: 'Authenticity' },
+    { name: 'Concierge', href: '/concierge', subtitle: 'Private Sourcing' },
   ];
+
+  const LUXURY_EASE = [0.25, 1, 0.5, 1];
 
   return (
     <>
       <header 
-        className={`fixed top-0 left-0 w-full z-[5000] transition-all duration-500 px-6 py-4 flex justify-between items-center pointer-events-none ${
-          scrolled || isMenuOpen ? 'bg-[#0A0A0A]/90 backdrop-blur-xl border-b border-white/10' : 'bg-transparent'
+        className={`fixed top-0 left-0 w-full z-50 transition-all duration-700 px-6 py-4 flex justify-between items-center pointer-events-none ${
+          scrolled || isMenuOpen ? 'bg-[#0A0A0A]/90 backdrop-blur-2xl border-b border-white/10' : 'bg-transparent'
         }`}
       >
         {/* Left: Logo */}
-        <Link href="/" className="relative z-[5001] pointer-events-auto">
+        <Link href="/" className="relative z-[51] pointer-events-auto transition-transform duration-700 hover:scale-110 active:scale-95">
           <Logo className="w-10 h-10 md:w-12 md:h-12" />
         </Link>
 
-        {/* Right: Cart & Menu Toggle */}
-        <div className="flex items-center gap-6 pointer-events-auto">
+        {/* Right: Interaction Bar */}
+        <div className="flex items-center gap-4 md:gap-8 pointer-events-auto">
           <button 
             onClick={() => toggleCart(true)}
-            className="relative p-2 text-white hover:text-[#C8A97E] transition-colors"
+            className="group relative p-3 text-white transition-all duration-500 hover:text-[#C8A97E] active:scale-90"
           >
-            <ShoppingBag size={22} strokeWidth={1.5} />
-            {cart.length > 0 && (
-              <span className="absolute top-0 right-0 w-4 h-4 bg-[#C8A97E] text-black text-[10px] font-bold rounded-full flex items-center justify-center">
-                {cart.length}
-              </span>
-            )}
+            <ShoppingBag size={20} strokeWidth={1.5} />
+            <div className="absolute inset-0 bg-white/5 rounded-full scale-0 group-hover:scale-100 transition-transform duration-500 ease-[0.25,1,0.5,1]" />
           </button>
-          
+
           <button 
-            onClick={() => setIsMenuOpen(true)}
-            className="text-white hover:text-[#C8A97E] transition-colors p-2"
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            className="group relative z-[10001] p-3 text-white transition-all duration-500 hover:text-[#C8A97E] active:rotate-90"
           >
-            <Menu size={24} strokeWidth={1.5} />
+            {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
         </div>
       </header>
 
-      {/* SIDEBAR NAVIGATION OVERLAY */}
+      {/* Sidebar Navigation */}
       <AnimatePresence>
         {isMenuOpen && (
           <>
-            {/* The Backdrop */}
-            <motion.div 
+            {/* Backdrop */}
+            <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setIsMenuOpen(false)}
-              className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[9998] cursor-pointer"
+              className="fixed inset-0 bg-black/80 backdrop-blur-md z-[9998]"
             />
 
-            {/* The Sidebar Panel */}
-            <motion.div 
+            {/* Panel */}
+            <motion.div
               initial={{ x: '-100%' }}
               animate={{ x: 0 }}
               exit={{ x: '-100%' }}
-              transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-              className="fixed inset-y-0 left-0 w-[85%] md:w-[400px] bg-[#0A0A0A] border-r border-white/10 z-[11000] flex flex-col shadow-2xl"
+              transition={{ duration: 0.8, ease: LUXURY_EASE }}
+              className="fixed inset-y-0 left-0 w-[85%] md:w-[450px] bg-[#0A0A0A] border-r border-white/5 z-[9999] flex flex-col shadow-[20px_0_60px_rgba(0,0,0,0.5)]"
             >
-              {/* Top Bar */}
-              <div className="flex items-center justify-between p-6 border-b border-white/5">
-                <button 
-                  onClick={() => setIsMenuOpen(false)} 
-                  className="text-white p-2 hover:bg-white/5 rounded-full transition-all"
-                >
-                  <X size={24} strokeWidth={1.5} />
-                </button>
-                <img src="/logo.png" className="w-8 h-8 object-contain" alt="TH" />
-                <div className="w-8"></div> {/* Spacer for symmetry */}
-              </div>
+              <div className="p-8 pt-24 flex-1 flex flex-col">
+                <div className="space-y-12">
+                  {menuItems.map((item, i) => (
+                    <motion.div
+                      key={item.name}
+                      initial={{ opacity: 0, x: -30 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: 0.2 + (i * 0.1), duration: 0.8, ease: LUXURY_EASE }}
+                    >
+                      <Link 
+                        href={item.href}
+                        onClick={() => setIsMenuOpen(false)}
+                        className="group flex flex-col"
+                      >
+                        <span className="text-[10px] uppercase tracking-[0.4em] text-[#C8A97E] mb-2 font-bold opacity-0 group-hover:opacity-100 transition-all duration-500 transform -translate-x-4 group-hover:translate-x-0">
+                          {item.subtitle}
+                        </span>
+                        <div className="flex items-center gap-4">
+                          <h2 className="text-4xl md:text-5xl font-serif text-white uppercase tracking-tight group-hover:pl-4 transition-all duration-700 ease-[0.25,1,0.5,1]">
+                            {item.name}
+                          </h2>
+                          <ChevronRight size={24} className="text-[#C8A97E] opacity-0 group-hover:opacity-100 transition-all duration-500 -translate-x-4 group-hover:translate-x-0" />
+                        </div>
+                      </Link>
+                    </motion.div>
+                  ))}
+                </div>
 
-              {/* Navigation Links */}
-              <nav className="flex-1 overflow-y-auto py-8 flex flex-col">
-                {navLinks.map((link, idx) => (
-                  <Link 
-                    key={idx}
-                    href={link.href}
-                    onClick={() => setIsMenuOpen(false)}
-                    className="px-8 py-5 text-white/80 text-lg font-serif tracking-tight border-b border-white/[0.02] flex justify-between items-center hover:bg-white/5 hover:text-[#C8A97E] transition-all group"
-                  >
-                    {link.name}
-                    <ChevronRight size={16} className="opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-[#C8A97E]" />
-                  </Link>
-                ))}
+                <div className="mt-auto space-y-12">
+                   <motion.div 
+                     initial={{ opacity: 0 }}
+                     animate={{ opacity: 1 }}
+                     transition={{ delay: 0.8 }}
+                     className="grid grid-cols-2 gap-8"
+                   >
+                     <button 
+                       onClick={() => { setIsMenuOpen(false); toggleAuth(true); }}
+                       className="flex flex-col gap-2 group text-left"
+                     >
+                        <span className="text-[10px] uppercase tracking-[0.3em] text-white/20 font-bold">Account</span>
+                        <span className="text-xs uppercase tracking-widest text-white group-hover:text-[#C8A97E] transition-colors">Private Portal</span>
+                     </button>
+                     <div className="flex items-center gap-4 pt-6">
+                        <Instagram size={18} className="text-white/20 hover:text-white transition-colors cursor-pointer" />
+                        <Twitter size={18} className="text-white/20 hover:text-white transition-colors cursor-pointer" />
+                        <Camera size={18} className="text-white/20 hover:text-white transition-colors cursor-pointer" />
+                     </div>
+                   </motion.div>
 
-                <div className="h-px bg-white/10 my-6 mx-8"></div>
-                
-                <Link 
-                  href="/dashboard"
-                  onClick={() => setIsMenuOpen(false)}
-                  className="px-8 py-4 text-white/50 text-sm uppercase tracking-[0.2em] hover:text-[#C8A97E] transition-colors"
-                >
-                  Track Order
-                </Link>
-              </nav>
-
-              {/* Bottom Footer */}
-              <div className="p-8 border-t border-white/5 flex flex-col gap-8 bg-[#050505]">
-                <Link 
-                  href="/login" 
-                  onClick={() => setIsMenuOpen(false)}
-                  className="flex items-center gap-3 text-white/70 text-sm font-bold uppercase tracking-widest hover:text-[#C8A97E] transition-colors"
-                >
-                  <User size={18} strokeWidth={2} /> 
-                  Log in
-                </Link>
-                
-                <div className="flex items-center gap-6">
-                   <Link href="#" className="text-white/40 hover:text-white transition-colors">
-                    <Camera size={20} />
-                   </Link>
-                   <span className="text-[10px] text-white/20 uppercase tracking-[0.3em]">Follow the Vault</span>
+                   <div className="text-[9px] uppercase tracking-[0.5em] text-white/10 font-black pb-4">
+                      EST. 2026 — THE HOUR
+                   </div>
                 </div>
               </div>
             </motion.div>

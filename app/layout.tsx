@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { Toaster } from "sonner";
 import { Providers } from "@/components/Providers";
 import Script from 'next/script';
 import Link from 'next/link';
@@ -37,7 +38,7 @@ export default function RootLayout({
           <Header />
           <SmoothScrollProvider>
             
-            <main className="relative z-0">
+            <main className="relative z-10 min-h-[100dvh]">
               {children}
             </main>
             
@@ -45,6 +46,7 @@ export default function RootLayout({
             <AuthModal />
             <ModalProvider />
           </SmoothScrollProvider>
+          <Toaster position="top-center" richColors />
         </Providers>
         
         {/* Global Boutique Aesthetic Elements */}
