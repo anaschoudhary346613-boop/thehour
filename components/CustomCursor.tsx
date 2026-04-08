@@ -1,75 +1,67 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { motion, useSpring, useMotionValue } from 'framer-motion';
+import React, { useEffect, useState } from 'react';
+import { motion, useSpring } from 'framer-motion';
 
 export default function CustomCursor() {
-  const cursorX = useMotionValue(-100);
-  const cursorY = useMotionValue(-100);
-  const followerX = useMotionValue(-100);
-  const followerY = useMotionValue(-100);
+  const [isPointer, setIsPointer] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
 
-  const springConfig = { damping: 25, stiffness: 400 };
-  const followerSpringConfig = { damping: 30, stiffness: 150 };
-
-  const x = useSpring(cursorX, springConfig);
-  const y = useSpring(cursorY, springConfig);
-  const fx = useSpring(followerX, followerSpringConfig);
-  const fy = useSpring(followerY, followerSpringConfig);
-
-  const [isHovering, setIsHovering] = useState(false);
+  const mouseX = useSpring(0, { stiffness: 500, damping: 50 });
+  const mouseY = useSpring(0, { stiffness: 500, damping: 50 });
 
   useEffect(() => {
-    const moveCursor = (e: MouseEvent) => {
-      cursorX.set(e.clientX - 10);
-      cursorY.set(e.clientY - 10);
-      followerX.set(e.clientX - 20);
-      followerY.set(e.clientY - 20);
-    };
-
-    const handleHover = (e: MouseEvent) => {
+    const handleMouseMove = (e: MouseEvent) => {
+      mouseX.set(e.clientX);
+      mouseY.set(e.clientY);
+      
       const target = e.target as HTMLElement;
-      if (
-        target.tagName === 'BUTTON' ||
-        target.tagName === 'A' ||
-        target.closest('button') ||
-        target.closest('a')
-      ) {
-        setIsHovering(true);
-      } else {
-        setIsHovering(false);
-      }
+      setIsPointer(
+        window.getComputedStyle(target).cursor === 'pointer' || 
+        target.tagName === 'A' || 
+        target.tagName === 'BUTTON'
+      );
+      
+      if (!isVisible) setIsVisible(true);
     };
 
-    window.addEventListener('mousemove', moveCursor);
-    window.addEventListener('mouseover', handleHover);
+    const handleMouseLeave = () => setIsVisible(false);
+    const handleMouseEnter = () => setIsVisible(true);
+
+    window.addEventListener('mousemove', handleMouseMove);
+    document.addEventListener('mouseleave', handleMouseLeave);
+    document.addEventListener('mouseenter', handleMouseEnter);
 
     return () => {
-      window.removeEventListener('mousemove', moveCursor);
-      window.removeEventListener('mouseover', handleHover);
+      window.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseleave', handleMouseLeave);
+      document.removeEventListener('mouseenter', handleMouseEnter);
     };
-  }, [cursorX, cursorY, followerX, followerY]);
+  }, [mouseX, mouseY, isVisible]);
+
+  if (typeof window === 'undefined') return null;
 
   return (
-    <>
+    <motion.div
+      style={{
+        left: mouseX,
+        top: mouseY,
+        opacity: isVisible ? 1 : 0,
+      }}
+      className="fixed top-0 left-0 w-8 h-8 pointer-events-none z-[99999] -translate-x-1/2 -translate-y-1/2 hidden md:block"
+    >
+      {/* Main Gold Ring */}
       <motion.div
-        className="custom-cursor hidden md:block"
-        style={{
-          x: x,
-          y: y,
-          scale: isHovering ? 1.5 : 1,
-          backgroundColor: isHovering ? 'var(--ivory)' : 'var(--gold)',
+        animate={{
+          scale: isPointer ? 1.5 : 1,
+          borderColor: isPointer ? '#C8A97E' : 'rgba(200, 169, 126, 0.3)',
+          borderWidth: isPointer ? '1px' : '2px',
         }}
+        className="w-full h-full rounded-full border border-[#C8A97E] transition-colors duration-300"
       />
-      <motion.div
-        className="cursor-follower hidden md:block"
-        style={{
-          x: fx,
-          y: fy,
-          scale: isHovering ? 1.8 : 1,
-          opacity: isHovering ? 0 : 0.5,
-        }}
-      />
-    </>
+      
+      {/* Center Dot */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-1 h-1 bg-[#C8A97E] rounded-full" />
+    </motion.div>
   );
 }

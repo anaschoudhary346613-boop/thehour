@@ -2,8 +2,8 @@
 
 @theme {
   --color-gold: #C8A97E;
-  --font-serif: "Cinzel", serif;
-  --font-geometric: "Syne", sans-serif;
+  --font-serif: var(--font-cinzel), serif;
+  --font-sans: var(--font-inter), sans-serif;
 }
 
 @layer base {
@@ -12,7 +12,7 @@
     color: white;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    font-family: 'Inter', sans-serif;
+    font-family: var(--font-inter);
     overflow-x: hidden;
   }
 
@@ -22,21 +22,22 @@
   }
 
   h1, h2, h3, .font-serif {
-    font-family: var(--font-serif);
+    font-family: var(--font-cinzel);
+    letter-spacing: -0.02em;
   }
 
-  .font-geometric {
-    font-family: var(--font-geometric);
+  .font-sans {
+    font-family: var(--font-inter);
   }
 }
 
 @layer utilities {
   .bg-oled-spotlight {
-    background: radial-gradient(circle at center, rgba(200, 169, 126, 0.15) 0%, rgba(0, 0, 0, 0) 70%);
+    background: radial-gradient(circle at center, rgba(200, 169, 126, 0.1) 0%, rgba(0, 0, 0, 0) 80%);
   }
 
   .text-shadow-luxe {
-    text-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+    text-shadow: 0 0 30px rgba(200, 169, 126, 0.2);
   }
 
   .noise-overlay {
@@ -46,48 +47,53 @@
     width: 100%;
     height: 100%;
     background-image: url("https://grainy-gradients.vercel.app/noise.svg");
-    opacity: 0.1;
-    z-index: 99999;
+    opacity: 0.03;
+    z-index: 9999;
     pointer-events: none;
     mix-blend-mode: soft-light;
   }
 
   .glass-card {
-    background-color: rgba(255, 255, 255, 0.05);
+    background-color: rgba(255, 255, 255, 0.03);
     backdrop-filter: blur(40px);
     border: 1px solid rgba(255, 255, 255, 0.05);
+    transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+  }
+
+  .glass-card:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+    border-color: rgba(200, 169, 126, 0.2);
   }
 }
 
-/* Custom Scrollbar */
+/* Custom Scrollbar - Refined for Luxury */
 ::-webkit-scrollbar {
   width: 4px;
 }
 
 ::-webkit-scrollbar-track {
-  background: black;
+  background: #050505;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #C8A97E;
+  background: #252525;
   border-radius: 10px;
+  transition: all 0.5s ease;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: white;
+  background: #C8A97E;
 }
 
-/* Page Transitons & Reveals */
-.reveal-content {
-  opacity: 0;
-  animation: reveal 2s cubic-bezier(0.76, 0, 0.24, 1) forwards;
-  animation-delay: 0.5s;
+/* Ultra Smooth Transitions */
+.page-transition {
+  animation: slideFadeIn 1.2s cubic-bezier(0.25, 1, 0.5, 1) forwards;
 }
 
-@keyframes reveal {
+@keyframes slideFadeIn {
   from {
     opacity: 0;
-    transform: translateY(20px);
+    transform: translateY(10px);
   }
   to {
     opacity: 1;
