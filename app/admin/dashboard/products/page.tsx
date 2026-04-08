@@ -1,21 +1,19 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Plus, 
   Search, 
-  Filter, 
-  MoreVertical, 
   Pencil, 
   Trash2, 
-  ExternalLink,
-  ChevronRight,
   Loader2,
   X,
   Upload,
   Image as ImageIcon,
-  Check
+  Check,
+  Tag,
+  Database
 } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { formatPrice } from '@/lib/products';
@@ -29,6 +27,10 @@ export default function InventoryPage() {
   const [editingWatch, setEditingWatch] = useState<any>(null);
   const [searchQuery, setSearchQuery] = useState('');
   
+  // Dynamic Options
+  const [categories, setCategories] = useState<string[]>(['Luxury', 'Mechanical', 'Chronograph', 'Heritage']);
+  const [brands, setBrands] = useState<string[]>(['Rolex', 'Patek Philippe', 'Audemars Piguet', 'G-Shock']);
+
   // Form State
   const [formData, setFormData] = useState({
     name: '',
@@ -47,17 +49,29 @@ export default function InventoryPage() {
 
   useEffect(() => {
     fetchWatches();
+    fetchDynamicOptions();
   }, []);
 
   async function fetchWatches() {
     setLoading(true);
-    const { data, error } = await supabase
+    const { data } = await supabase
       .from('watches')
       .select('*')
       .order('created_at', { ascending: false });
 
     if (data) setWatches(data);
     setLoading(false);
+  }
+
+  async function fetchDynamicOptions() {
+    const { data } = await supabase.from('watches').select('category, brand');
+    if (data) {
+      const uniqueCats = Array.from(new Set(data.map(i => i.category))).filter(Boolean);
+      const uniqueBrands = Array.from(new Set(data.map(i => i.brand))).filter(Boolean);
+      
+      if (uniqueCats.length > 0) setCategories(prev => Array.from(new Set([...prev, ...uniqueCats])));
+      if (uniqueBrands.length > 0) setBrands(prev => Array.from(new Set([...prev, ...uniqueBrands])));
+    }
   }
 
   const handleOpenModal = (watch: any = null) => {
@@ -83,7 +97,7 @@ export default function InventoryPage() {
         subtitle: '',
         description: '',
         price: '',
-        category: 'Luxury',
+        category: categories[0] || 'Luxury',
         stock: 1,
         hero_image_url: '',
         lifestyle_image_url: '',
@@ -99,7 +113,7 @@ export default function InventoryPage() {
 
     setUploading(true);
     const fileExt = file.name.split('.').pop();
-    const fileName = `${Math.random()}.${fileExt}`;
+    const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
     const filePath = `watches/${fileName}`;
 
     const { error: uploadError } = await supabase.storage
@@ -155,12 +169,13 @@ export default function InventoryPage() {
       toast.success(editingWatch ? 'Asset updated.' : 'New timepiece added to the vault.');
       setIsModalOpen(false);
       fetchWatches();
+      fetchDynamicOptions();
     }
     setLoading(false);
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm('Are you sure you want to permanently remove this asset from the vault?')) return;
+    if (!confirm('Abort transaction? This asset will be purged permanently.')) return;
     
     const { error } = await supabase
       .from('watches')
@@ -168,23 +183,26 @@ export default function InventoryPage() {
       .eq('id', id);
 
     if (error) {
-      toast.error('Deletion failed: ' + error.message);
+       toast.error('Purge failed: ' + error.message);
     } else {
-      toast.success('Asset removed.');
-      fetchWatches();
+       toast.success('Asset removed from archive.');
+       fetchWatches();
     }
   };
 
-  const filteredWatches = watches.filter(w => 
-    w.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
-    w.brand.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredWatches = useMemo(() => {
+    return watches.filter(w => 
+      w.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+      w.brand.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      w.category.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+  }, [watches, searchQuery]);
 
   const LUXURY_EASE = [0.25, 1, 0.5, 1];
 
   return (
-    <div className="space-y-12">
-      {/* Header */}
+    <div className="space-y-12 pb-20">
+      {/* Header Viewport */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-8">
         <motion.div
           initial={{ opacity: 0, x: -20 }}
@@ -195,12 +213,12 @@ export default function InventoryPage() {
           <h1 className="text-5xl font-serif text-white uppercase tracking-tighter">Inventory</h1>
         </motion.div>
         
-        <div className="flex items-center gap-4">
-           <div className="flex items-center gap-3 bg-white/5 px-6 py-4 rounded-2xl border border-white/5 w-full md:w-80 group hover:border-[#C8A97E]/30 transition-all duration-500">
+        <div className="flex items-center gap-4 w-full md:w-auto">
+           <div className="flex items-center gap-3 bg-white/5 px-6 py-4 rounded-2xl border border-white/5 flex-1 md:w-80 group focus-within:border-[#C8A97E]/30 transition-all duration-500">
               <Search size={16} className="text-white/20 group-hover:text-[#C8A97E] transition-colors" />
               <input 
                 type="text" 
-                placeholder="FILTER COLLECTION..." 
+                placeholder="PROBE CATALOGUE..." 
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="bg-transparent border-none text-[10px] tracking-widest text-white focus:ring-0 w-full font-black placeholder:text-white/10"
@@ -208,21 +226,21 @@ export default function InventoryPage() {
            </div>
            <button 
              onClick={() => handleOpenModal()}
-             className="bg-white text-black px-8 py-4 rounded-2xl text-[10px] font-black uppercase tracking-[0.3em] flex items-center gap-2 hover:bg-[#C8A97E] transition-all duration-500 active:scale-95 shadow-[0_10px_30px_rgba(255,255,255,0.1)]"
+             className="bg-white text-black px-8 py-4 rounded-2xl text-[10px] font-black uppercase tracking-[0.3em] flex items-center gap-2 hover:bg-[#C8A97E] transition-all duration-500 active:scale-95 shadow-xl"
            >
-              <Plus size={16} strokeWidth={3} /> Add Asset
+              <Plus size={16} strokeWidth={3} /> NEW ASSET
            </button>
         </div>
       </div>
 
-      {/* Grid List */}
+      {/* Product List */}
       <div className="bg-[#0A0A0A] border border-white/5 rounded-[3rem] overflow-hidden">
-        <div className="overflow-x-auto">
+        <div className="overflow-x-auto custom-scrollbar">
           <table className="w-full text-left">
             <thead>
               <tr className="text-[10px] font-black text-white/20 tracking-[0.4em] uppercase border-b border-white/5 bg-white/[0.01]">
-                <th className="px-10 py-8">Timepiece</th>
-                <th className="px-10 py-8">Vitals</th>
+                <th className="px-10 py-8">Asset</th>
+                <th className="px-10 py-8">Classification</th>
                 <th className="px-10 py-8 text-right">Valuation</th>
                 <th className="px-10 py-8 text-right">Status</th>
                 <th className="px-10 py-8 text-right">Actions</th>
@@ -231,14 +249,15 @@ export default function InventoryPage() {
             <tbody className="divide-y divide-white/[0.03]">
               {loading ? (
                 <tr>
-                  <td colSpan={5} className="py-20 text-center">
+                  <td colSpan={5} className="py-24 text-center">
                     <Loader2 size={32} className="text-[#C8A97E] animate-spin mx-auto" />
+                    <p className="mt-4 text-[9px] font-black text-white/10 uppercase tracking-widest">Hydrating Archives...</p>
                   </td>
                 </tr>
               ) : filteredWatches.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="py-20 text-center text-white/20 text-[10px] font-black uppercase tracking-widest">
-                    No assets found in the matching range.
+                  <td colSpan={5} className="py-32 text-center text-white/10 text-[10px] font-black uppercase tracking-[0.4em]">
+                    No matching assets in vault.
                   </td>
                 </tr>
               ) : filteredWatches.map((watch) => (
@@ -246,12 +265,14 @@ export default function InventoryPage() {
                   <td className="px-10 py-8">
                      <div className="flex items-center gap-6">
                         <div className="w-16 h-16 rounded-2xl bg-[#050505] border border-white/5 flex items-center justify-center p-2 group-hover:border-[#C8A97E]/30 transition-all duration-700 relative overflow-hidden">
-                           <Image 
-                             src={watch.hero_image_url || '/placeholder.png'} 
-                             alt={watch.name} 
-                             fill 
-                             className="object-contain p-2"
-                           />
+                           {watch.hero_image_url ? (
+                             <Image 
+                               src={watch.hero_image_url} 
+                               alt={watch.name} 
+                               fill 
+                               className="object-contain p-2"
+                             />
+                           ) : <ImageIcon className="text-white/5" />}
                         </div>
                         <div className="flex flex-col">
                            <span className="text-xs font-black text-white uppercase tracking-widest">{watch.name}</span>
@@ -263,8 +284,8 @@ export default function InventoryPage() {
                      <div className="flex flex-col gap-1">
                         <span className="text-[10px] font-black text-white/40 uppercase tracking-widest">{watch.category} Collection</span>
                         <div className="flex items-center gap-2">
-                           <div className="w-1 h-1 rounded-full bg-green-500" />
-                           <span className="text-[9px] font-bold text-white/20 uppercase tracking-widest">{watch.stock} Units Stocked</span>
+                           <div className={`w-1 h-1 rounded-full ${watch.stock > 0 ? 'bg-green-500' : 'bg-red-500'}`} />
+                           <span className="text-[9px] font-bold text-white/20 uppercase tracking-widest">{watch.stock} Units</span>
                         </div>
                      </div>
                   </td>
@@ -273,7 +294,7 @@ export default function InventoryPage() {
                   </td>
                   <td className="px-10 py-8 text-right">
                      <span className={`text-[8px] font-black uppercase tracking-widest px-3 py-1 rounded-full border ${watch.stock > 0 ? 'bg-green-500/5 text-green-500 border-green-500/10' : 'bg-red-500/5 text-red-500 border-red-500/10'}`}>
-                        {watch.stock > 0 ? 'LIVE' : 'DEPLETED'}
+                        {watch.stock > 0 ? 'IN VAULT' : 'OUTFLOW'}
                      </span>
                   </td>
                   <td className="px-10 py-8 text-right">
@@ -299,115 +320,157 @@ export default function InventoryPage() {
         </div>
       </div>
 
-      {/* Entry Modal */}
+      {/* Asset Entry Modal */}
       <AnimatePresence>
         {isModalOpen && (
-          <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4">
+          <div className="fixed inset-0 z-[10000] flex items-center justify-center p-4 min-h-screen">
              <motion.div 
                initial={{ opacity: 0 }}
                animate={{ opacity: 1 }}
                exit={{ opacity: 0 }}
                onClick={() => setIsModalOpen(false)}
-               className="absolute inset-0 bg-black/80 backdrop-blur-md"
+               className="absolute inset-0 bg-black/90 backdrop-blur-xl"
              />
              
              <motion.div 
-               initial={{ opacity: 0, scale: 0.9, y: 30 }}
+               initial={{ opacity: 0, scale: 0.95, y: 40 }}
                animate={{ opacity: 1, scale: 1, y: 0 }}
-               exit={{ opacity: 0, scale: 0.9, y: 30 }}
+               exit={{ opacity: 0, scale: 0.95, y: 40 }}
                transition={{ duration: 0.8, ease: LUXURY_EASE }}
-               className="relative w-full max-w-4xl bg-[#0A0A0A] border border-white/10 rounded-[4rem] shadow-[0_50px_100px_rgba(0,0,0,0.8)] overflow-hidden flex flex-col max-h-[90vh]"
+               className="relative w-full max-w-5xl bg-[#0A0A0A] border border-white/10 rounded-[3rem] shadow-[0_50px_100px_-20px_rgba(0,0,0,1)] overflow-hidden flex flex-col max-h-[92vh]"
              >
-                <div className="p-10 border-b border-white/5 flex items-center justify-between">
-                   <div className="flex items-center gap-4">
-                      <div className="w-2 h-8 bg-[#C8A97E] rounded-full" />
-                      <h2 className="text-3xl font-serif text-white uppercase tracking-tighter">
-                        {editingWatch ? 'Secure Asset Update' : 'New Asset Entry'}
-                      </h2>
+                <div className="p-10 border-b border-white/5 flex items-center justify-between bg-gradient-to-r from-[#C8A97E]/10 via-transparent to-transparent">
+                   <div className="flex items-center gap-6">
+                      <div className="w-1 h-10 bg-[#C8A97E] rounded-full shadow-[0_0_15px_#C8A97E]" />
+                      <div className="flex flex-col">
+                        <h2 className="text-3xl font-serif text-white uppercase tracking-tighter">
+                          {editingWatch ? 'Secure Asset Update' : 'New Asset Induction'}
+                        </h2>
+                        <span className="text-[10px] font-black text-[#C8A97E] uppercase tracking-widest mt-1">Operational Node: Vault-01</span>
+                      </div>
                    </div>
-                   <button onClick={() => setIsModalOpen(false)} className="p-4 text-white/20 hover:text-white transition-colors">
+                   <button onClick={() => setIsModalOpen(false)} className="p-4 rounded-2xl bg-white/5 text-white/20 hover:text-white hover:bg-white/10 transition-all">
                       <X size={24} />
                    </button>
                 </div>
 
-                <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-12 space-y-12">
-                   <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-                      {/* Left Side: General Info */}
-                      <div className="space-y-8">
-                         <div className="space-y-3">
-                            <label className="text-[10px] font-black uppercase tracking-[0.4em] text-white/20 ml-4">Core Identification</label>
+                <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-12 space-y-12 custom-scrollbar">
+                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
+                      {/* Left: Metadata */}
+                      <div className="space-y-10">
+                         <div className="space-y-4">
+                            <label className="text-[10px] font-black uppercase tracking-[0.4em] text-white/20 ml-6">Primary ID</label>
                             <input 
                               required
-                              placeholder="WATCH NAME..."
+                              placeholder="WATCH MODEL NAME..."
                               value={formData.name}
                               onChange={(e) => setFormData({...formData, name: e.target.value})}
-                              className="w-full bg-white/[0.03] border border-white/5 rounded-2xl px-8 py-5 text-xs text-white placeholder:text-white/10 focus:border-[#C8A97E]/30 focus:ring-0 transition-all font-bold tracking-widest"
+                              className="w-full bg-white/[0.03] border border-white/5 rounded-3xl px-8 py-6 text-xs text-white placeholder:text-white/10 focus:border-[#C8A97E]/30 focus:ring-0 transition-all font-black tracking-widest"
                             />
-                            <input 
-                              required
-                              placeholder="BRAND (e.g. ROLEX)..."
-                              value={formData.brand}
-                              onChange={(e) => setFormData({...formData, brand: e.target.value})}
-                              className="w-full bg-white/[0.03] border border-white/5 rounded-2xl px-8 py-5 text-xs text-white placeholder:text-white/10 focus:border-[#C8A97E]/30 focus:ring-0 transition-all font-bold tracking-widest"
-                            />
+                            
+                            {/* DYNAMIC BRAND SELECT */}
+                            <div className="relative group">
+                              <select 
+                                required
+                                value={formData.brand}
+                                onChange={(e) => setFormData({...formData, brand: e.target.value})}
+                                className="w-full bg-white/[0.03] border border-white/5 rounded-3xl px-8 py-6 text-xs text-white focus:border-[#C8A97E]/30 focus:ring-0 transition-all font-black tracking-widest uppercase appearance-none"
+                              >
+                                <option value="" disabled>SELECT PRESTIGE BRAND...</option>
+                                {brands.map(b => <option key={b} value={b}>{b.toUpperCase()}</option>)}
+                                <option value="NEW">+ INDUCT NEW BRAND</option>
+                              </select>
+                              {formData.brand === 'NEW' && (
+                                <input 
+                                  placeholder="ENTER NEW BRAND NAME..."
+                                  onBlur={(e) => {
+                                    if(e.target.value) {
+                                      setBrands(prev => [...prev, e.target.value]);
+                                      setFormData({...formData, brand: e.target.value});
+                                    } else setFormData({...formData, brand: ''});
+                                  }}
+                                  className="mt-4 w-full bg-white/[0.03] border border-[#C8A97E]/30 rounded-3xl px-8 py-6 text-xs text-white placeholder:text-white/20 focus:ring-0 transition-all font-black tracking-widest"
+                                />
+                              )}
+                            </div>
                          </div>
 
-                         <div className="space-y-3">
-                            <label className="text-[10px] font-black uppercase tracking-[0.4em] text-white/20 ml-4">Valuation & Stock</label>
-                            <div className="grid grid-cols-2 gap-4">
+                         <div className="grid grid-cols-2 gap-6">
+                            <div className="space-y-4">
+                               <label className="text-[10px] font-black uppercase tracking-[0.4em] text-white/20 ml-6">Market Valuation</label>
                                <input 
                                  required
                                  type="number"
                                  placeholder="PRICE (USD)..."
                                  value={formData.price}
                                  onChange={(e) => setFormData({...formData, price: e.target.value})}
-                                 className="bg-white/[0.03] border border-white/5 rounded-2xl px-8 py-5 text-xs text-white placeholder:text-white/10 focus:border-[#C8A97E]/30 focus:ring-0 transition-all font-bold tracking-widest"
+                                 className="w-full bg-white/[0.03] border border-white/5 rounded-3xl px-8 py-6 text-xs text-white placeholder:text-white/10 focus:border-[#C8A97E]/30 focus:ring-0 transition-all font-black tracking-widest"
                                />
+                            </div>
+                            <div className="space-y-4">
+                               <label className="text-[10px] font-black uppercase tracking-[0.4em] text-white/20 ml-6">Vault Volume</label>
                                <input 
                                  required
                                  type="number"
                                  placeholder="STOCK..."
                                  value={formData.stock}
                                  onChange={(e) => setFormData({...formData, stock: parseInt(e.target.value)})}
-                                 className="bg-white/[0.03] border border-white/5 rounded-2xl px-8 py-5 text-xs text-white placeholder:text-white/10 focus:border-[#C8A97E]/30 focus:ring-0 transition-all font-bold tracking-widest"
+                                 className="w-full bg-white/[0.03] border border-white/5 rounded-3xl px-8 py-6 text-xs text-white placeholder:text-white/10 focus:border-[#C8A97E]/30 focus:ring-0 transition-all font-black tracking-widest"
                                />
                             </div>
                          </div>
 
-                         <div className="space-y-3">
-                            <label className="text-[10px] font-black uppercase tracking-[0.4em] text-white/20 ml-4">Categorization</label>
-                            <select 
-                              value={formData.category}
-                              onChange={(e) => setFormData({...formData, category: e.target.value})}
-                              className="w-full bg-white/[0.03] border border-white/5 rounded-2xl px-8 py-5 text-xs text-white focus:border-[#C8A97E]/30 focus:ring-0 transition-all font-bold uppercase tracking-widest appearance-none"
-                            >
-                               <option value="Luxury">Luxury Collection</option>
-                               <option value="Automatic">Mechanical Arts</option>
-                               <option value="Chronograph">Chronograph Series</option>
-                               <option value="Heritage">Heritage Edition</option>
-                            </select>
+                         <div className="space-y-4">
+                            <label className="text-[10px] font-black uppercase tracking-[0.4em] text-white/20 ml-6">Asset Classification</label>
+                            <div className="flex flex-wrap gap-3">
+                               {categories.map(cat => (
+                                 <button
+                                   key={cat}
+                                   type="button"
+                                   onClick={() => setFormData({...formData, category: cat})}
+                                   className={`px-6 py-4 rounded-2xl text-[9px] font-black uppercase tracking-widest transition-all ${
+                                     formData.category === cat 
+                                     ? 'bg-[#C8A97E] text-black shadow-[0_0_20px_rgba(200,169,126,0.3)]' 
+                                     : 'bg-white/5 text-white/20 hover:text-white hover:bg-white/10'
+                                   }`}
+                                 >
+                                   {cat}
+                                 </button>
+                               ))}
+                               <button
+                                 type="button"
+                                 onClick={() => {
+                                   const newCat = prompt('Envision New Category:');
+                                   if (newCat) {
+                                     setCategories(prev => [...prev, newCat]);
+                                     setFormData({...formData, category: newCat});
+                                   }
+                                 }}
+                                 className="px-6 py-4 rounded-2xl bg-white/5 text-[#C8A97E] text-[9px] font-black uppercase tracking-widest border border-[#C8A97E]/10"
+                               >
+                                 + ADAPT
+                               </button>
+                            </div>
                          </div>
                       </div>
 
-                      {/* Right Side: Media & Details */}
-                      <div className="space-y-8">
-                         <div className="space-y-4">
-                            <label className="text-[10px] font-black uppercase tracking-[0.4em] text-white/20 ml-4">Visual Assets</label>
-                            
-                            {/* Hero Image Upload */}
-                            <div className="group relative w-full aspect-video bg-[#050505] rounded-[2rem] border-2 border-dashed border-white/5 flex flex-col items-center justify-center cursor-pointer hover:border-[#C8A97E]/30 transition-all overflow-hidden p-6">
+                      {/* Right: Visual Assets */}
+                      <div className="space-y-10">
+                         <div className="space-y-6">
+                            <label className="text-[10px] font-black uppercase tracking-[0.4em] text-white/20 ml-6">Vanguard Presentation (HERO)</label>
+                            <div className="group relative w-full aspect-[4/3] bg-[#050505] rounded-[3rem] border-2 border-dashed border-white/5 flex flex-col items-center justify-center cursor-pointer hover:border-[#C8A97E]/30 transition-all overflow-hidden p-8">
                                {formData.hero_image_url ? (
                                  <>
-                                   <Image src={formData.hero_image_url} alt="Hero" fill className="object-contain p-4 group-hover:scale-105 transition-transform duration-700" />
-                                   <div className="absolute inset-0 bg-black/60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                                      <Upload className="text-white mb-2" />
-                                      <span className="text-[9px] font-black text-white uppercase tracking-widest">Update Hero Asset</span>
+                                   <Image src={formData.hero_image_url} alt="Hero" fill className="object-contain p-8 group-hover:scale-105 transition-transform duration-1000 ease-[0.25,1,0.5,1]" />
+                                   <div className="absolute inset-0 bg-black/70 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                      <Upload className="text-[#C8A97E] mb-4" />
+                                      <span className="text-[10px] font-black text-white uppercase tracking-[0.3em]">REPLACE MASTER PNG</span>
                                    </div>
                                  </>
                                ) : (
                                  <>
-                                   <ImageIcon size={32} className="text-white/10 mb-4" />
-                                   <span className="text-[9px] font-black text-white/20 uppercase tracking-widest">Upload Master Transparent PNG</span>
+                                   <ImageIcon size={48} className="text-white/5 mb-6" />
+                                   <span className="text-[10px] font-black text-white/20 uppercase tracking-[0.3em] text-center max-w-[200px] leading-relaxed">UPLOAD ALPHA-TRANSPARENT<br/>PRODUCT SHOWCASE</span>
                                  </>
                                )}
                                <input 
@@ -416,36 +479,37 @@ export default function InventoryPage() {
                                  onChange={(e) => handleUpload(e, 'hero')}
                                  className="absolute inset-0 opacity-0 cursor-pointer" 
                                />
-                               {uploading && <div className="absolute inset-0 bg-black/80 flex items-center justify-center"><Loader2 className="animate-spin text-[#C8A97E]" /></div>}
+                               {uploading && <div className="absolute inset-0 bg-black/90 flex flex-col items-center justify-center z-50"><Loader2 className="animate-spin text-[#C8A97E] mb-4" /><span className="text-[9px] font-black text-[#C8A97E] uppercase tracking-widest">TRANSMITTING...</span></div>}
                             </div>
                          </div>
                          
                          <div className="space-y-4">
+                            <label className="text-[10px] font-black uppercase tracking-[0.4em] text-white/20 ml-6">Artisanal Storytelling</label>
                             <textarea 
-                              placeholder="ARTISANAL STORYTELLING (DESCRIPTION)..."
+                              placeholder="NARRATE THE HERITAGE OF THIS TIMEPIECE..."
                               value={formData.description}
                               onChange={(e) => setFormData({...formData, description: e.target.value})}
-                              rows={4}
-                              className="w-full bg-white/[0.03] border border-white/5 rounded-3xl px-8 py-6 text-xs text-white placeholder:text-white/10 focus:border-[#C8A97E]/30 focus:ring-0 transition-all font-medium leading-relaxed"
+                              rows={5}
+                              className="w-full bg-white/[0.03] border border-white/5 rounded-[2.5rem] px-8 py-8 text-xs text-white placeholder:text-white/10 focus:border-[#C8A97E]/30 focus:ring-0 transition-all font-medium leading-loose"
                             />
                          </div>
                       </div>
                    </div>
 
-                   <div className="pt-12 border-t border-white/5 flex gap-4">
+                   <div className="pt-12 border-t border-white/5 flex gap-6">
                       <button 
                         type="submit" 
                         disabled={loading || uploading}
-                        className="flex-1 bg-white text-black py-6 rounded-3xl text-sm font-black uppercase tracking-[0.3em] hover:bg-[#C8A97E] transition-all duration-700 flex items-center justify-center gap-3 disabled:opacity-50"
+                        className="flex-1 bg-white text-black py-7 rounded-3xl text-sm font-black uppercase tracking-[0.4em] hover:bg-[#C8A97E] transition-all duration-700 flex items-center justify-center gap-4 disabled:opacity-50 shadow-[0_20px_40px_rgba(255,255,255,0.1)] group"
                       >
-                         {loading ? <Loader2 className="animate-spin" /> : <><Check size={20} /> Secure Entry</>}
+                         {loading ? <Loader2 className="animate-spin" /> : <><Check size={20} className="group-hover:scale-125 transition-transform" /> SECURE DISCOVERY ENTRY</>}
                       </button>
                       <button 
                          type="button" 
                          onClick={() => setIsModalOpen(false)}
-                         className="px-12 py-6 rounded-3xl border border-white/5 text-white/20 text-[10px] font-black uppercase tracking-[0.4em] hover:text-white hover:border-white/20 transition-all"
+                         className="px-14 py-7 rounded-3xl border border-white/10 text-white/30 text-[10px] font-black uppercase tracking-[0.5em] hover:text-white hover:border-white/40 transition-all"
                       >
-                        Abort
+                        ABORT
                       </button>
                    </div>
                 </form>
@@ -454,10 +518,14 @@ export default function InventoryPage() {
         )}
       </AnimatePresence>
 
-      <div className="fixed bottom-12 right-12 z-50">
-         <div className="flex items-center gap-4 bg-[#0A0A0A] border border-[#C8A97E]/20 px-6 py-4 rounded-full backdrop-blur-xl shadow-2xl">
-            <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-            <span className="text-[9px] font-black text-white uppercase tracking-widest">Master Node: Active</span>
+      <div className="fixed bottom-12 right-12 z-50 hidden lg:block">
+         <div className="flex items-center gap-6 bg-[#0A0A0A]/80 border border-[#C8A97E]/30 px-8 py-5 rounded-full backdrop-blur-2xl shadow-2xl">
+            <div className="flex items-center gap-3">
+               <Database size={16} className="text-[#C8A97E]" />
+               <span className="text-[10px] font-black text-white uppercase tracking-widest">VAULT.ONLINE</span>
+            </div>
+            <div className="w-px h-4 bg-white/10" />
+            <span className="text-[9px] font-bold text-white/40 tracking-widest">{watches.length} ASSETS REGISTERED</span>
          </div>
       </div>
     </div>
