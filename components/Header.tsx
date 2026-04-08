@@ -22,6 +22,7 @@ export default function Header() {
     { name: 'Home page', href: '/' },
     { name: 'The Collection', href: '/shop' },
     { name: 'Heritage & Craft', href: '/heritage' },
+    { name: 'Verify Authenticity', href: '/verify' },
     { name: 'Bespoke Sourcing', href: '/concierge' },
     { name: 'Shop All', href: '/shop' },
   ];

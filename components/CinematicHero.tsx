@@ -1,26 +1,59 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 
+declare global {
+  namespace JSX {
+    interface IntrinsicElements {
+      'model-viewer': any;
+    }
+  }
+}
+
 export default function CinematicHero() {
+  useEffect(() => {
+    // Dynamically load model-viewer script
+    const script = document.createElement('script');
+    script.type = 'module';
+    script.src = 'https://ajax.googleapis.com/ajax/libs/model-viewer/3.3.0/model-viewer.min.js';
+    document.body.appendChild(script);
+    return () => {
+      document.body.removeChild(script);
+    };
+  }, []);
+
   return (
     <section className="relative w-full min-h-[100dvh] flex flex-col items-center justify-center pt-32 pb-24 overflow-hidden bg-[#0A0A0A]">
       {/* 2. THE BACKGROUND TEXT */}
-      <h2 className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[18vw] font-serif text-white/5 whitespace-nowrap z-0 pointer-events-none select-none">
+      <h2 className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-[60%] text-[18vw] font-serif text-white/5 whitespace-nowrap z-0 pointer-events-none select-none">
         THE HOUR
       </h2>
 
-      {/* 3. THE ROTATING 3D WATCH (TOP ELEMENT) */}
-      <div className="relative z-20 w-full max-w-[350px] md:max-w-[500px] mb-8">
-        <motion.img 
-          src="/watch.png" 
-          alt="3D Luxury Watch" 
-          className="w-full object-contain drop-shadow-[0_20px_50px_rgba(200,169,126,0.15)]" 
-          animate={{ y: [0, -15, 0], rotate: [0, 2, -2, 0] }} 
-          transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }} 
-        />
+      {/* 3. THE 3D ROTATING WATCH (WATCH.GLB) */}
+      <div className="relative z-20 w-full aspect-square max-w-[450px] md:max-w-[700px] mb-8 cursor-grab active:cursor-grabbing">
+        <model-viewer
+          src="/watch.glb"
+          poster="/watch.png"
+          alt="3D Gold G-Shock"
+          auto-rotate
+          rotation-speed="0.5"
+          camera-controls
+          disable-zoom
+          shadow-intensity="2"
+          exposure="1.2"
+          environment-image="neutral"
+          style={{ width: '100%', height: '100%', backgroundColor: 'transparent' }}
+          className="w-full h-full"
+          ar
+          ar-modes="webxr scene-viewer quick-look"
+        >
+          {/* Fallback image if 3D fails */}
+          <div slot="poster" className="w-full h-full flex items-center justify-center">
+             <img src="/watch.png" className="w-[80%] object-contain drop-shadow-[0_20px_50px_rgba(200,169,126,0.3)] animate-float" alt="Watch Fallback" />
+          </div>
+        </model-viewer>
       </div>
 
       {/* 4. THE TYPOGRAPHY (MIDDLE ELEMENT) */}
@@ -43,11 +76,21 @@ export default function CinematicHero() {
         </Link>
       </div>
 
-      {/* Aesthetic Accents (Subtle additions to anchor the layout) */}
+      {/* Aesthetic Accents */}
       <div className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-4 opacity-20">
          <div className="w-[1px] h-12 bg-gradient-to-b from-white to-transparent" />
          <span className="text-[8px] uppercase tracking-[0.5em] font-bold text-white">Editorial Flagship</span>
       </div>
+
+      <style jsx global>{`
+        @keyframes float {
+          0%, 100% { transform: translateY(0) rotate(0); }
+          50% { transform: translateY(-20px) rotate(2deg); }
+        }
+        .animate-float {
+          animation: float 6s ease-in-out infinite;
+        }
+      `}</style>
     </section>
   );
 }
