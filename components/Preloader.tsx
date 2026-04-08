@@ -58,9 +58,13 @@ export default function Preloader() {
               initial={{ y: '100%', opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ duration: 1.5, ease: [0.22, 1, 0.36, 1] }}
-              className="text-7xl md:text-9xl font-serif text-white tracking-[0.3em] font-black relative z-10 select-none"
+              className="relative z-10 select-none w-32 h-32 md:w-48 md:h-48"
             >
-              TH
+              <img 
+                src="/logo.png" 
+                alt="THE HOUR" 
+                className="w-full h-full object-contain brightness-125"
+              />
             </motion.div>
             
             {/* Volumetric Pulse behind Logo */}

@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { ShoppingBag, Menu } from 'lucide-react';
 import { useStore } from '@/store/useStore';
 import { useUIStore } from '@/store/useUIStore';
+import Logo from './Logo';
 
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -32,13 +33,7 @@ export default function Header() {
       <div className="max-w-[1800px] mx-auto px-6 md:px-12 flex items-center justify-between">
         {/* Left: Logo */}
         <Link href="/" className="group relative z-[1000] flex items-center gap-4">
-          <div className="w-10 h-10 md:w-12 md:h-12 relative overflow-hidden transition-transform duration-500 group-hover:scale-110">
-            <img 
-              src="/logo.png" 
-              alt="THE HOUR" 
-              className="w-full h-full object-contain mix-blend-screen brightness-125"
-            />
-          </div>
+          <Logo size={isScrolled ? 40 : 50} className="transition-transform duration-500 group-hover:scale-110" />
           <span className={`text-white text-[10px] uppercase tracking-[0.4em] font-black transition-opacity duration-500 ${isScrolled ? 'opacity-100' : 'opacity-0'}`}>
             The Hour
           </span>
