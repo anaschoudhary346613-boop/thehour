@@ -4,7 +4,7 @@ import React, { use, useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { ShoppingBag, ArrowLeft, Shield, Clock, Award, ShieldCheck, Truck, Banknote, MessageCircle } from 'lucide-react';
+import { ShoppingBag, ArrowLeft, ShieldCheck, Truck, Banknote, MessageCircle } from 'lucide-react';
 import { useCart } from '@/store/useCart';
 import { PRODUCTS, formatPrice, Product } from '@/lib/products';
 
@@ -12,7 +12,6 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
   const { id } = use(params);
   const { addItem, toggleCart } = useCart();
   const [product, setProduct] = useState<Product | null>(null);
-  const [activeTab, setActiveTab] = useState('SPECIFICATIONS');
 
   useEffect(() => {
     const foundProduct = PRODUCTS.find((p) => p.id === id);
@@ -31,8 +30,8 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
   const whatsappUrl = `https://wa.me/919860948892?text=${encodeURIComponent(`Namaste The Hour Concierge, I am interested in acquiring the ${product.name}. The listed price is ${formatPrice(product.price)}. Please guide me on the next steps for a secure transfer.`)}`;
 
   return (
-    <div className="min-h-screen bg-[#050505] text-[#C8A97E] font-sans">
-      <main className="pt-24 md:pt-32 px-6 lg:px-12 max-w-7xl mx-auto pb-40">
+    <div className="min-h-screen bg-[#050505] text-[#C8A97E] font-sans pb-[140px]">
+      <main className="pt-24 md:pt-32 px-6 lg:px-12 max-w-7xl mx-auto">
         {/* Back Link */}
         <motion.div 
           initial={{ opacity: 0, x: -10 }}
@@ -91,9 +90,19 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
                 <span className="text-[9px] text-gray-500 uppercase tracking-widest font-bold">Limited Acquisition</span>
               </div>
 
-              <h1 className="text-4xl md:text-6xl font-serif text-white uppercase tracking-tighter leading-none mb-6">
-                {product.name}
-              </h1>
+              {/* Header Fix: Restoring Normal Flow & Side-by-Side Logo */}
+              <div className="flex flex-col md:flex-row items-start md:items-center gap-6 mb-8 group">
+                <div className="w-16 h-16 md:w-20 md:h-20 bg-white/[0.03] border border-white/10 p-3 rounded-2xl transition-transform group-hover:scale-105 duration-500">
+                  <img 
+                    src="/logo.png" 
+                    alt="Logo"
+                    className="w-full h-full object-contain" 
+                  />
+                </div>
+                <h1 className="text-4xl md:text-6xl font-serif text-white uppercase tracking-tighter leading-tight">
+                  {product.name}
+                </h1>
+              </div>
 
               <p className="text-gray-400 text-sm leading-relaxed mb-8 max-w-md">
                 {product.description}
@@ -117,21 +126,21 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
                     image_url: product.image,
                     quantity: 1
                   }); toggleCart(true); }}
-                  className="w-full bg-white text-black py-5 text-[10px] uppercase tracking-[0.4em] font-bold shadow-2xl flex items-center justify-center gap-3 hover:bg-[#C8A97E] transition-colors"
+                  className="w-full bg-white text-black py-5 text-[10px] uppercase tracking-[0.4em] font-bold shadow-2xl flex items-center justify-center gap-3 hover:bg-[#C8A97E] transition-colors rounded-xl"
                 >
                   <ShoppingBag size={18} />
                   Secure Acquisition
                 </button>
 
-                {/* WhatsApp Concierge Button */}
+                {/* Fixed: Wired up Anchor Tag for WhatsApp */}
                 <a 
                   href={whatsappUrl} 
                   target="_blank" 
                   rel="noopener noreferrer" 
-                  className="w-full flex items-center justify-center gap-3 py-5 rounded-full border border-white/10 bg-white/5 backdrop-blur-md text-white hover:border-[#25D366]/50 hover:bg-[#25D366]/10 transition-all duration-300 group"
+                  className="w-full flex items-center justify-center gap-3 py-5 rounded-xl border border-[#25D366]/30 bg-[#25D366]/5 backdrop-blur-md text-white hover:bg-[#25D366]/20 transition-all duration-300 group"
                 >
-                  <MessageCircle size={18} className="text-gray-400 group-hover:text-[#25D366] transition-colors" />
-                  <span className="text-[10px] uppercase tracking-[0.2em] font-bold group-hover:text-[#25D366] transition-colors">Order via Concierge</span>
+                  <MessageCircle size={18} className="text-[#25D366]" />
+                  <span className="text-[10px] uppercase tracking-[0.2em] font-bold text-[#25D366]">Order on WhatsApp</span>
                 </a>
               </div>
 
@@ -141,7 +150,7 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
                   <div className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center mb-3">
                     <ShieldCheck className="text-[#C8A97E]" size={20} />
                   </div>
-                  <span className="text-[8px] uppercase tracking-[0.2em] text-gray-400 leading-tight">
+                  <span className="text-[8px] uppercase tracking-[0.2em] text-gray-400 leading-tight font-bold">
                     100%<br/>Authentic
                   </span>
                 </div>
@@ -150,7 +159,7 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
                   <div className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center mb-3">
                     <Truck className="text-[#C8A97E]" size={20} />
                   </div>
-                  <span className="text-[8px] uppercase tracking-[0.2em] text-gray-400 leading-tight">
+                  <span className="text-[8px] uppercase tracking-[0.2em] text-gray-400 leading-tight font-bold">
                     Pan-India<br/>Delivery
                   </span>
                 </div>
@@ -159,7 +168,7 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
                   <div className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center mb-3">
                     <Banknote className="text-[#C8A97E]" size={20} />
                   </div>
-                  <span className="text-[8px] uppercase tracking-[0.2em] text-gray-400 leading-tight">
+                  <span className="text-[8px] uppercase tracking-[0.2em] text-gray-400 leading-tight font-bold">
                     Secure<br/>Transfer
                   </span>
                 </div>
@@ -169,10 +178,10 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
         </div>
       </main>
 
-      {/* Sticky Mobile Buy Bar */}
-      <div className="fixed bottom-0 left-0 w-full bg-[#050505]/95 backdrop-blur-2xl border-t border-white/10 p-5 px-6 flex justify-between items-center z-[200] md:hidden">
+      {/* Sticky Mobile Buy Bar: Highest Z-Index & PB Safe */}
+      <div className="fixed bottom-0 left-0 w-full bg-[#050505] border-t border-white/10 p-5 px-6 pb-safe flex justify-between items-center z-[9999] md:hidden">
         <div className="flex flex-col">
-          <span className="text-[9px] uppercase tracking-widest text-gray-500 font-bold mb-1">Total Acquisition</span>
+          <span className="text-[9px] uppercase tracking-widest text-gray-500 font-bold mb-1">Total Price</span>
           <span className="text-[#C8A97E] font-bold text-lg leading-none">
             {formatPrice(product.price)}
           </span>
@@ -182,10 +191,10 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
           href={whatsappUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="bg-[#25D366] text-black px-6 py-3.5 rounded-full font-bold text-[10px] uppercase tracking-widest flex items-center gap-2 shadow-[0_0_30px_rgba(37,211,102,0.2)] active:scale-95 transition-transform"
+          className="bg-[#25D366] text-black px-6 py-3.5 rounded-full font-bold text-[10px] uppercase tracking-widest flex items-center gap-2 shadow-[0_4px_20px_rgba(37,211,102,0.3)] active:scale-95 transition-transform"
         >
           <MessageCircle size={16} />
-          WhatsApp Order
+          Order Now
         </a>
       </div>
     </div>
