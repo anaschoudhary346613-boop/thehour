@@ -4,7 +4,7 @@ import React, { use, useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { ShoppingBag, ArrowLeft, Shield, Clock, Award } from 'lucide-react';
+import { ShoppingBag, ArrowLeft, Shield, Clock, Award, ShieldCheck, Truck, Banknote, MessageCircle } from 'lucide-react';
 import { useCart } from '@/store/useCart';
 import { PRODUCTS, formatPrice, Product } from '@/lib/products';
 
@@ -28,22 +28,24 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
     </div>
   );
 
+  const whatsappUrl = `https://wa.me/919860948892?text=${encodeURIComponent(`Namaste The Hour Concierge, I am interested in acquiring the ${product.name}. The listed price is ${formatPrice(product.price)}. Please guide me on the next steps for a secure transfer.`)}`;
+
   return (
-    <div className="min-h-screen bg-[#0A0A0A] text-[#C8A97E] font-inter">
-      <main className="pt-24 md:pt-32 px-6 lg:px-12 max-w-7xl mx-auto pb-[120px]">
+    <div className="min-h-screen bg-[#050505] text-[#C8A97E] font-sans">
+      <main className="pt-24 md:pt-32 px-6 lg:px-12 max-w-7xl mx-auto pb-40">
         {/* Back Link */}
         <motion.div 
           initial={{ opacity: 0, x: -10 }}
           animate={{ opacity: 1, x: 0 }}
           className="mb-8"
         >
-          <Link href="/shop" className="group inline-flex items-center gap-2 text-[#C8A97E]/40 hover:text-[#C8A97E] transition-colors text-xs uppercase tracking-widest font-bold">
-            <ArrowLeft size={14} className="group-hover:-translate-x-1 transition-transform" />
+          <Link href="/shop" className="group inline-flex items-center gap-2 text-[#C8A97E]/40 hover:text-[#C8A97E] transition-colors text-[10px] uppercase tracking-widest font-bold">
+            <ArrowLeft size={12} className="group-hover:-translate-x-1 transition-transform" />
             Back to Collection
           </Link>
         </motion.div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-24 items-start">
           
           {/* Visual Showcase (Left) */}
           <div className="space-y-8">
@@ -51,7 +53,7 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.8 }}
-              className="relative aspect-[4/5] bg-[#141414] border border-[#C8A97E]/10 group overflow-hidden"
+              className="relative aspect-[4/5] bg-white/[0.03] border border-white/5 group overflow-hidden rounded-3xl"
             >
               <Image
                 src={product.image}
@@ -64,14 +66,14 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
             
             {/* Asset Details Grid */}
             <div className="grid grid-cols-2 gap-6">
-              <div className="bg-[#141414] p-8 border border-[#C8A97E]/5 flex flex-col justify-center">
-                <span className="text-[10px] text-[#C8A97E]/40 uppercase tracking-[0.3em] font-bold mb-2">Heritage</span>
-                <p className="text-[#C8A97E]/70 text-sm leading-relaxed italic font-serif">
+              <div className="bg-white/[0.03] p-8 border border-white/5 flex flex-col justify-center rounded-2xl">
+                <span className="text-[9px] text-[#C8A97E]/40 uppercase tracking-[0.3em] font-bold mb-3">Heritage</span>
+                <p className="text-[#C8A97E]/70 text-xs leading-relaxed italic font-serif">
                   "Each watch requires over 800 hours of hand-finishing in our private atelier in Geneva."
                 </p>
               </div>
-              <div className="relative aspect-square overflow-hidden bg-[#141414] border border-[#C8A97E]/5">
-                <Image src={product.image} alt="Detail" fill className="object-contain p-8 rotate-12 opacity-50" />
+              <div className="relative aspect-square overflow-hidden bg-white/[0.03] border border-white/5 rounded-2xl">
+                <Image src={product.image} alt="Detail" fill className="object-contain p-8 rotate-12 opacity-30" />
               </div>
             </div>
           </div>
@@ -83,49 +85,25 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8 }}
             >
-              <div className="flex items-center gap-4 mb-6">
-                <span className="text-xs text-[#C8A97E] font-bold uppercase tracking-[0.4em]">{product.category}</span>
-                <span className="w-8 h-[1px] bg-[#C8A97E]/20" />
-                <span className="text-[10px] text-[#C8A97E]/40 uppercase tracking-widest font-bold">MASTER SERIES</span>
+              <div className="flex items-center gap-4 mb-4">
+                <span className="text-[10px] text-[#C8A97E] font-bold uppercase tracking-[0.4em]">{product.category}</span>
+                <span className="w-8 h-[1px] bg-white/10" />
+                <span className="text-[9px] text-gray-500 uppercase tracking-widest font-bold">Limited Acquisition</span>
               </div>
 
               <h1 className="text-4xl md:text-6xl font-serif text-white uppercase tracking-tighter leading-none mb-6">
                 {product.name}
               </h1>
 
-              <p className="text-[#C8A97E]/60 text-base leading-relaxed mb-8 max-w-lg">
+              <p className="text-gray-400 text-sm leading-relaxed mb-8 max-w-md">
                 {product.description}
               </p>
 
-              <div className="flex items-baseline gap-4 mb-12">
-                <span className="text-4xl font-serif text-white">{formatPrice(product.price)}</span>
-                <span className="text-[10px] text-[#C8A97E]/40 font-bold uppercase tracking-widest">PRIVATE ACQUISITION</span>
-              </div>
-
-              {/* Specifications Tabs */}
-              <div className="mb-12 border-t border-[#C8A97E]/10 pt-8">
-                <div className="flex gap-8 mb-8">
-                  {['SPECIFICATIONS', 'HERITAGE'].map((tab) => (
-                    <button
-                      key={tab}
-                      onClick={() => setActiveTab(tab)}
-                      className={`text-[10px] font-bold tracking-[0.3em] transition-all uppercase ${
-                        activeTab === tab ? 'text-white' : 'text-[#C8A97E]/30 hover:text-[#C8A97E]'
-                      } relative pb-2`}
-                    >
-                      {tab}
-                      {activeTab === tab && (
-                        <motion.div layoutId="tabLine" className="absolute bottom-0 left-0 w-full h-[1px] bg-[#C8A97E]" />
-                      )}
-                    </button>
-                  ))}
-                </div>
-
-                <div className="space-y-4">
-                  <SpecLine label="Material" value={product.material || "904L Satin Steel"} />
-                  <SpecLine label="Movement" value="Swiss Calibre TH-01" />
-                  <SpecLine label="Resistance" value="Professional 10BAR" />
-                </div>
+              <div className="flex items-baseline gap-4 mb-10 pb-10 border-b border-white/10">
+                <span className="text-4xl font-serif text-[#C8A97E]">{formatPrice(product.price)}</span>
+                {product.originalPrice && (
+                  <span className="text-lg text-gray-500 line-through decoration-white/20">{formatPrice(product.originalPrice)}</span>
+                )}
               </div>
 
               {/* Action Buttons */}
@@ -134,45 +112,82 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
                   onClick={() => { addItem({
                     id: product.id,
                     name: product.name,
-                    brand: 'The Hour',
+                    brand: product.brand || 'The Hour',
                     price: product.price,
                     image_url: product.image,
                     quantity: 1
                   }); toggleCart(true); }}
-                  className="w-full bg-[#C8A97E] text-black py-5 text-xs uppercase tracking-[0.4em] font-bold shadow-2xl shadow-[#C8A97E]/5 flex items-center justify-center gap-3 hover:bg-white transition-colors"
+                  className="w-full bg-white text-black py-5 text-[10px] uppercase tracking-[0.4em] font-bold shadow-2xl flex items-center justify-center gap-3 hover:bg-[#C8A97E] transition-colors"
                 >
                   <ShoppingBag size={18} />
                   Secure Acquisition
                 </button>
-                
-                <div className="flex items-center justify-between px-2 pt-4">
-                  <div className="flex items-center gap-2">
-                    <Shield size={14} className="text-[#C8A97E]/40" />
-                    <span className="text-[9px] text-[#C8A97E]/40 font-bold uppercase tracking-widest">Verified Asset</span>
+
+                {/* WhatsApp Concierge Button */}
+                <a 
+                  href={whatsappUrl} 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  className="w-full flex items-center justify-center gap-3 py-5 rounded-full border border-white/10 bg-white/5 backdrop-blur-md text-white hover:border-[#25D366]/50 hover:bg-[#25D366]/10 transition-all duration-300 group"
+                >
+                  <MessageCircle size={18} className="text-gray-400 group-hover:text-[#25D366] transition-colors" />
+                  <span className="text-[10px] uppercase tracking-[0.2em] font-bold group-hover:text-[#25D366] transition-colors">Order via Concierge</span>
+                </a>
+              </div>
+
+              {/* Trust Badges */}
+              <div className="grid grid-cols-3 gap-4 mt-12 py-8 border-t border-white/10">
+                <div className="flex flex-col items-center text-center">
+                  <div className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center mb-3">
+                    <ShieldCheck className="text-[#C8A97E]" size={20} />
                   </div>
-                  <div className="flex items-center gap-2">
-                    <Award size={14} className="text-[#C8A97E]/40" />
-                    <span className="text-[9px] text-[#C8A97E]/40 font-bold uppercase tracking-widest">Master Certified</span>
+                  <span className="text-[8px] uppercase tracking-[0.2em] text-gray-400 leading-tight">
+                    100%<br/>Authentic
+                  </span>
+                </div>
+
+                <div className="flex flex-col items-center text-center">
+                  <div className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center mb-3">
+                    <Truck className="text-[#C8A97E]" size={20} />
                   </div>
-                  <div className="flex items-center gap-2">
-                    <Clock size={14} className="text-[#C8A97E]/40" />
-                    <span className="text-[9px] text-[#C8A97E]/40 font-bold uppercase tracking-widest">Lifetime Service</span>
+                  <span className="text-[8px] uppercase tracking-[0.2em] text-gray-400 leading-tight">
+                    Pan-India<br/>Delivery
+                  </span>
+                </div>
+
+                <div className="flex flex-col items-center text-center">
+                  <div className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center mb-3">
+                    <Banknote className="text-[#C8A97E]" size={20} />
                   </div>
+                  <span className="text-[8px] uppercase tracking-[0.2em] text-gray-400 leading-tight">
+                    Secure<br/>Transfer
+                  </span>
                 </div>
               </div>
             </motion.div>
           </div>
         </div>
       </main>
-    </div>
-  );
-}
 
-function SpecLine({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="flex justify-between items-center py-3 border-b border-[#C8A97E]/5 group hover:bg-[#C8A97E]/5 transition-colors px-2">
-      <span className="text-[10px] text-[#C8A97E]/40 font-bold uppercase tracking-widest">{label}</span>
-      <span className="text-xs text-white font-serif">{value}</span>
+      {/* Sticky Mobile Buy Bar */}
+      <div className="fixed bottom-0 left-0 w-full bg-[#050505]/95 backdrop-blur-2xl border-t border-white/10 p-5 px-6 flex justify-between items-center z-[200] md:hidden">
+        <div className="flex flex-col">
+          <span className="text-[9px] uppercase tracking-widest text-gray-500 font-bold mb-1">Total Acquisition</span>
+          <span className="text-[#C8A97E] font-bold text-lg leading-none">
+            {formatPrice(product.price)}
+          </span>
+        </div>
+
+        <a 
+          href={whatsappUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="bg-[#25D366] text-black px-6 py-3.5 rounded-full font-bold text-[10px] uppercase tracking-widest flex items-center gap-2 shadow-[0_0_30px_rgba(37,211,102,0.2)] active:scale-95 transition-transform"
+        >
+          <MessageCircle size={16} />
+          WhatsApp Order
+        </a>
+      </div>
     </div>
   );
 }

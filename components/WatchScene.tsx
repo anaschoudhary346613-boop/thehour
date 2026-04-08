@@ -23,9 +23,9 @@ function Model() {
 export default function WatchScene() {
   return (
     <div 
-      className="absolute inset-0 z-10 w-full h-full flex items-center justify-center pointer-events-none"
+      className="absolute inset-0 z-10 w-full h-full flex flex-col items-center justify-center pointer-events-none"
     >
-      <div className="w-[80vw] h-[80vh] pointer-events-auto cursor-grab active:cursor-grabbing">
+      <div className="w-[80vw] h-[70vh] pointer-events-auto cursor-grab active:cursor-grabbing">
         <Canvas 
           shadows 
           dpr={[1, 2]}
@@ -74,11 +74,13 @@ export default function WatchScene() {
         </Canvas>
       </div>
 
-      {/* Interaction UI */}
-      <div className="absolute bottom-[22%] left-1/2 -translate-x-1/2 flex items-center gap-3 opacity-30 hover:opacity-100 transition-opacity duration-700 pointer-events-none">
-        <div className="w-10 h-[1px] bg-[#C8A97E]" />
-        <span className="text-[9px] uppercase tracking-[0.5em] text-white font-sans font-bold">Orbital View Active</span>
-        <div className="w-10 h-[1px] bg-[#C8A97E]" />
+      {/* Simplified, Non-Colliding Interaction UI */}
+      <div className="flex flex-col items-center gap-4 mt-8 pointer-events-none">
+        <div className="flex items-center gap-3 opacity-20 hover:opacity-100 transition-opacity duration-700">
+           <div className="w-10 h-[1px] bg-[#C8A97E]" />
+           <span className="text-[9px] uppercase tracking-[0.5em] text-white font-sans font-bold">Orbital View Active</span>
+           <div className="w-10 h-[1px] bg-[#C8A97E]" />
+        </div>
       </div>
     </div>
   );

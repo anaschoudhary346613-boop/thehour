@@ -39,11 +39,11 @@ export default function RootLayout({
               <img 
                 src="/logo.png" 
                 alt="THE HOUR" 
-                className="w-full h-full object-contain filter drop-shadow-[0_0_10px_rgba(255,255,255,0.2)]"
+                className="w-full h-full object-contain mix-blend-screen opacity-90 filter drop-shadow-[0_0_10px_rgba(255,255,255,0.1)]"
               />
             </div>
 
-            <main className="relative z-0">
+            <main className="relative z-0 pb-[120px] md:pb-[150px]">
               {children}
             </main>
             

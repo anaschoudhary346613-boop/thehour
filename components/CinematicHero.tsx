@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
+import Link from 'next/link';
 import MagneticButton from './MagneticButton';
 import WatchScene from './WatchScene';
 
@@ -38,37 +39,29 @@ export default function CinematicHero() {
           transition={{ duration: 1, delay: 0.5, ease: "easeOut" }}
           className="max-w-xl"
         >
-          <h2 className="text-[10px] md:text-sm uppercase tracking-[0.5em] text-[#C8A97E] mb-4 font-sans font-medium">
-            Exclusively Curated
-          </h2>
+          <div className="flex flex-col items-center gap-4 mb-4">
+             <h2 className="text-[10px] md:text-sm uppercase tracking-[0.5em] text-[#C8A97E] font-sans font-medium">
+               Exclusively Curated
+             </h2>
+          </div>
+          
           <h3 className="text-3xl md:text-6xl font-serif text-white mb-8 tracking-tight leading-tight">
             The New Era of <br /> Luxury Timekeeping
           </h3>
           
           <div className="flex justify-center pointer-events-auto">
             <MagneticButton>
-              <button 
-                onClick={() => document.getElementById('collection')?.scrollIntoView({ behavior: 'smooth' })}
-                className="group relative px-8 md:px-10 py-4 md:py-5 bg-white text-black font-sans font-bold uppercase tracking-widest text-[10px] md:text-xs overflow-hidden transition-transform active:scale-95"
-              >
-                <span className="relative z-10">Discover Collection</span>
-                <motion.div 
-                  className="absolute inset-0 bg-[#C8A97E] -translate-x-full group-hover:translate-x-0 transition-transform duration-500 ease-in-out"
-                />
-              </button>
+              <Link href="/shop" className="block">
+                <button className="backdrop-blur-md bg-white/5 border border-white/20 text-white px-10 py-5 rounded-full uppercase tracking-[0.2em] text-[10px] md:text-xs hover:bg-[#C8A97E] hover:text-black hover:border-[#C8A97E] transition-all duration-300 active:scale-95">
+                  Discover Collection
+                </button>
+              </Link>
             </MagneticButton>
           </div>
         </motion.div>
       </div>
 
-      {/* Scroll Indicator */}
-      <motion.div 
-        animate={{ y: [0, 10, 0] }}
-        transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-        className="absolute bottom-6 md:bottom-10 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-2"
-      >
-        <div className="w-[1px] h-8 md:h-12 bg-gradient-to-b from-white/0 via-[#C8A97E]/50 to-white/0" />
-      </motion.div>
+      {/* Cleanup: Removed the stray vertical scroll line */}
     </section>
   );
 }

@@ -1,99 +1,107 @@
 'use client';
 
+import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { PRODUCTS, formatPrice } from '@/lib/products';
-import { useCart } from '@/store/useCart';
-import { ShoppingBag, ArrowRight } from 'lucide-react';
+import { SlidersHorizontal, ShoppingBag } from 'lucide-react';
 
 export default function ShopPage() {
-  const { addItem } = useCart();
-
   return (
-    <div className="min-h-screen bg-[#0A0A0A] text-[#C8A97E] font-inter">
-      <main className="pt-24 md:pt-32 px-6 lg:px-12 max-w-7xl mx-auto pb-[120px]">
-        <div className="mb-12 md:mb-20">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="flex flex-col items-center md:items-start text-center md:text-left"
-          >
-            <span className="text-[10px] uppercase tracking-[0.4em] text-[#C8A97E]/40 mb-2">
-              The Vault
-            </span>
-            <h1 className="text-5xl md:text-7xl font-serif text-white tracking-wider uppercase">
-              Collection
-            </h1>
-            <p className="mt-4 text-[#C8A97E]/60 max-w-md text-sm leading-relaxed">
-              Discover our complete inventory of horological masterpieces. Each piece represents the pinnacle of craftsmanship and heritage.
-            </p>
-          </motion.div>
-        </div>
+    <main className="min-h-screen bg-[#050505] pt-24 pb-32 px-4 md:px-8 text-white flex flex-col font-sans">
+      {/* Page Header */}
+      <div className="max-w-7xl mx-auto w-full mb-12 mt-8 md:mt-16">
+        <motion.div
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 1 }}
+        >
+          <span className="text-[10px] uppercase tracking-[0.5em] text-[#C8A97E] mb-2 block font-bold">The Vault</span>
+          <h1 className="text-4xl md:text-7xl font-serif text-white tracking-widest uppercase">The Collection</h1>
+        </motion.div>
+      </div>
 
-        {/* Product Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-12">
-          {PRODUCTS.map((product, idx) => (
-            <motion.div
-              key={product.id}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: idx * 0.1 }}
-              className="bg-[#141414] p-6 border border-[#C8A97E]/10 hover:border-[#C8A97E]/30 transition-all group flex flex-col relative"
-            >
-              <Link href={`/product/${product.id}`} className="block relative w-full aspect-square mb-8">
-                <Image
-                  src={product.image}
-                  alt={product.name}
-                  fill
-                  className="object-contain p-4 drop-shadow-2xl transition-transform duration-700 group-hover:scale-105"
-                />
-              </Link>
-              
-              <div className="flex flex-col flex-1 justify-between">
-                <div>
-                  <div className="flex justify-between items-start mb-2">
-                    <div>
-                      <span className="text-[10px] uppercase tracking-[0.2em] text-[#C8A97E]/40 block mb-1">
-                        {product.category}
-                      </span>
-                      <h3 className="text-xl font-serif text-white uppercase tracking-tight">
-                        {product.name}
-                      </h3>
+      {/* Filter & Sort Toolbar */}
+      <div className="max-w-7xl mx-auto w-full mb-10">
+        <div className="flex justify-between items-center border-y border-white/10 py-5">
+          <button className="bg-white/5 border border-white/10 px-5 py-2.5 rounded-full flex items-center gap-3 text-[10px] uppercase tracking-widest text-[#C8A97E] font-bold hover:bg-white hover:text-black transition-all duration-500">
+            <SlidersHorizontal size={14} />
+            Filter and sort
+          </button>
+          <span className="text-[10px] uppercase tracking-widest text-gray-500 font-bold">
+            {PRODUCTS.length} Masterpieces
+          </span>
+        </div>
+      </div>
+
+      {/* 2-Column Product Grid */}
+      <div className="max-w-7xl mx-auto w-full">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-x-4 gap-y-10 md:gap-x-8 md:gap-y-16">
+          {PRODUCTS.map((product, idx) => {
+            const discount = product.originalPrice 
+              ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100) 
+              : 0;
+
+            return (
+              <motion.div 
+                key={product.id}
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: idx * 0.1 }}
+                className="flex flex-col group cursor-pointer"
+              >
+                <Link href={`/product/${product.id}`} className="block">
+                  {/* Image Wrapper */}
+                  <div className="relative aspect-[4/5] bg-white/[0.03] rounded-2xl overflow-hidden mb-5 border border-white/5 transition-colors group-hover:border-[#C8A97E]/30">
+                    <Image
+                      src={product.image}
+                      alt={product.name}
+                      fill
+                      className="object-contain p-6 md:p-10 drop-shadow-2xl transition-transform duration-1000 group-hover:scale-110 ease-out"
+                    />
+
+                    {/* Discount Badge */}
+                    {discount > 0 && (
+                      <div className="absolute top-3 left-3 bg-black/80 backdrop-blur-md border border-[#C8A97E]/30 text-white text-[9px] font-bold uppercase tracking-widest px-2 py-1 rounded">
+                        Save {discount}%
+                      </div>
+                    )}
+                    
+                    {/* Hover Quick Add Overlay */}
+                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-center justify-center pointer-events-none">
+                       <div className="w-10 h-10 rounded-full bg-[#C8A97E] flex items-center justify-center text-black">
+                          <ShoppingBag size={18} />
+                       </div>
                     </div>
                   </div>
-                  <p className="text-2xl font-serif text-white mb-6">
-                    {formatPrice(product.price)}
-                  </p>
-                </div>
 
-                <div className="flex items-center gap-3 mt-auto">
-                  <button 
-                    onClick={() => addItem({
-                      id: product.id,
-                      name: product.name,
-                      brand: 'The Hour',
-                      price: product.price,
-                      image_url: product.image,
-                      quantity: 1
-                    })}
-                    className="flex-1 bg-[#0A0A0A] text-white border border-[#C8A97E]/20 py-3 hover:bg-[#C8A97E]/10 transition-colors uppercase font-bold text-[10px] tracking-widest flex items-center justify-center gap-2"
-                  >
-                    <ShoppingBag size={14} />
-                    Add to Cart
-                  </button>
-                  <Link 
-                    href={`/product/${product.id}`}
-                    className="w-12 h-12 flex items-center justify-center bg-[#C8A97E]/10 text-[#C8A97E] hover:bg-[#C8A97E] hover:text-[#0A0A0A] transition-colors"
-                  >
-                    <ArrowRight size={18} />
-                  </Link>
-                </div>
-              </div>
-            </motion.div>
-          ))}
+                  {/* Card Text Data */}
+                  <div className="px-1">
+                    <h3 className="text-[10px] font-bold uppercase tracking-[0.3em] text-[#C8A97E]/60 mb-1.5 font-sans">
+                      {product.brand || 'The Hour'}
+                    </h3>
+                    <h2 className="text-sm md:text-base font-serif text-white mb-2 leading-tight uppercase tracking-tight group-hover:text-[#C8A97E] transition-colors">
+                      {product.name}
+                    </h2>
+                    
+                    <div className="flex items-center gap-3">
+                      <span className="text-sm font-bold text-[#C8A97E]">
+                        {formatPrice(product.price)}
+                      </span>
+                      {product.originalPrice && (
+                        <span className="text-xs text-gray-500 line-through decoration-white/20">
+                          {formatPrice(product.originalPrice)}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                </Link>
+              </motion.div>
+            );
+          })}
         </div>
-      </main>
-    </div>
+      </div>
+    </main>
   );
 }
