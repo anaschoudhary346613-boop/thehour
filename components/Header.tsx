@@ -2,15 +2,20 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X, ShoppingBag, User, Search, ChevronRight } from 'lucide-react';
 import { useStore } from '@/store/useStore';
 import Logo from './Logo';
 
 export default function Header() {
+  const pathname = usePathname();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const { toggleCart, toggleAuth } = useStore();
+
+  // Hide header on admin routes
+  if (pathname?.startsWith('/admin')) return null;
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50);
