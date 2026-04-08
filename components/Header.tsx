@@ -2,75 +2,145 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { ShoppingBag, Menu } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Menu, X, ShoppingBag, User, Instagram, Search, ChevronRight } from 'lucide-react';
 import { useStore } from '@/store/useStore';
-import { useUIStore } from '@/store/useUIStore';
 import Logo from './Logo';
 
 export default function Header() {
-  const [isScrolled, setIsScrolled] = useState(false);
-  const { cart, toggleCart } = useStore();
-  const { openCategories } = useUIStore();
-  
-  const itemCount = cart.reduce((acc, item) => acc + item.quantity, 0);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const { toggleCart, cart } = useStore();
 
   useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
-    };
+    const handleScroll = () => setScrolled(window.scrollY > 20);
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  const navLinks = [
+    { name: 'Home page', href: '/' },
+    { name: 'The Collection', href: '/shop' },
+    { name: 'Heritage & Craft', href: '/heritage' },
+    { name: 'Bespoke Sourcing', href: '/concierge' },
+    { name: 'Shop All', href: '/shop' },
+  ];
+
   return (
-    <header 
-      className={`fixed top-0 left-0 w-full z-[999] transition-all duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] ${
-        isScrolled 
-          ? 'bg-[#0A0A0A]/80 backdrop-blur-2xl border-b border-white/5 py-3 md:py-4' 
-          : 'bg-transparent py-8 md:py-12'
-      }`}
-    >
-      <div className="max-w-[1800px] mx-auto px-6 md:px-12 flex items-center justify-between">
+    <>
+      <header 
+        className={`fixed top-0 left-0 w-full z-[5000] transition-all duration-500 px-6 py-4 flex justify-between items-center ${
+          scrolled || isMenuOpen ? 'bg-[#0A0A0A]/90 backdrop-blur-xl border-b border-white/10' : 'bg-transparent'
+        }`}
+      >
         {/* Left: Logo */}
-        <Link href="/" className="group relative z-[1000] flex items-center gap-4">
-          <Logo size={isScrolled ? 40 : 50} className="transition-transform duration-500 group-hover:scale-110" />
-          <span className={`text-white text-[10px] uppercase tracking-[0.4em] font-black transition-opacity duration-500 ${isScrolled ? 'opacity-100' : 'opacity-0'}`}>
-            The Hour
-          </span>
+        <Link href="/" className="relative z-[5001]">
+          <Logo className="w-10 h-10 md:w-12 md:h-12" />
         </Link>
 
-        {/* Right: Actions */}
-        <div className="flex items-center gap-8 md:gap-12 relative z-[1000]">
-          {/* Minimalist Cart Icon */}
+        {/* Right: Cart & Menu Toggle */}
+        <div className="flex items-center gap-6">
           <button 
             onClick={() => toggleCart(true)}
-            className="group relative flex items-center gap-3 text-white transition-all"
+            className="relative p-2 text-white hover:text-[#C8A97E] transition-colors"
           >
-            <span className="text-[9px] font-black uppercase tracking-[0.3em] opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all duration-500 hidden md:block">
-              Bag
-            </span>
-            <div className="relative">
-              <ShoppingBag size={20} className="text-white/80 group-hover:text-white transition-colors" />
-              {itemCount > 0 && (
-                <span className="absolute -top-1.5 -right-1.5 w-4 h-4 bg-[#C8A97E] text-black text-[8px] font-black rounded-full flex items-center justify-center shadow-lg">
-                  {itemCount}
-                </span>
-              )}
-            </div>
+            <ShoppingBag size={22} strokeWidth={1.5} />
+            {cart.length > 0 && (
+              <span className="absolute top-0 right-0 w-4 h-4 bg-[#C8A97E] text-black text-[10px] font-bold rounded-full flex items-center justify-center">
+                {cart.length}
+              </span>
+            )}
           </button>
-
-          {/* Minimalist Menu Icon */}
+          
           <button 
-             onClick={openCategories}
-             className="group flex items-center gap-3 text-white transition-all"
+            onClick={() => setIsMenuOpen(true)}
+            className="text-white hover:text-[#C8A97E] transition-colors p-2"
           >
-            <span className="text-[9px] font-black uppercase tracking-[0.3em] opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all duration-500 hidden md:block">
-              Index
-            </span>
-            <Menu size={22} className="text-white/80 group-hover:text-white transition-colors" />
+            <Menu size={24} strokeWidth={1.5} />
           </button>
         </div>
-      </div>
-    </header>
+      </header>
+
+      {/* SIDEBAR NAVIGATION OVERLAY */}
+      <AnimatePresence>
+        {isMenuOpen && (
+          <>
+            {/* The Backdrop */}
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setIsMenuOpen(false)}
+              className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[9998] cursor-pointer"
+            />
+
+            {/* The Sidebar Panel */}
+            <motion.div 
+              initial={{ x: '-100%' }}
+              animate={{ x: 0 }}
+              exit={{ x: '-100%' }}
+              transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+              className="fixed inset-y-0 left-0 w-[85%] md:w-[400px] bg-[#0A0A0A] border-r border-white/10 z-[9999] flex flex-col shadow-2xl"
+            >
+              {/* Top Bar */}
+              <div className="flex items-center justify-between p-6 border-b border-white/5">
+                <button 
+                  onClick={() => setIsMenuOpen(false)} 
+                  className="text-white p-2 hover:bg-white/5 rounded-full transition-all"
+                >
+                  <X size={24} strokeWidth={1.5} />
+                </button>
+                <img src="/logo.png" className="w-8 h-8 object-contain" alt="TH" />
+                <div className="w-8"></div> {/* Spacer for symmetry */}
+              </div>
+
+              {/* Navigation Links */}
+              <nav className="flex-1 overflow-y-auto py-8 flex flex-col">
+                {navLinks.map((link, idx) => (
+                  <Link 
+                    key={idx}
+                    href={link.href}
+                    onClick={() => setIsMenuOpen(false)}
+                    className="px-8 py-5 text-white/80 text-lg font-serif tracking-tight border-b border-white/[0.02] flex justify-between items-center hover:bg-white/5 hover:text-[#C8A97E] transition-all group"
+                  >
+                    {link.name}
+                    <ChevronRight size={16} className="opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-[#C8A97E]" />
+                  </Link>
+                ))}
+
+                <div className="h-px bg-white/10 my-6 mx-8"></div>
+                
+                <Link 
+                  href="/dashboard"
+                  onClick={() => setIsMenuOpen(false)}
+                  className="px-8 py-4 text-white/50 text-sm uppercase tracking-[0.2em] hover:text-[#C8A97E] transition-colors"
+                >
+                  Track Order
+                </Link>
+              </nav>
+
+              {/* Bottom Footer */}
+              <div className="p-8 border-t border-white/5 flex flex-col gap-8 bg-[#050505]">
+                <Link 
+                  href="/login" 
+                  onClick={() => setIsMenuOpen(false)}
+                  className="flex items-center gap-3 text-white/70 text-sm font-bold uppercase tracking-widest hover:text-[#C8A97E] transition-colors"
+                >
+                  <User size={18} strokeWidth={2} /> 
+                  Log in
+                </Link>
+                
+                <div className="flex items-center gap-6">
+                   <Link href="#" className="text-white/40 hover:text-white transition-colors">
+                    <Instagram size={20} />
+                   </Link>
+                   <span className="text-[10px] text-white/20 uppercase tracking-[0.3em]">Follow the Vault</span>
+                </div>
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
+    </>
   );
 }

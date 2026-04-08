@@ -4,7 +4,6 @@ import { Providers } from "@/components/Providers";
 import Script from 'next/script';
 import Link from 'next/link';
 import ModalProvider from '@/components/ModalProvider';
-import FloatingNav from '@/components/FloatingNav';
 import CartDrawer from '@/components/CartDrawer';
 import AuthModal from '@/components/AuthModal';
 import SmoothScrollProvider from '@/components/SmoothScrollProvider';
@@ -42,10 +41,10 @@ export default function RootLayout({
               {children}
             </main>
             
-            <FloatingNav />
             <CartDrawer />
             <AuthModal />
             <ModalProvider />
+            <Preloader />
           </SmoothScrollProvider>
         </Providers>
         

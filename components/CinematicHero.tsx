@@ -6,47 +6,47 @@ import Link from 'next/link';
 
 export default function CinematicHero() {
   return (
-    <section className="relative w-full min-h-[100dvh] flex flex-col items-center justify-center pt-20 pb-32 overflow-hidden bg-[#0A0A0A]">
-      {/* 5. THE BACKGROUND TEXT (BEHIND EVERYTHING) */}
-      <h2 className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[15vw] font-serif text-white/[0.03] whitespace-nowrap z-0 pointer-events-none select-none uppercase tracking-tighter">
+    <section className="relative w-full min-h-[100dvh] flex flex-col items-center justify-center pt-32 pb-24 overflow-hidden bg-[#0A0A0A]">
+      {/* 2. THE BACKGROUND TEXT */}
+      <h2 className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[18vw] font-serif text-white/5 whitespace-nowrap z-0 pointer-events-none select-none">
         THE HOUR
       </h2>
 
-      {/* Volumetric Spotlight (Aesthetic Support) */}
-      <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 z-0 flex justify-center pointer-events-none">
-        <div className="w-[60vw] h-[60vw] bg-[#C8A97E]/5 rounded-full blur-[120px]" />
+      {/* 3. THE ROTATING 3D WATCH (TOP ELEMENT) */}
+      <div className="relative z-20 w-full max-w-[350px] md:max-w-[500px] mb-8">
+        <motion.img 
+          src="/watch.png" 
+          alt="3D Luxury Watch" 
+          className="w-full object-contain drop-shadow-[0_20px_50px_rgba(200,169,126,0.15)]" 
+          animate={{ y: [0, -15, 0], rotate: [0, 2, -2, 0] }} 
+          transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }} 
+        />
       </div>
 
-      {/* 2. RESTORE THE TRANSPARENT WATCH & ROTATION (FRAMER MOTION) */}
-      <motion.img 
-        src="/watch.png" 
-        alt="The Hour Timepiece" 
-        className="w-[85%] md:w-[500px] object-contain drop-shadow-[0_20px_50px_rgba(200,169,126,0.2)] z-20" 
-        animate={{ 
-          y: [0, -15, 0], 
-          rotate: [0, 2, -2, 0] 
-        }} 
-        transition={{ 
-          duration: 6, 
-          repeat: Infinity, 
-          ease: "easeInOut" 
-        }} 
-      />
+      {/* 4. THE TYPOGRAPHY (MIDDLE ELEMENT) */}
+      <div className="z-30 text-center flex flex-col items-center gap-4 mb-10">
+        <span className="text-[#C8A97E] text-[10px] md:text-xs tracking-[0.4em] uppercase font-bold">
+          Best Luxury Watches
+        </span>
+        <h1 className="text-4xl md:text-6xl font-serif text-white leading-tight">
+          Premium Watches<br/>for Every Person
+        </h1>
+      </div>
 
-      {/* 3. THE BUTTON PLACEMENT */}
-      <div className="z-30 mt-12 relative">
+      {/* 5. THE BUTTON (BOTTOM ELEMENT) */}
+      <div className="z-30">
         <Link 
           href="/shop" 
-          className="border border-[#C8A97E]/50 bg-white/5 backdrop-blur-md text-white px-10 py-4 rounded-full text-xs font-bold tracking-[0.3em] uppercase hover:bg-[#C8A97E] hover:text-black hover:border-[#C8A97E] transition-all duration-300 shadow-[0_0_30px_rgba(0,0,0,0.5)]"
+          className="border border-white/20 bg-white/5 backdrop-blur-md text-white px-8 py-4 rounded-full text-[10px] md:text-xs font-bold tracking-[0.3em] uppercase hover:bg-[#C8A97E] hover:text-black hover:border-[#C8A97E] transition-all duration-300"
         >
           Discover Collection
         </Link>
       </div>
 
-      {/* Aesthetic Accents */}
+      {/* Aesthetic Accents (Subtle additions to anchor the layout) */}
       <div className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-4 opacity-20">
          <div className="w-[1px] h-12 bg-gradient-to-b from-white to-transparent" />
-         <span className="text-[8px] uppercase tracking-[0.5em] font-bold text-white">Scroll</span>
+         <span className="text-[8px] uppercase tracking-[0.5em] font-bold text-white">Editorial Flagship</span>
       </div>
     </section>
   );
