@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, ShoppingBag, User, Instagram, Search, ChevronRight, Camera } from 'lucide-react';
+import { Menu, X, ShoppingBag, User, Search, ChevronRight } from 'lucide-react';
 import { useStore } from '@/store/useStore';
 import Logo from './Logo';
 
@@ -121,9 +121,9 @@ export default function Header() {
                         <span className="text-[10px] uppercase tracking-[0.3em] text-white/20 font-bold">Account</span>
                         <span className="text-xs uppercase tracking-widest text-white group-hover:text-[#C8A97E] transition-colors">Private Portal</span>
                      </button>
-                     <div className="flex items-center gap-4 pt-6">
-                        <Instagram size={18} className="text-white/20 hover:text-white transition-colors cursor-pointer" />
-                        <Camera size={18} className="text-white/20 hover:text-white transition-colors cursor-pointer" />
+                     <div className="flex items-center gap-8 pt-6">
+                        <span className="text-[10px] uppercase tracking-widest text-white/20 hover:text-white transition-colors cursor-pointer font-bold">Instagram</span>
+                        <span className="text-[10px] uppercase tracking-widest text-white/20 hover:text-white transition-colors cursor-pointer font-bold">Journal</span>
                      </div>
                    </motion.div>
 
